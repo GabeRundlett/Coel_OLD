@@ -118,6 +118,6 @@ void Window::update()
 	glfwPollEvents();
 	m_Context->swap();
 }
-} // namespace Linux
+} // namespace MacOS
 } // namespace Platform
 } // namespace Coel

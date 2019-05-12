@@ -22,6 +22,6 @@ void Context::swap()
 {
 	glfwSwapBuffers(m_window);
 }
-} // namespace OpenGL
+} // namespace Metal
 } // namespace RenderAPI
 } // namespace Coel

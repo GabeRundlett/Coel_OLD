@@ -8,7 +8,7 @@ class Application
 {
 	static Window *m_window;
 	static LayerStack *m_layerStack;
-	
+
 	static unsigned int m_vao, m_vbo, m_ibo;
 
 public:

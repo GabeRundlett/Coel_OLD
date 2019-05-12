@@ -25,6 +25,6 @@ public:
 	unsigned int getHeight() override { return m_data.height; };
 	void setEventCallback(void (*func)(Event &)) { m_data.eventCallback = func; };
 };
-} // namespace Linux
+} // namespace MacOS
 } // namespace Platform
 } // namespace Coel

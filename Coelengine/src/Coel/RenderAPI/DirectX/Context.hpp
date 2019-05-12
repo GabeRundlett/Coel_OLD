@@ -19,6 +19,6 @@ public:
 	void init() override;
 	void swap() override;
 };
-} // namespace OpenGL
+} // namespace DirectX
 } // namespace RenderAPI
 } // namespace Coel

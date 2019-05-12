@@ -23,31 +23,36 @@ Application::Application()
 
 	m_layerStack = new LayerStack;
 	CL_LOG("Successfully created Coel Application\n");
-	
+
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);
-	
+
 	glGenBuffers(1, &m_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	
+
 	float pos[] = {
-		-0.5f, -0.5f, 0.f,
-		 0.5f, -0.5f, 0.f,
-		 0.0f,  0.5f, 0.f,
+		-0.5f,
+		-0.5f,
+		0.f,
+		0.5f,
+		-0.5f,
+		0.f,
+		0.0f,
+		0.5f,
+		0.f,
 	};
-	
+
 	glBufferData(GL_ARRAY_BUFFER, sizeof(pos), pos, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-	
+
 	glGenBuffers(1, &m_ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-	
+
 	unsigned int ind[] = {
-		0, 1, 2
-	};
-	
+		0, 1, 2};
+
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ind), ind, GL_STATIC_DRAW);
 }
 
@@ -75,10 +80,10 @@ void Application::run()
 			frameCount = 0;
 		}
 		frameCount++;
-		
+
 		glBindVertexArray(m_vao);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-		
+
 		m_window->update();
 	}
 }

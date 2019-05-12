@@ -19,6 +19,6 @@ public:
 	void init() override;
 	void swap() override;
 };
-} // namespace OpenGL
+} // namespace Vulkan
 } // namespace RenderAPI
 } // namespace Coel
