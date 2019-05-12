@@ -1,0 +1,9 @@
+[submodule "Coelengine/dep/glad"]
+	path = Coelengine/dep/glad
+	url = https://github.com/GabeRundlett/glad
+[submodule "Coelengine/dep/GLFW"]
+	path = Coelengine/dep/GLFW
+	url = https://github.com/GabeRundlett/GLFW
+[submodule "Coelengine/dep/clm"]
+	path = Coelengine/dep/clm
+	url = https://github.com/GabeRundlett/clm
