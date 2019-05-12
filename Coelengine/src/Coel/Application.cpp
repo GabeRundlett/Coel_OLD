@@ -15,14 +15,14 @@ unsigned int Application::m_vao = 0, Application::m_vbo = 0, Application::m_ibo 
 
 Application::Application()
 {
-	CL_LOG("Creating application...\n");
+	CL_LOG("Creating Coel Application\n");
 
 	m_window = Window::create();
 	CL_BREAK(m_window, "Window creation failed.\n");
 	m_window->setEventCallback(onEvent);
 
 	m_layerStack = new LayerStack;
-	CL_LOG("successfully created application...\n");
+	CL_LOG("Successfully created Coel Application\n");
 	
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);
@@ -39,7 +39,7 @@ Application::Application()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(pos), pos, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 	
 	glGenBuffers(1, &m_ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);

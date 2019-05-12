@@ -1,5 +1,6 @@
 #include "clpch.hpp"
 #include "Context.hpp"
+#include "Coel/Utilities/Log.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -22,6 +23,11 @@ void Context::init()
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	CL_LOG("  Context: (OpenGL) Info:\n" << 
+		"     Vendor:    " << glGetString(GL_VENDOR) << '\n' << 
+		"     Renderer:  " << glGetString(GL_RENDERER) << '\n' << 
+		"     Version:   " << glGetString(GL_VERSION) << '\n');
 }
 
 void Context::swap()

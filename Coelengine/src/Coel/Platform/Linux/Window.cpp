@@ -18,8 +18,8 @@ namespace Linux
 Window::Window(const WindowProp &prop)
 	: m_window(nullptr), m_data(prop), m_Context(nullptr)
 {
-	CL_LOG("Creating window...\n");
-	CL_ASSERT(glfwInit(), "Unable to initialize glfw.\n");
+	CL_LOG("Creating Coel Window\n");
+	CL_ASSERT(glfwInit(), "Unable to initialize GLFW.\n");
 
 	m_window = glfwCreateWindow(800, 600, "window", nullptr, nullptr);
 	CL_BREAK(m_window, "Unable to create window.\n");
@@ -100,7 +100,7 @@ Window::Window(const WindowProp &prop)
 		data.eventCallback(e);
 	});
 
-	CL_LOG("Successfully created window.\n");
+	CL_LOG("Successfully created Coel Window\n");
 }
 
 Window::~Window()
