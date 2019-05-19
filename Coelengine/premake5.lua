@@ -35,8 +35,16 @@ project "Coelengine"
 		systemversion "latest"
 		defines "COEL_PLATFORM_WINDOWS"
 		excludes {
+			--Platform specific code
 			"src/Coel/Platform/Linux/**.hpp",
-			"src/Coel/Platform/Linux/**.cpp"
+			"src/Coel/Platform/Linux/**.cpp",
+
+			"src/Coel/Platform/MacOS/**.hpp",
+			"src/Coel/Platform/MacOS/**.cpp",
+
+			--Renderer specific code
+			"src/Coel/RenderAPI/Metal/**.hpp",
+			"src/Coel/RenderAPI/Metal/**.cpp"
 		}
 		links {
 			"GLFW",
@@ -47,8 +55,32 @@ project "Coelengine"
 		cppdialect "C++17"
 		defines "COEL_PLATFORM_LINUX"
 		excludes {
+			--Platform specific code
 			"src/Coel/Platform/Windows/**.hpp",
-			"src/Coel/Platform/Windows/**.cpp"
+			"src/Coel/Platform/Windows/**.cpp",
+
+			"src/Coel/Platform/MacOS/**.hpp",
+			"src/Coel/Platform/MacOS/**.cpp",
+
+			--Renderer specific code
+			"src/Coel/RenderAPI/DirectX/**.hpp",
+			"src/Coel/RenderAPI/DirectX/**.cpp",
+
+			"src/Coel/RenderAPI/Metal/**.hpp",
+			"src/Coel/RenderAPI/Metal/**.cpp"
 		}
 	filter "system:macosx"
+		cppdialect "C++17"
 		defines "COEL_PLATFORM_MACOS"
+		excludes {
+			--Platform specific code
+			"src/Coel/Platform/Windows/**.hpp",
+			"src/Coel/Platform/Windows/**.cpp",
+
+			"src/Coel/Platform/Linux/**.hpp",
+			"src/Coel/Platform/Linux/**.cpp",
+
+			--Renderer specific code
+			"src/Coel/RenderAPI/DirectX/**.hpp",
+			"src/Coel/RenderAPI/DirectX/**.cpp"
+		}

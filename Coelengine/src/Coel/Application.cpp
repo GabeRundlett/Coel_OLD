@@ -30,16 +30,10 @@ Application::Application()
 	glGenBuffers(1, &m_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-	float pos[] = {
-		-0.5f,
-		-0.5f,
-		0.f,
-		0.5f,
-		-0.5f,
-		0.f,
-		0.0f,
-		0.5f,
-		0.f,
+	float pos[] = { 
+		-0.5f, -0.5f, 0.f,
+		 0.5f, -0.5f, 0.f,
+		 0.0f,  0.5f, 0.f,
 	};
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(pos), pos, GL_STATIC_DRAW);
