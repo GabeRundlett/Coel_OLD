@@ -1,6 +1,6 @@
 #include "clpch.hpp"
 #include "Window.hpp"
-#include "Coel/RenderAPI/OpenGL/Context.hpp"
+#include "Coel/Graphics/OpenGL/Context.hpp"
 
 #include <GLFW/glfw3.h>
 #include "Coel/Utilities/Log.hpp"
@@ -24,7 +24,7 @@ Window::Window(const WindowProp &prop)
 	m_window = glfwCreateWindow(800, 600, "window", nullptr, nullptr);
 	CL_BREAK(m_window, "Unable to create window.\n");
 
-	m_Context = new RenderAPI::OpenGL::Context(m_window);
+	m_Context = new Graphics::OpenGL::Context(m_window);
 	m_Context->init();
 
 	glfwSwapInterval(0);
@@ -95,7 +95,7 @@ Window::Window(const WindowProp &prop)
 		data.eventCallback(e);
 	});
 	glfwSetScrollCallback(m_window, [](GLFWwindow *window, double xOffset, double yOffset) {
-		WindowProp &data = *(WindowProp *)glfwGetWindowUserPointer(window);
+		WindowProp& data = *(WindowProp*)glfwGetWindowUserPointer(window);
 
 		MouseScrolledEvent e((float)xOffset, (float)yOffset);
 		data.eventCallback(e);

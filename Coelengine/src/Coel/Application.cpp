@@ -11,7 +11,8 @@ Event *Event::s_current = nullptr;
 Window *Application::m_window = nullptr;
 LayerStack *Application::m_layerStack = nullptr;
 
-unsigned int Application::m_vao = 0, Application::m_vbo = 0, Application::m_ibo = 0;
+Graphics::VertexBuffer *Application::m_vbo = nullptr;
+Graphics::IndexBuffer *Application::m_ibo = nullptr;
 
 Application::Application()
 {
@@ -24,36 +25,18 @@ Application::Application()
 	m_layerStack = new LayerStack;
 	CL_LOG("Successfully created Coel Application\n");
 
-	glGenVertexArrays(1, &m_vao);
-	glBindVertexArray(m_vao);
+	float pos[] = { -0.5f, -0.5f, 0.5f, -0.5f, 0.0f, 0.5f };
+	unsigned int ind[] = { 0, 1, 2 };
 
-	glGenBuffers(1, &m_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-	float pos[] = { 
-		-0.5f, -0.5f, 0.f,
-		 0.5f, -0.5f, 0.f,
-		 0.0f,  0.5f, 0.f,
-	};
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(pos), pos, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-
-	glGenBuffers(1, &m_ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-
-	unsigned int ind[] = {
-		0, 1, 2};
-
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ind), ind, GL_STATIC_DRAW);
+	m_vbo = new Graphics::OpenGL::VertexBuffer(pos, 3, 2);
+	m_ibo = new Graphics::OpenGL::IndexBuffer(ind, 3);
 }
 
 Application::~Application()
 {
 	delete m_layerStack;
 	delete m_window;
+	delete m_vbo, m_ibo;
 }
 
 bool Application::closed()
@@ -63,19 +46,26 @@ bool Application::closed()
 
 void Application::run()
 {
-	Timer frameTimer;
-	float frameCount = 0;
+	constexpr const unsigned int TICK_RATE = 128;
+	Timer tickClock;
+	const float tickTime = 1.f / TICK_RATE;
+	float tickOffset = 0, updateOffset = 0;
+
 	while (!m_window->closed())
 	{
-		if (frameTimer.elapsed() > 5)
-		{
-			CL_LOG(frameCount / 5 << " fps\n");
-			frameTimer.reset();
-			frameCount = 0;
-		}
-		frameCount++;
+		AppUpdateEvent updateEvent(tickClock.elapsed() - updateOffset);
+		updateOffset = tickClock.elapsed();
+		onEvent(updateEvent);
 
-		glBindVertexArray(m_vao);
+		float sinceLastTick = tickClock.elapsed() - tickOffset;
+		if (sinceLastTick > tickTime)
+		{
+			AppTickEvent tickEvent(sinceLastTick);
+			tickOffset += tickTime;
+			onEvent(tickEvent);
+		}
+		
+		m_vbo->bind();
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
 
 		m_window->update();

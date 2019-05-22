@@ -3,28 +3,26 @@
 
 namespace Coel
 {
-class AppUdateEvent : public Event
+class AppUpdateEvent : public Event
 {
+	float m_time;
 public:
-	AppUdateEvent() {}
+	AppUpdateEvent(float elapsed)
+		: m_time(elapsed) {}
+	inline float getTime() const { return m_time; }
 	EVENT_CLASS_CATEGORY(CategoryApplication)
 	EVENT_CLASS_TYPE(AppUpdate)
 };
 
 class AppTickEvent : public Event
 {
+	float m_time;
 public:
-	AppTickEvent() {}
+	AppTickEvent(float elapsed)
+		: m_time(elapsed) {}
+	inline float getTime() const { return m_time; }
 	EVENT_CLASS_CATEGORY(CategoryApplication)
 	EVENT_CLASS_TYPE(AppTick)
-};
-
-class AppRenderEvent : public Event
-{
-public:
-	AppRenderEvent() {}
-	EVENT_CLASS_CATEGORY(CategoryApplication)
-	EVENT_CLASS_TYPE(AppRender)
 };
 
 class WindowCloseEvent : public Event

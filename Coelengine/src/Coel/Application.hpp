@@ -2,6 +2,9 @@
 #include "Window.hpp"
 #include "Layer.hpp"
 
+#include "Graphics/OpenGL/VertexBuffer.hpp"
+#include "Graphics/OpenGL/IndexBuffer.hpp"
+
 namespace Coel
 {
 class Application
@@ -9,7 +12,8 @@ class Application
 	static Window *m_window;
 	static LayerStack *m_layerStack;
 
-	static unsigned int m_vao, m_vbo, m_ibo;
+	static Graphics::VertexBuffer *m_vbo;
+	static Graphics::IndexBuffer *m_ibo;
 
 public:
 	static Application *create();

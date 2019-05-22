@@ -1,6 +1,6 @@
 #include "Coel.hpp"
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <iostream>
 #define LOG(x) std::cout << x
@@ -12,22 +12,12 @@ using namespace Coel;
 
 class MyLayer : public Layer
 {
-
 public:
 	MyLayer() {}
 	~MyLayer() {}
 
-	void onAttach() override
-	{
-	}
-
-	void onDetach() override
-	{
-	}
-
-	void onUpdate() override
-	{
-	}
+	void onAttach() override {}
+	void onDetach() override {}
 
 	void onEvent(Coel::Event &event) override
 	{
@@ -59,8 +49,16 @@ public:
 			LOG("window resized " << std::flush);
 			return false;
 		});
-		Event::dispatch<WindowCloseEvent>([](WindowCloseEvent &e) -> bool {
+		Event::dispatch<WindowCloseEvent>([](WindowCloseEvent& e) -> bool {
 			LOG("window closed " << std::flush);
+			return false;
+		});
+		Event::dispatch<AppTickEvent>([](AppTickEvent& e) -> bool {
+			LOG('0' << std::flush);
+			return false;
+		});
+		Event::dispatch<AppUpdateEvent>([](AppUpdateEvent& e) -> bool {
+			LOG('.' << std::flush);
 			return false;
 		});
 	}

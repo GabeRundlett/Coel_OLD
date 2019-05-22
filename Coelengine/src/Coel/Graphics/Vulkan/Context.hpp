@@ -1,15 +1,15 @@
 #pragma once
-#include "Coel/RenderAPI/Context.hpp"
+#include "Coel/Graphics/Context.hpp"
 
 struct GLFWwindow;
 
 namespace Coel
 {
-namespace RenderAPI
+namespace Graphics
 {
-namespace Metal
+namespace Vulkan
 {
-class Context : public RenderAPI::Context
+class Context : public Graphics::Context
 {
 	GLFWwindow *m_window;
 
@@ -19,6 +19,6 @@ public:
 	void init() override;
 	void swap() override;
 };
-} // namespace Metal
-} // namespace RenderAPI
+} // namespace Vulkan
+} // namespace Graphics
 } // namespace Coel

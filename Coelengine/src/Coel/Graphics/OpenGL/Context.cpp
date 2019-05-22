@@ -7,7 +7,7 @@
 
 namespace Coel
 {
-namespace RenderAPI
+namespace Graphics
 {
 namespace OpenGL
 {
@@ -26,7 +26,7 @@ void Context::init()
 
 	CL_LOG("  Context: (OpenGL) Info:\n"
 		   << "   - Vendor:    " << glGetString(GL_VENDOR) << '\n'
-		   << "   - Renderer:  " << glGetString(GL_RENDERER) << '\n'
+		   << "   - Graphics:  " << glGetString(GL_RENDERER) << '\n'
 		   << "   - Version:   " << glGetString(GL_VERSION) << '\n');
 }
 
@@ -34,6 +34,11 @@ void Context::swap()
 {
 	glfwSwapBuffers(m_window);
 }
+
+RenderAPI Context::getAPI()
+{
+	return RenderAPI::OpenGL;
+}
 } // namespace OpenGL
-} // namespace RenderAPI
+} // namespace Graphics
 } // namespace Coel

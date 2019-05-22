@@ -5,9 +5,9 @@
 
 namespace Coel
 {
-namespace RenderAPI
+namespace Graphics
 {
-namespace Vulkan
+namespace DirectX
 {
 Context::Context(GLFWwindow *window)
 	: m_window(window)
@@ -22,6 +22,6 @@ void Context::swap()
 {
 	glfwSwapBuffers(m_window);
 }
-} // namespace Vulkan
-} // namespace RenderAPI
+} // namespace DirectX
+} // namespace Graphics
 } // namespace Coel

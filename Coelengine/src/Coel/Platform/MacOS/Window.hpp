@@ -1,6 +1,6 @@
 #pragma once
 #include "Coel/Window.hpp"
-#include "Coel/RenderAPI/Context.hpp"
+#include "Coel/Graphics/Context.hpp"
 
 struct GLFWwindow;
 
@@ -14,7 +14,7 @@ class Window : public Coel::Window
 {
 	GLFWwindow *m_window;
 	WindowProp m_data;
-	RenderAPI::Context *m_Context;
+	Graphics::Context *m_Context;
 
 public:
 	Window(const WindowProp &prop);

@@ -43,8 +43,8 @@ project "Coelengine"
 			"src/Coel/Platform/MacOS/**.cpp",
 
 			--Renderer specific code
-			"src/Coel/RenderAPI/Metal/**.hpp",
-			"src/Coel/RenderAPI/Metal/**.cpp"
+			"src/Coel/Graphics/Metal/**.hpp",
+			"src/Coel/Graphics/Metal/**.cpp"
 		}
 		links {
 			"GLFW",
@@ -63,11 +63,11 @@ project "Coelengine"
 			"src/Coel/Platform/MacOS/**.cpp",
 
 			--Renderer specific code
-			"src/Coel/RenderAPI/DirectX/**.hpp",
-			"src/Coel/RenderAPI/DirectX/**.cpp",
+			"src/Coel/Graphics/DirectX/**.hpp",
+			"src/Coel/Graphics/DirectX/**.cpp",
 
-			"src/Coel/RenderAPI/Metal/**.hpp",
-			"src/Coel/RenderAPI/Metal/**.cpp"
+			"src/Coel/Graphics/Metal/**.hpp",
+			"src/Coel/Graphics/Metal/**.cpp"
 		}
 	filter "system:macosx"
 		cppdialect "C++17"
@@ -81,6 +81,6 @@ project "Coelengine"
 			"src/Coel/Platform/Linux/**.cpp",
 
 			--Renderer specific code
-			"src/Coel/RenderAPI/DirectX/**.hpp",
-			"src/Coel/RenderAPI/DirectX/**.cpp"
+			"src/Coel/Graphics/DirectX/**.hpp",
+			"src/Coel/Graphics/DirectX/**.cpp"
 		}

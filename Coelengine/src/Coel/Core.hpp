@@ -35,16 +35,16 @@
 #endif
 
 #ifdef COEL_RENDER_API_VULKAN
-#define COEL_RENDER_API Coel::RenderAPI::Vulkan
+#define COEL_RENDER_API Coel::Graphics::Vulkan
 #endif
 #ifdef COEL_RENDER_API_DIRECTX
-#define COEL_RENDER_API Coel::RenderAPI::DirectX
+#define COEL_RENDER_API Coel::Graphics::DirectX
 #endif
 #ifdef COEL_RENDER_API_METAL
-#define COEL_RENDER_API Coel::RenderAPI::Metal
+#define COEL_RENDER_API Coel::Graphics::Metal
 #endif
 
 #ifndef COEL_RENDER_API
-#define COEL_RENDER_API Coel::RenderAPI::OpenGL
+#define COEL_RENDER_API Coel::Graphics::OpenGL
 #define COEL_RENDER_API_OPENGL
 #endif

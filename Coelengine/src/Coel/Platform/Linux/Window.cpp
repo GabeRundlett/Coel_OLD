@@ -1,6 +1,6 @@
 #include "clpch.hpp"
 #include "Window.hpp"
-#include "Coel/RenderAPI/OpenGL/Context.hpp"
+#include "Coel/Graphics/OpenGL/Context.hpp"
 
 #include <GLFW/glfw3.h>
 #include "Coel/Utilities/Log.hpp"
@@ -24,7 +24,7 @@ Window::Window(const WindowProp &prop)
 	m_window = glfwCreateWindow(800, 600, "window", nullptr, nullptr);
 	CL_BREAK(m_window, "Unable to create window.\n");
 
-	m_Context = new RenderAPI::OpenGL::Context(m_window);
+	m_Context = new Graphics::OpenGL::Context(m_window);
 	m_Context->init();
 
 	glfwSetWindowUserPointer(m_window, &m_data);
