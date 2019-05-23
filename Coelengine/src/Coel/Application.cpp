@@ -25,11 +25,11 @@ Application::Application()
 	m_layerStack = new LayerStack;
 	CL_LOG("Successfully created Coel Application\n");
 
-	float pos[] = { -0.5f, -0.5f, 0.5f, -0.5f, 0.0f, 0.5f };
-	unsigned int ind[] = { 0, 1, 2 };
+	float pos[] = { -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
+	unsigned int ind[] = { 0, 1, 2, 1, 2, 3 };
 
-	m_vbo = new Graphics::OpenGL::VertexBuffer(pos, 3, 2);
-	m_ibo = new Graphics::OpenGL::IndexBuffer(ind, 3);
+	m_vbo = new Graphics::OpenGL::VertexBuffer(pos, 4, 2);
+	m_ibo = new Graphics::OpenGL::IndexBuffer(ind, 6);
 }
 
 Application::~Application()
@@ -46,7 +46,7 @@ bool Application::closed()
 
 void Application::run()
 {
-	constexpr const unsigned int TICK_RATE = 128;
+	constexpr const unsigned int TICK_RATE = 20;
 	Timer tickClock;
 	const float tickTime = 1.f / TICK_RATE;
 	float tickOffset = 0, updateOffset = 0;
@@ -66,7 +66,7 @@ void Application::run()
 		}
 		
 		m_vbo->bind();
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 		m_window->update();
 	}
