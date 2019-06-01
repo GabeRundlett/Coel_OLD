@@ -9,7 +9,7 @@ workspace "Coel"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["Coelengine"] = "%{wks.location}/Coelengine/src"
+IncludeDir["Coelengine"] = "%{wks.location}/Coelengine/include"
 IncludeDir["dep"] = "%{wks.location}/Coelengine/dep"
 IncludeDir["GLFW"] = "%{IncludeDir.dep}/GLFW/include"
 IncludeDir["glad"] = "%{IncludeDir.dep}/glad/include"

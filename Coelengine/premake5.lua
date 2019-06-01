@@ -5,35 +5,39 @@ project "Coelengine"
 	targetdir("%{wks.location}/Build/bin/" .. outputdir .. "/%{prj.name}")
 	objdir("%{wks.location}/Build/bin/intermediates/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "clpch.hpp"
-	pchsource "src/clpch.cpp"
+	pchheader "pch.hpp"
+	pchsource "src/pch.cpp"
 	
 	files {
 		"src/**.hpp",
 		"src/**.cpp",
+		"include/**.hpp",
 	}
 	
 	includedirs {
-		"%{IncludeDir.Coelengine}",
+		"%{wks.location}/Coelengine/src",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.glad}",
-		"%{IncludeDir.clm}"
+		"%{IncludeDir.glad}"
 	}
+
 	defines {
 		"GLFW_INCLUDE_NONE"
 	}
-		
+
 	filter "configurations:Debug"
-		defines "COEL_DEBUG"
+		defines "CONFIG_DEBUG"
 		symbols "On"
 	filter "configurations:Release"
-		defines "COEL_RELEASE"
+		defines "CONFIG_RELEASE"
 		optimize "On"
 	
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
-		defines "COEL_PLATFORM_WINDOWS"
+		defines "CONFIG_PLATFORM_WINDOWS"
+		links {
+			"GLFW",
+			"glad"
+		}
 		excludes {
 			--Platform specific code
 			"src/Coel/Platform/Linux/**.hpp",
@@ -46,14 +50,8 @@ project "Coelengine"
 			"src/Coel/Graphics/Metal/**.hpp",
 			"src/Coel/Graphics/Metal/**.cpp"
 		}
-		links {
-			"GLFW",
-			"glad",
-			"clm"
-		}
 	filter "system:linux"
-		cppdialect "C++17"
-		defines "COEL_PLATFORM_LINUX"
+		defines "CONFIG_PLATFORM_LINUX"
 		excludes {
 			--Platform specific code
 			"src/Coel/Platform/Windows/**.hpp",
@@ -70,8 +68,7 @@ project "Coelengine"
 			"src/Coel/Graphics/Metal/**.cpp"
 		}
 	filter "system:macosx"
-		cppdialect "C++17"
-		defines "COEL_PLATFORM_MACOS"
+		defines "CONFIG_PLATFORM_MACOS"
 		excludes {
 			--Platform specific code
 			"src/Coel/Platform/Windows/**.hpp",
@@ -84,3 +81,4 @@ project "Coelengine"
 			"src/Coel/Graphics/DirectX/**.hpp",
 			"src/Coel/Graphics/DirectX/**.cpp"
 		}
+		

@@ -1,96 +1,65 @@
-#include "clpch.hpp"
-#include "Application.hpp"
-#include "Utilities/Log.hpp"
-#include "Utilities/Timer.hpp"
+#include "pch.hpp"
 
-#include <glad/glad.h>
+#include "WindowManager.hpp"
+#include "Internals/Utilities/Log.hpp"
+#include "Internals/AppCallbacks.hpp"
 
-namespace Coel
-{
-Event *Event::s_current = nullptr;
-Window *Application::m_window = nullptr;
-LayerStack *Application::m_layerStack = nullptr;
+#include <time.h>
 
-Graphics::VertexBuffer *Application::m_vbo = nullptr;
-Graphics::IndexBuffer *Application::m_ibo = nullptr;
-
-Application::Application()
-{
-	CL_LOG("Creating Coel Application\n");
-
-	m_window = Window::create();
-	CL_BREAK(m_window, "Window creation failed.\n");
-	m_window->setEventCallback(onEvent);
-
-	m_layerStack = new LayerStack;
-	CL_LOG("Successfully created Coel Application\n");
-
-	float pos[] = { -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
-	unsigned int ind[] = { 0, 1, 2, 1, 2, 3 };
-
-	m_vbo = new Graphics::OpenGL::VertexBuffer(pos, 4, 2);
-	m_ibo = new Graphics::OpenGL::IndexBuffer(ind, 6);
-}
-
-Application::~Application()
-{
-	delete m_layerStack;
-	delete m_window;
-	delete m_vbo, m_ibo;
-}
-
-bool Application::closed()
-{
-	return m_window->closed();
-}
-
-void Application::run()
-{
-	constexpr const unsigned int TICK_RATE = 20;
-	Timer tickClock;
-	const float tickTime = 1.f / TICK_RATE;
-	float tickOffset = 0, updateOffset = 0;
-
-	while (!m_window->closed())
-	{
-		AppUpdateEvent updateEvent(tickClock.elapsed() - updateOffset);
-		updateOffset = tickClock.elapsed();
-		onEvent(updateEvent);
-
-		float sinceLastTick = tickClock.elapsed() - tickOffset;
-		if (sinceLastTick > tickTime)
+namespace Engine {
+	namespace Application {
+		constexpr static const unsigned int TICK_RATE = 64;
+		constexpr static const float MILLIS_PER_TICK = 1000.f / TICK_RATE;
+		static float totalTickTime = 0, millisElapsed;
+		static unsigned char shouldOpen;
+		unsigned int init()
 		{
-			AppTickEvent tickEvent(sinceLastTick);
-			tickOffset += tickTime;
-			onEvent(tickEvent);
+			LOG_INFO(Application, "Initializing application...\n");
+			LOG_INFO(Application, "Initializing window manager...\n");
+			if (!WindowManager::init()) {
+				LOG_ERROR(Application, "Window manager failed to initialize\n");
+				shouldOpen = 0;
+				return 0;
+			}
+			LOG_SUCCESS(Application, "Initialized window manager\n");
+			LOG_SUCCESS(Application, "Initialized application\n");
+			shouldOpen = 1;
+			return 1;
 		}
-		
-		m_vbo->bind();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-		m_window->update();
-	}
-}
-
-void Application::onEvent(Event &e)
-{
-	Event::s_current = &e;
-
-	for (auto it = m_layerStack->end(); it != m_layerStack->begin();)
-	{
-		(*--it)->onEvent(e);
-		if (e.handled)
-			break;
-	}
-}
-
-void Application::pushLayer(Layer *l)
-{
-	m_layerStack->pushLayer(l);
-}
-
-void Application::pushOverlay(Layer *l)
-{
-	m_layerStack->pushOverlay(l);
-}
-} // namespace Coel
+		void start()
+		{
+			if (shouldOpen) {
+				LOG_INFO(Application, "Starting application...\n");
+				Internals::onStartCallback();
+				LOG_SUCCESS(Application, "Started application\n");
+				while (WindowManager::shouldRun()) {
+					WindowManager::update();
+					Internals::onUpdateCallback();
+					millisElapsed = clock() - totalTickTime;
+					if (millisElapsed > MILLIS_PER_TICK) {
+						totalTickTime += MILLIS_PER_TICK;
+						Internals::onTickCallback();
+					}
+				}
+				LOG_INFO(Application, "Closing application...\n");
+				Internals::onCloseCallback();
+				WindowManager::close();
+				LOG_SUCCESS(Application, "Closed application\n");
+			}
+		}
+		void reset()
+		{
+			if (shouldOpen) {
+				LOG_INFO(Application, "Resetting application...\n");
+				totalTickTime = (float)clock();
+				Internals::onResetCallback();
+				LOG_SUCCESS(Application, "Reset application\n");
+			}
+		}
+	} // namespace Application
+	void setOnStartCallback(void (*func)()) { Internals::onStartCallback = func; }
+	void setOnResetCallback(void (*func)()) { Internals::onResetCallback = func; }
+	void setOnCloseCallback(void (*func)()) { Internals::onCloseCallback = func; }
+	void setOnUpdateCallback(void (*func)()) { Internals::onUpdateCallback = func; }
+	void setOnTickCallback(void (*func)()) { Internals::onTickCallback = func; }
+} // namespace Engine
