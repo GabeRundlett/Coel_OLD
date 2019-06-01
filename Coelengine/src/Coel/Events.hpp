@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Engine {
+namespace Coel {
 	struct KeyPressedEvent {
 		int key, scancode, mods;
 	};
@@ -39,4 +39,4 @@ namespace Engine {
 	struct WindowLostFocusEvent {
 		int width, height;
 	};
-} // namespace Engine
+} // namespace Coel

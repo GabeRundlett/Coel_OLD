@@ -7,7 +7,7 @@
 
 static GLFWwindow *s_window;
 
-namespace Engine {
+namespace Coel {
 	namespace WindowManager {
 		unsigned int init()
 		{
@@ -93,4 +93,4 @@ namespace Engine {
 	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowClosed)
 	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowFocused)
 	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowLostFocus)
-} // namespace Engine
+} // namespace Coel

@@ -2,7 +2,7 @@
 
 #include "Events.hpp"
 
-namespace Engine {
+namespace Coel {
 	namespace WindowManager {
 		unsigned int init();
 		void update();
@@ -26,4 +26,4 @@ namespace Engine {
 	__ENGINE_DECLARE_EVENT_CALLBACK_SETTER(WindowClosed);
 	__ENGINE_DECLARE_EVENT_CALLBACK_SETTER(WindowFocused);
 	__ENGINE_DECLARE_EVENT_CALLBACK_SETTER(WindowLostFocus);
-} // namespace Engine
+} // namespace Coel

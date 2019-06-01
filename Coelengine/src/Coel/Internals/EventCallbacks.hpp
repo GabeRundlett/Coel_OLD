@@ -2,7 +2,7 @@
 
 #include "Coel/Events.hpp"
 
-namespace Engine {
+namespace Coel {
 	namespace Internals {
 #define IMPLIMENT_EVENT_CALLBACK(name)               \
 	static void empty##name(const name##Event &e) {} \
@@ -23,4 +23,4 @@ namespace Engine {
 		IMPLIMENT_EVENT_CALLBACK(WindowFocused)
 		IMPLIMENT_EVENT_CALLBACK(WindowLostFocus)
 	} // namespace Internals
-} // namespace Engine
+} // namespace Coel

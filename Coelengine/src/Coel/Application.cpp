@@ -6,7 +6,7 @@
 
 #include <time.h>
 
-namespace Engine {
+namespace Coel {
 	namespace Application {
 		constexpr static const unsigned int TICK_RATE = 64;
 		constexpr static const float MILLIS_PER_TICK = 1000.f / TICK_RATE;
@@ -62,4 +62,4 @@ namespace Engine {
 	void setOnCloseCallback(void (*func)()) { Internals::onCloseCallback = func; }
 	void setOnUpdateCallback(void (*func)()) { Internals::onUpdateCallback = func; }
 	void setOnTickCallback(void (*func)()) { Internals::onTickCallback = func; }
-} // namespace Engine
+} // namespace Coel

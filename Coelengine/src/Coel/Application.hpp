@@ -2,7 +2,7 @@
 
 #include "Events.hpp"
 
-namespace Engine {
+namespace Coel {
 	namespace Application {
 		unsigned int init();
 		void start();
@@ -13,4 +13,4 @@ namespace Engine {
 	void setOnCloseCallback(void (*func)());
 	void setOnUpdateCallback(void (*func)());
 	void setOnTickCallback(void (*func)());
-} // namespace Engine
+} // namespace Coel

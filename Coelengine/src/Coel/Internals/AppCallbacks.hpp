@@ -2,7 +2,7 @@
 
 #include "Coel/Events.hpp"
 
-namespace Engine {
+namespace Coel {
 	namespace Internals {
 		static void emptyFunction() {}
 
@@ -12,4 +12,4 @@ namespace Engine {
 		static void (*onUpdateCallback)() = &emptyFunction;
 		static void (*onTickCallback)() = &emptyFunction;
 	} // namespace Internals
-} // namespace Engine
+} // namespace Coel
