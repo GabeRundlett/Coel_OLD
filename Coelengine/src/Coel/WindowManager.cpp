@@ -5,10 +5,10 @@
 #include "Internals/Utilities/Log.hpp"
 #include "Internals/EventCallbacks.hpp"
 
-static GLFWwindow *s_window;
-
 namespace Coel {
 	namespace WindowManager {
+		static GLFWwindow *s_window;
+
 		unsigned int init()
 		{
 			LOG_INFO(WindowManager, "Initializing window manager...\n");
@@ -22,9 +22,12 @@ namespace Coel {
 				LOG_ERROR(WindowManager, "Failed to create window\n");
 				return 0;
 			}
-			LOG_SUCCESS(WindowManager, "Created window\n");
-			gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 			glfwMakeContextCurrent(s_window);
+			LOG_SUCCESS(WindowManager, "Created window\n");
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+				LOG_ERROR(WindowManager, "Failed to initalize glad\n");
+				return 0;
+			}
 			glfwSwapInterval(0);
 
 			glfwSetKeyCallback(s_window, [](GLFWwindow *w, int key, int scancode, int action, int mods) {

@@ -3,6 +3,7 @@
 #include "WindowManager.hpp"
 #include "Internals/Utilities/Log.hpp"
 #include "Internals/AppCallbacks.hpp"
+#include "Graphics/Renderer.hpp"
 
 #include <time.h>
 
@@ -22,6 +23,13 @@ namespace Coel {
 				return 0;
 			}
 			LOG_SUCCESS(Application, "Initialized window manager\n");
+			LOG_INFO(Application, "Initializing Renderer...\n");
+			if (!Graphics::Renderer::init()) {
+				LOG_ERROR(Application, "Renderer failed to initialize\n");
+				shouldOpen = 0;
+				return 0;
+			}
+			LOG_SUCCESS(Application, "Initialized Renderer\n");
 			LOG_SUCCESS(Application, "Initialized application\n");
 			shouldOpen = 1;
 			return 1;
@@ -34,6 +42,7 @@ namespace Coel {
 				LOG_SUCCESS(Application, "Started application\n");
 				while (WindowManager::shouldRun()) {
 					WindowManager::update();
+					Graphics::Renderer::update();
 					Internals::onUpdateCallback();
 					millisElapsed = clock() - totalTickTime;
 					if (millisElapsed > MILLIS_PER_TICK) {
