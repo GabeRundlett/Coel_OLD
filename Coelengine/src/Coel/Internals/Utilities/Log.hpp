@@ -14,6 +14,7 @@
 #define __LOG_TEXT_FOREGROUND_MAGENTA__ "\033[35m"
 #define __LOG_TEXT_FOREGROUND_CYAN__ "\033[36m"
 #define __LOG_TEXT_FOREGROUND_WHITE__ "\033[37m"
+#define __LOG_TEXT_FOREGROUND_GRAY__ "\033[90m"
 
 #define __LOG_TEXT_BACKGROUND_BLACK__ "\033[40m"
 #define __LOG_TEXT_BACKGROUND_RED__ "\033[41m"
@@ -23,10 +24,10 @@
 #define __LOG_TEXT_BACKGROUND_MAGENTA__ "\033[45m"
 #define __LOG_TEXT_BACKGROUND_CYAN__ "\033[46m"
 #define __LOG_TEXT_BACKGROUND_WHITE__ "\033[47m"
-#define __LOG_TEXT_BACKGROUND_GRAY__ "\033[90m"
+#define __LOG_TEXT_BACKGROUND_GRAY__ "\033[100m"
 
-#define LOG_INFO(source, msg) printf(__LOG_TEXT_BACKGROUND_GRAY__ #source ": " __LOG_RESET__ msg)
-#define LOG_SUCCESS(source, msg) printf(__LOG_TEXT_BACKGROUND_GRAY__ #source ": " __LOG_RESET__ __LOG_TEXT_FOREGROUND_GREEN__ msg __LOG_RESET__)
+#define LOG_INFO(source, msg) printf(__LOG_TEXT_FOREGROUND_GRAY__ #source ": " __LOG_RESET__ msg)
+#define LOG_SUCCESS(source, msg) printf(__LOG_TEXT_FOREGROUND_GRAY__ #source ": " __LOG_RESET__ __LOG_TEXT_FOREGROUND_GREEN__ msg __LOG_RESET__)
 #define LOG_ERROR(source, msg) printf(__LOG_BOLD__ __LOG_TEXT_BACKGROUND_RED__ "[ERROR::" #source "]" __LOG_RESET__ " " __LOG_TEXT_FOREGROUND_RED__ msg __LOG_RESET__)
 #else
 #define LOG_INFO(source, msg)

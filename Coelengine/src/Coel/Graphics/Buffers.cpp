@@ -7,34 +7,36 @@
 namespace Coel {
 	namespace Graphics {
 		// All of this is OpenGL specific
-		static unsigned int s_vertexArrayID = 0, s_vertexBufferCount = 0;
 
-		VertexBuffer createVertexBuffer(float *data, unsigned int size)
+		//----------------------------------------------------------------//
+		//                          VertexBuffer                          //
+		//----------------------------------------------------------------//
+
+		VertexBuffer createStaticVertexBuffer(float *data, unsigned int size)
 		{
-			LOG_INFO(VertexBuffer, "Creating vertex buffer...\n");
-			if (!s_vertexArrayID) {
-				glGenVertexArrays(1, &s_vertexArrayID);
-				glBindVertexArray(s_vertexArrayID);
-			}
-			if (s_vertexBufferCount > 31) {
-				LOG_ERROR(VertexBuffer, "Failed to create VBO, Too many vertex buffers\n");
-				return {0};
-			}
+			LOG_INFO(VertexBuffer, "Creating static vertex buffer...\n");
 			VertexBuffer result;
+			result.size = size;
 			glCreateBuffers(1, &result.id);
 			glBindBuffer(GL_ARRAY_BUFFER, result.id);
 			glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-
-			glEnableVertexAttribArray(s_vertexBufferCount);
-			glVertexAttribPointer(s_vertexBufferCount, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
-
-			s_vertexBufferCount++;
-			LOG_SUCCESS(VertexBuffer, "Created vertex buffer\n");
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			LOG_SUCCESS(VertexBuffer, "Created static vertex buffer\n");
+			return result;
+		}
+		VertexBuffer createDynamicVertexBuffer(unsigned int size)
+		{
+			LOG_INFO(VertexBuffer, "Creating dynamic vertex buffer...\n");
+			VertexBuffer result;
+			glCreateBuffers(1, &result.id);
+			glBindBuffer(GL_ARRAY_BUFFER, result.id);
+			resizeVertexBuffer(&result, size);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			LOG_SUCCESS(VertexBuffer, "Created dynamic vertex buffer\n");
 			return result;
 		}
 		void bindBuffer(VertexBuffer *b)
 		{
-			glBindVertexArray(s_vertexArrayID);
 			glBindBuffer(GL_ARRAY_BUFFER, b->id);
 		}
 		void unbindBuffer(VertexBuffer *b)
@@ -45,6 +47,17 @@ namespace Coel {
 		{
 			glDeleteBuffers(1, &b->id);
 		}
+		void resizeVertexBuffer(VertexBuffer *b, unsigned int size)
+		{
+			b->size = size;
+			glBindBuffer(GL_ARRAY_BUFFER, b->id);
+			glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+		}
+
+		//----------------------------------------------------------------//
+		//                          IndexBuffer                           //
+		//----------------------------------------------------------------//
+
 		IndexBuffer createIndexBuffer(unsigned int *data, unsigned int count)
 		{
 			LOG_INFO(IndexBuffer, "Creating index buffer...\n");
@@ -53,6 +66,7 @@ namespace Coel {
 			glCreateBuffers(1, &result.id);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.id);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			LOG_SUCCESS(IndexBuffer, "Created index buffer\n");
 			return result;
 		}

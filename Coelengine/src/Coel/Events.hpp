@@ -18,10 +18,10 @@ namespace Coel {
 		int button, mods;
 	};
 	struct MouseScrolledEvent {
-		double xPos, yPos;
+		double xOffset, yOffset;
 	};
 	struct MouseMovedEvent {
-		double xOffset, yOffset;
+		double xPos, yPos;
 	};
 
 	struct WindowMovedEvent {

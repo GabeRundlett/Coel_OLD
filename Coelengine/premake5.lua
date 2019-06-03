@@ -17,7 +17,8 @@ project "Coelengine"
 	includedirs {
 		"%{wks.location}/Coelengine/src",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.glad}"
+		"%{IncludeDir.glad}",
+		"%{IncludeDir.clm}"
 	}
 
 	defines {

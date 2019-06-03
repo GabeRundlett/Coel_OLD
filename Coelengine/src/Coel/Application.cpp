@@ -6,10 +6,11 @@
 #include "Graphics/Renderer.hpp"
 
 #include <time.h>
+#include "Application.hpp"
 
 namespace Coel {
 	namespace Application {
-		constexpr static const unsigned int TICK_RATE = 64;
+		constexpr static const unsigned int TICK_RATE = 128;
 		constexpr static const float MILLIS_PER_TICK = 1000.f / TICK_RATE;
 		static float totalTickTime = 0, millisElapsed;
 		static unsigned char shouldOpen;
@@ -40,10 +41,13 @@ namespace Coel {
 				LOG_INFO(Application, "Starting application...\n");
 				Internals::onStartCallback();
 				LOG_SUCCESS(Application, "Started application\n");
+				reset();
 				while (WindowManager::shouldRun()) {
 					WindowManager::update();
-					Graphics::Renderer::update();
+					Graphics::Renderer::begin();
 					Internals::onUpdateCallback();
+					Graphics::Renderer::end();
+					Graphics::Renderer::flush();
 					millisElapsed = clock() - totalTickTime;
 					if (millisElapsed > MILLIS_PER_TICK) {
 						totalTickTime += MILLIS_PER_TICK;

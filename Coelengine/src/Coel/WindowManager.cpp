@@ -30,6 +30,10 @@ namespace Coel {
 			}
 			glfwSwapInterval(0);
 
+			glEnable(GL_CULL_FACE);
+			glFrontFace(GL_CCW);
+			glCullFace(GL_BACK);
+
 			glfwSetKeyCallback(s_window, [](GLFWwindow *w, int key, int scancode, int action, int mods) {
 				switch (action) {
 				case GLFW_PRESS:
@@ -50,7 +54,7 @@ namespace Coel {
 					Internals::onMousePressedCallback({button, mods});
 					break;
 				case GLFW_RELEASE:
-					Internals::onMousePressedCallback({button, mods});
+					Internals::onMouseReleasedCallback({button, mods});
 					break;
 				}
 			});
