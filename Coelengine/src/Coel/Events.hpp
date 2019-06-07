@@ -1,48 +1,117 @@
 #pragma once
 
 namespace Coel {
-	struct KeyPressedEvent {
-		int key, scancode, mods;
-	};
-	struct KeyReleasedEvent {
-		int key, scancode, mods;
-	};
-	struct KeyRepeatedEvent {
-		int key, scancode, mods;
-	};
-
-	struct MousePressedEvent {
-		int button, mods;
-	};
-	struct MouseReleasedEvent {
-		int button, mods;
-	};
-	struct MouseScrolledEvent {
-		double xOffset, yOffset;
-	};
-	struct MouseMovedEvent {
-		double xPos, yPos;
-	};
-
-	struct WindowMovedEvent {
-		int xPos, yPos;
-	};
-	struct WindowResizedEvent {
-		int width, height;
-	};
-	struct WindowClosedEvent {
-		int xPos, yPos;
-	};
-	struct WindowFocusedEvent {
-		int width, height;
-	};
-	struct WindowLostFocusEvent {
-		int width, height;
-	};
+	namespace Key {
+		struct PressEvent {
+			int key, scancode, mods;
+		};
+		struct ReleaseEvent {
+			int key, scancode, mods;
+		};
+		struct RepeatEvent {
+			int key, scancode, mods;
+		};
+	} // namespace Key
+	namespace Mouse {
+		struct PressEvent {
+			int button, mods;
+		};
+		struct ReleaseEvent {
+			int button, mods;
+		};
+		struct ScrollEvent {
+			double xOffset, yOffset;
+		};
+		struct MoveEvent {
+			double xPos, yPos;
+		};
+	} // namespace Mouse
+	namespace Window {
+		struct MoveEvent {
+			int xPos, yPos;
+		};
+		struct ResizeEvent {
+			int width, height;
+		};
+		struct CloseEvent {
+			int xPos, yPos;
+		};
+		struct FocusEvent {
+			int width, height;
+		};
+		struct DefocusEvent {
+			int width, height;
+		};
+	} // namespace Window
 } // namespace Coel
 
 // Key codes
-#pragma once
+
+namespace Coel {
+	namespace Key {
+		constexpr static const unsigned short Space = 32,
+											  Apostrophe = 39,
+											  Comma = 44,
+											  Minus = 45,
+											  Period = 46,
+											  Slash = 47,
+
+											  SemiColon = 59,
+											  Equal = 60,
+
+											  NumRow0 = 48,
+											  NumRow1 = 49,
+											  NumRow2 = 50,
+											  NumRow3 = 51,
+											  NumRow4 = 52,
+											  NumRow5 = 53,
+											  NumRow6 = 54,
+											  NumRow7 = 55,
+											  NumRow8 = 56,
+											  NumRow9 = 57,
+
+											  NumPad0 = 320,
+											  NumPad1 = 321,
+											  NumPad2 = 322,
+											  NumPad3 = 323,
+											  NumPad4 = 324,
+											  NumPad5 = 325,
+											  NumPad6 = 326,
+											  NumPad7 = 327,
+											  NumPad8 = 328,
+											  NumPad9 = 329,
+
+											  A = 65,
+											  B = 66,
+											  C = 67,
+											  D = 68,
+											  E = 69,
+											  F = 70,
+											  G = 71,
+											  H = 72,
+											  I = 73,
+											  J = 74,
+											  K = 75,
+											  L = 76,
+											  M = 77,
+											  N = 78,
+											  O = 79,
+											  P = 80,
+											  Q = 81,
+											  R = 82,
+											  S = 83,
+											  T = 84,
+											  U = 85,
+											  V = 86,
+											  W = 87,
+											  X = 88,
+											  Y = 89,
+											  Z = 90;
+	} // namespace Key
+	namespace Mouse {
+
+	}
+} // namespace Coel
 
 #define COEL_KEY_SPACE 32
 #define COEL_KEY_APOSTROPHE 39
@@ -166,3 +235,15 @@ namespace Coel {
 #define COEL_KEY_RIGHT_ALT 346
 #define COEL_KEY_RIGHT_SUPER 347
 #define COEL_KEY_MENU 348
+
+#define COEL_MOUSE_BUTTON_1 0
+#define COEL_MOUSE_BUTTON_2 1
+#define COEL_MOUSE_BUTTON_3 2
+#define COEL_MOUSE_BUTTON_4 3
+#define COEL_MOUSE_BUTTON_5 4
+#define COEL_MOUSE_BUTTON_6 5
+#define COEL_MOUSE_BUTTON_7 6
+#define COEL_MOUSE_BUTTON_8 7
+#define COEL_MOUSE_BUTTON_LEFT COEL_MOUSE_BUTTON_1
+#define COEL_MOUSE_BUTTON_RIGHT COEL_MOUSE_BUTTON_2
+#define COEL_MOUSE_BUTTON_MIDDLE COEL_MOUSE_BUTTON_3

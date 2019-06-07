@@ -11,11 +11,13 @@ project "Coeleditor"
 	}
 	
 	includedirs {
-		"%{IncludeDir.Coelengine}"
+		"%{IncludeDir.Coelengine}",
+		"%{IncludeDir.clm}"
 	}
 
 	links {
-		"Coelengine"
+		"Coelengine",
+		"clm"
 	}
 	
 	filter "configurations:Debug"

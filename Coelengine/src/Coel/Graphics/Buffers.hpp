@@ -17,7 +17,7 @@ namespace Coel {
 		void unbindBuffer(VertexBuffer *b);
 		void destroyBuffer(VertexBuffer *b);
 		void resizeVertexBuffer(VertexBuffer *b, unsigned int size);
-		IndexBuffer createIndexBuffer(unsigned int *data, unsigned int size);
+		IndexBuffer createIndexBuffer(unsigned short *data, unsigned int size);
 		void bindBuffer(IndexBuffer *b);
 		void unbindBuffer(IndexBuffer *b);
 		void destroyBuffer(IndexBuffer *b);

@@ -6,53 +6,35 @@
 #include <glad/glad.h>
 #include "Renderer.hpp"
 
-#define GLCall(x)                           \
-	glGetError();                           \
-	x;                                      \
-	if (!GLLogCall(#x, __FILE__, __LINE__)) \
-		while (1) {}
-
-bool GLLogCall(const char *function, const char *file, int line)
-{
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		LOG_ERROR(Renderer, " OpenGL error\n");
-		printf("(%d) line: %d", (int)error, line);
-		return false;
-	}
-	return true;
-}
-
-#define RENDERER_VERTEX_SIZE sizeof(Coel::Graphics::VertexData)
-#define RENDERER_MAX_SPRITES 60000
-#define RENDERER_SPRITE_SIZE (RENDERER_VERTEX_SIZE * 4)
-#define RENDERER_BUFFER_SIZE (RENDERER_SPRITE_SIZE * RENDERER_MAX_SPRITES)
-#define RENDERER_INDICES_SIZE (RENDERER_MAX_SPRITES * 6)
-
 namespace Coel {
 	namespace Graphics {
 		namespace Renderer {
+			constexpr static const unsigned int s_maxSprites = 60000,
+												s_vertexSize = sizeof(VertexData),
+												s_spriteSize = s_vertexSize * 4,
+												s_indicesSize = s_maxSprites * 6,
+												s_bufferSize = s_spriteSize * s_maxSprites;
 			static IndexBuffer s_ibo;
 			static VertexData *s_bufferPointer = nullptr;
 			static unsigned int s_vaoID, s_vboID, s_indexCount;
-			static unsigned int s_indices[RENDERER_INDICES_SIZE];
+			static unsigned short s_indices[s_indicesSize];
 			int init()
 			{
 				LOG_INFO(Renderer, "Initializing renderer...\n");
-				GLCall(glGenVertexArrays(1, &s_vaoID));
+				glGenVertexArrays(1, &s_vaoID);
 				glBindVertexArray(s_vaoID);
 
-				GLCall(glGenBuffers(1, &s_vboID));
+				glGenBuffers(1, &s_vboID);
 				glBindBuffer(GL_ARRAY_BUFFER, s_vboID);
-				glBufferData(GL_ARRAY_BUFFER, RENDERER_BUFFER_SIZE, NULL, GL_DYNAMIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, s_bufferSize, NULL, GL_DYNAMIC_DRAW);
 
 				glEnableVertexAttribArray(0);
 				glEnableVertexAttribArray(1);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const void *)0);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, RENDERER_VERTEX_SIZE, (const void *)(3 * sizeof(float)));
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, s_vertexSize, (const void *)0);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, s_vertexSize, (const void *)(3 * sizeof(float)));
 
 				int offset = 0;
-				for (int i = 0; i < RENDERER_INDICES_SIZE; i += 6) {
+				for (int i = 0; i < s_indicesSize; i += 6) {
 					s_indices[i] = offset + 0;
 					s_indices[i + 1] = offset + 1;
 					s_indices[i + 2] = offset + 2;
@@ -63,32 +45,34 @@ namespace Coel {
 					offset += 4;
 				}
 
-				s_ibo = createIndexBuffer(s_indices, RENDERER_INDICES_SIZE);
+				s_ibo = createIndexBuffer(s_indices, s_indicesSize);
 
 				LOG_SUCCESS(Renderer, "Initialized renderer\n");
 				return 1;
 			}
-			void begin()
+			void clear()
 			{
 				glClear(GL_COLOR_BUFFER_BIT);
+			}
+			void begin()
+			{
 				glBindBuffer(GL_ARRAY_BUFFER, s_vboID);
 				s_bufferPointer = (VertexData *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 			}
 			void end()
 			{
 				glUnmapBuffer(GL_ARRAY_BUFFER);
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}
 			void flush()
 			{
 				glBindVertexArray(s_vaoID);
 				Graphics::bindBuffer(&s_ibo);
-				glDrawElements(GL_TRIANGLES, s_indexCount, GL_UNSIGNED_INT, nullptr);
+				glDrawElements(GL_TRIANGLES, s_indexCount, GL_UNSIGNED_SHORT, nullptr);
 				s_indexCount = 0;
 			}
 			void drawRect(float x, float y, float w, float h, unsigned int color)
 			{
-				if (s_indexCount > RENDERER_INDICES_SIZE - 1) {
+				if (s_indexCount > s_indicesSize - 1) {
 					end();
 					flush();
 					begin();

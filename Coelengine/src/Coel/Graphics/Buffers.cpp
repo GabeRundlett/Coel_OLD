@@ -58,14 +58,14 @@ namespace Coel {
 		//                          IndexBuffer                           //
 		//----------------------------------------------------------------//
 
-		IndexBuffer createIndexBuffer(unsigned int *data, unsigned int count)
+		IndexBuffer createIndexBuffer(unsigned short *data, unsigned int count)
 		{
 			LOG_INFO(IndexBuffer, "Creating index buffer...\n");
 			IndexBuffer result;
 			result.count = count;
 			glCreateBuffers(1, &result.id);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.id);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned short), data, GL_STATIC_DRAW);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			LOG_SUCCESS(IndexBuffer, "Created index buffer\n");
 			return result;

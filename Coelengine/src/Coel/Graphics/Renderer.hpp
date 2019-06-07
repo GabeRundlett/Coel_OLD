@@ -4,6 +4,7 @@ namespace Coel {
 	namespace Graphics {
 		namespace Renderer {
 			int init();
+			void clear();
 			void begin();
 			void end();
 			void flush();

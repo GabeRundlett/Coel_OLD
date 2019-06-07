@@ -1,50 +1,68 @@
 #include "Coel.hpp"
+#include "clm.hpp"
 
 #include <stdio.h>
 #include <random>
 
-struct vec2 {
-	float x = 0, y = 0;
-};
-
-vec2 mouse = {0, 0}, screen = {800, 600};
-vec2 mousePressedLoc = mouse;
+Coel::vec2 mouse = {0, 0}, screen = {800, 600};
+Coel::vec2 mousePressedLoc = mouse;
 bool mouseIsPressed = false;
 
-constexpr const unsigned int particleCount = 1000;
-constexpr const float particleSize = 40;
+unsigned int particleCount = 200;
+constexpr static const unsigned int newParticlesToAdd = 100, particleMaxLife = 1000;
+constexpr const float dampening = 0.0, friction = 0.97;
 unsigned int upt = 0;
 
 struct Particle {
-	vec2 pos, vel = {float(rand() % 10000 - 5000) / 200000, float(rand() % 10000 - 5000) / 200000};
-	vec2 size = {particleSize / screen.x, particleSize / screen.y};
+	Coel::vec2 pos, vel = randomVel();
+	Coel::vec2 size = randomSize();
+	unsigned int tickLifetime = 0;
 	inline void draw()
 	{
-		Coel::Graphics::Renderer::drawRect(pos.x, pos.y, size.x, size.y);
+		if (isAlive())
+			Coel::Graphics::Renderer::drawRect(pos.x, pos.y, size.x, size.y);
 	}
 	inline void update()
 	{
-		size = {particleSize / screen.x, particleSize / screen.y};
+		if (isAlive()) {
+			if (pos.x < -1) {
+				vel.x *= -dampening;
+				vel.y *= friction;
+				pos.x = -1;
+			} else if (pos.x > 1 - size.x) {
+				vel.x *= -dampening;
+				vel.y *= friction;
+				pos.x = 1 - size.x;
+			}
 
-		if (pos.x < -1) {
-			vel.x *= -0.75;
-			pos.x = -1;
-		} else if (pos.x > 1 - size.x) {
-			vel.x *= -0.75;
-			pos.x = 1 - size.x;
+			if (pos.y < -1) {
+				vel.x *= friction;
+				vel.y *= -dampening;
+				pos.y = -1;
+			} else if (pos.y > 1 - size.y) {
+				vel.x *= friction;
+				vel.y *= -dampening;
+				pos.y = 1 - size.y;
+			}
+			vel.y -= 9.8 / Coel::Application::TICK_RATE;
+
+			pos.x += vel.x / Coel::Application::TICK_RATE;
+			pos.y += vel.y / Coel::Application::TICK_RATE;
 		}
 
-		if (pos.y < -1) {
-			vel.y *= -0.75;
-			pos.y = -1;
-		} else if (pos.y > 1 - size.y) {
-			vel.y *= -0.75;
-			pos.y = 1 - size.y;
-		}
-		vel.y -= 0.0002;
-
-		pos.x += vel.x;
-		pos.y += vel.y;
+		tickLifetime++;
+	}
+	static Coel::vec2 randomVel()
+	{
+		return Coel::vec2::polar(float(rand() % 10000 - 5000), float(rand() % 10000) / 2000);
+	}
+	static Coel::vec2 randomSize()
+	{
+		return {float(rand() % 10000 + 10000) / 500 / screen.x, float(rand() % 10000 + 10000) / 500 / screen.y};
+	}
+	inline bool isAlive()
+	{
+		return tickLifetime < particleMaxLife;
 	}
 };
 
@@ -52,7 +70,7 @@ Particle *particles;
 
 void onTick()
 {
-	printf("updates per tick: %d\n", upt);
+	//printf("updates per tick: %d\n", upt);
 	upt = 0;
 	for (unsigned int i = 0; i < particleCount; ++i)
 		particles[i].update();
@@ -65,35 +83,52 @@ void onUpdate()
 	upt++;
 }
 
-void onKeyPress(const Coel::KeyPressedEvent &e)
+void onKeyPress(const Coel::Key::PressEvent &e)
 {
 }
 
-void onMouseMove(const Coel::MouseMovedEvent &e)
+void onMouseMove(const Coel::Mouse::MoveEvent &e)
 {
 	mouse = {
 		(float)e.xPos / screen.x * 2 - 1,
 		(float)e.yPos / screen.y * -2 + 1};
 }
 
-void onWindowResize(const Coel::WindowResizedEvent &e)
+void onWindowResize(const Coel::Window::ResizeEvent &e)
 {
 	Coel::Graphics::Renderer::resizeViewport(0, 0, e.width, e.height);
 	screen = {(float)e.width, (float)e.height};
 }
 
-void onMousePress(const Coel::MousePressedEvent &e)
+void onMousePress(const Coel::Mouse::PressEvent &e)
 {
 	mouseIsPressed = true;
-	for (unsigned int i = 0; i < particleCount; ++i) {
-		particles[i].pos = mouse;
-		particles[i].vel = {
-			float(rand() % 10000 - 5000) / 200000,
-			float(rand() % 10000 - 5000) / 200000};
+	if (e.button == COEL_MOUSE_BUTTON_LEFT) {
+		unsigned int deadParticles = 0;
+		for (unsigned int i = 0; i < particleCount; ++i) {
+			if (!particles[i].isAlive() && deadParticles < newParticlesToAdd) {
+				particles[i].pos = mouse;
+				particles[i].tickLifetime = 0;
+				particles[i].vel = Particle::randomVel();
+				deadParticles++;
+			}
+		}
+		if (deadParticles < newParticlesToAdd + 1) {
+			Particle *tempParticles = new Particle[particleCount + newParticlesToAdd - deadParticles];
+			for (unsigned int i = 0; i < particleCount; ++i)
+				tempParticles[i] = particles[i];
+			for (unsigned int i = particleCount; i < particleCount + newParticlesToAdd - deadParticles; ++i) {
+				tempParticles[i] = Particle();
+				tempParticles[i].pos = mouse;
+			}
+			delete[] particles;
+			particles = tempParticles;
+			particleCount += newParticlesToAdd - deadParticles;
+		}
 	}
 }
 
-void onMouseRelease(const Coel::MouseReleasedEvent &e)
+void onMouseRelease(const Coel::Mouse::ReleaseEvent &e)
 {
 	mouseIsPressed = false;
 }
@@ -107,12 +142,13 @@ int main()
 	for (unsigned int i = 0; i < particleCount; ++i)
 		particles[i] = Particle();
 
-	Coel::setOnKeyPressedCallback(&onKeyPress);
-	Coel::setOnMouseMovedCallback(&onMouseMove);
-	Coel::setOnWindowResizedCallback(&onWindowResize);
-	Coel::setOnMousePressedCallback(&onMousePress);
-	Coel::setOnMouseReleasedCallback(&onMouseRelease);
+	Coel::setOnKeyPressCallback(&onKeyPress);
+	Coel::setOnMouseMoveCallback(&onMouseMove);
+	Coel::setOnWindowResizeCallback(&onWindowResize);
+	Coel::setOnMousePressCallback(&onMousePress);
+	Coel::setOnMouseReleaseCallback(&onMouseRelease);
 
-	Coel::Application::init();
 	Coel::Application::start();
+
+	delete[] particles;
 }

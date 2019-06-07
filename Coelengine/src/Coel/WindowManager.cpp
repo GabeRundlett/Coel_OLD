@@ -37,13 +37,13 @@ namespace Coel {
 			glfwSetKeyCallback(s_window, [](GLFWwindow *w, int key, int scancode, int action, int mods) {
 				switch (action) {
 				case GLFW_PRESS:
-					Internals::onKeyPressedCallback({key, scancode, mods});
+					Internals::onKeyPressCallback({key, scancode, mods});
 					break;
 				case GLFW_RELEASE:
-					Internals::onKeyReleasedCallback({key, scancode, mods});
+					Internals::onKeyReleaseCallback({key, scancode, mods});
 					break;
 				case GLFW_REPEAT:
-					Internals::onKeyRepeatedCallback({key, scancode, mods});
+					Internals::onKeyRepeatCallback({key, scancode, mods});
 					break;
 				}
 			});
@@ -51,25 +51,25 @@ namespace Coel {
 			glfwSetMouseButtonCallback(s_window, [](GLFWwindow *w, int button, int action, int mods) {
 				switch (action) {
 				case GLFW_PRESS:
-					Internals::onMousePressedCallback({button, mods});
+					Internals::onMousePressCallback({button, mods});
 					break;
 				case GLFW_RELEASE:
-					Internals::onMouseReleasedCallback({button, mods});
+					Internals::onMouseReleaseCallback({button, mods});
 					break;
 				}
 			});
 			glfwSetCursorPosCallback(s_window, [](GLFWwindow *w, double xPos, double yPos) {
-				Internals::onMouseMovedCallback({xPos, yPos});
+				Internals::onMouseMoveCallback({xPos, yPos});
 			});
 			glfwSetScrollCallback(s_window, [](GLFWwindow *w, double xOffset, double yOffset) {
-				Internals::onMouseScrolledCallback({xOffset, yOffset});
+				Internals::onMouseScrollCallback({xOffset, yOffset});
 			});
 
 			glfwSetWindowPosCallback(s_window, [](GLFWwindow *w, int xPos, int yPos) {
-				Internals::onWindowMovedCallback({xPos, yPos});
+				Internals::onWindowMoveCallback({xPos, yPos});
 			});
 			glfwSetWindowSizeCallback(s_window, [](GLFWwindow *w, int width, int height) {
-				Internals::onWindowResizedCallback({width, height});
+				Internals::onWindowResizeCallback({width, height});
 			});
 
 			LOG_SUCCESS(WindowManager, "Initialized window manager\n");
@@ -83,21 +83,21 @@ namespace Coel {
 		int shouldRun() { return !glfwWindowShouldClose(s_window); }
 		void close() { glfwTerminate(); }
 	} // namespace WindowManager
-#define __ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(name) \
-	void setOn##name##Callback(void (*func)(const name##Event &)) { Internals::on##name##Callback = func; }
+#define __ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(_namespace_, _eventName_) \
+	void setOn##_namespace_##_eventName_##Callback(void (*func)(const _namespace_::_eventName_##Event &)) { Internals::on##_namespace_##_eventName_##Callback = func; }
 
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(KeyPressed)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(KeyReleased)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(KeyRepeated)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Key, Press)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Key, Release)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Key, Repeat)
 
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(MouseMoved)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(MousePressed)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(MouseReleased)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(MouseScrolled)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Mouse, Move)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Mouse, Press)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Mouse, Release)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Mouse, Scroll)
 
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowMoved)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowResized)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowClosed)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowFocused)
-	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(WindowLostFocus)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Window, Move)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Window, Resize)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Window, Close)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Window, Focus)
+	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Window, Defocus)
 } // namespace Coel

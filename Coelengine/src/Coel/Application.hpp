@@ -4,7 +4,7 @@
 
 namespace Coel {
 	namespace Application {
-		unsigned int init();
+		constexpr static const unsigned int TICK_RATE = 128;
 		void start();
 		void reset();
 	} // namespace Application

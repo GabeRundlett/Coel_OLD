@@ -10,40 +10,36 @@
 
 namespace Coel {
 	namespace Application {
-		constexpr static const unsigned int TICK_RATE = 128;
 		constexpr static const float MILLIS_PER_TICK = 1000.f / TICK_RATE;
 		static float totalTickTime = 0, millisElapsed;
-		static unsigned char shouldOpen;
-		unsigned int init()
+		static unsigned int init()
 		{
 			LOG_INFO(Application, "Initializing application...\n");
 			LOG_INFO(Application, "Initializing window manager...\n");
 			if (!WindowManager::init()) {
 				LOG_ERROR(Application, "Window manager failed to initialize\n");
-				shouldOpen = 0;
 				return 0;
 			}
 			LOG_SUCCESS(Application, "Initialized window manager\n");
 			LOG_INFO(Application, "Initializing Renderer...\n");
 			if (!Graphics::Renderer::init()) {
 				LOG_ERROR(Application, "Renderer failed to initialize\n");
-				shouldOpen = 0;
 				return 0;
 			}
 			LOG_SUCCESS(Application, "Initialized Renderer\n");
 			LOG_SUCCESS(Application, "Initialized application\n");
-			shouldOpen = 1;
 			return 1;
 		}
 		void start()
 		{
-			if (shouldOpen) {
+			if (init()) {
 				LOG_INFO(Application, "Starting application...\n");
 				Internals::onStartCallback();
 				LOG_SUCCESS(Application, "Started application\n");
 				reset();
 				while (WindowManager::shouldRun()) {
 					WindowManager::update();
+					Graphics::Renderer::clear();
 					Graphics::Renderer::begin();
 					Internals::onUpdateCallback();
 					Graphics::Renderer::end();
@@ -62,12 +58,10 @@ namespace Coel {
 		}
 		void reset()
 		{
-			if (shouldOpen) {
-				LOG_INFO(Application, "Resetting application...\n");
-				totalTickTime = (float)clock();
-				Internals::onResetCallback();
-				LOG_SUCCESS(Application, "Reset application\n");
-			}
+			LOG_INFO(Application, "Resetting application...\n");
+			totalTickTime = (float)clock();
+			Internals::onResetCallback();
+			LOG_SUCCESS(Application, "Reset application\n");
 		}
 	} // namespace Application
 	void setOnStartCallback(void (*func)()) { Internals::onStartCallback = func; }

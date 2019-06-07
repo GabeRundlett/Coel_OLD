@@ -1,3 +1,3 @@
 cd ..
-Build\Premake\premake5.exe vs2017
+Build\Premake\premake5.exe vs2019
 PAUSE
