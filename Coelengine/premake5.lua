@@ -37,7 +37,8 @@ project "Coelengine"
 		defines "CONFIG_PLATFORM_WINDOWS"
 		links {
 			"GLFW",
-			"glad"
+			"glad",
+			"clm"
 		}
 		excludes {
 			--Platform specific code

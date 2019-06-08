@@ -14,11 +14,6 @@ project "Coeleditor"
 		"%{IncludeDir.Coelengine}",
 		"%{IncludeDir.clm}"
 	}
-
-	links {
-		"Coelengine",
-		"clm"
-	}
 	
 	filter "configurations:Debug"
 		defines "CONFIG_DEBUG"
@@ -26,3 +21,20 @@ project "Coeleditor"
 	filter "configurations:Release"
 		defines "CONFIG_RELEASE"
 		optimize "On"
+
+	filter "system:windows"
+		links {
+			"Coelengine",
+			"clm"
+		}
+	filter "system:linux"
+		links {
+			"Coelengine",
+			"clm",
+			"GLFW",
+			"glad",
+			"X11",
+			"dl",
+			"pthread"
+		}
+	filter "system:macosx"

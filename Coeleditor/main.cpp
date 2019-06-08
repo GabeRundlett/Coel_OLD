@@ -70,7 +70,7 @@ Particle *particles;
 
 void onTick()
 {
-	//printf("updates per tick: %d\n", upt);
+	printf("updates per tick: %d\n", upt);
 	upt = 0;
 	for (unsigned int i = 0; i < particleCount; ++i)
 		particles[i].update();
@@ -83,27 +83,27 @@ void onUpdate()
 	upt++;
 }
 
-void onKeyPress(const Coel::Key::PressEvent &e)
+void onKeyPress(const Coel::Event::Key::Press &e)
 {
 }
 
-void onMouseMove(const Coel::Mouse::MoveEvent &e)
+void onMouseMove(const Coel::Event::Mouse::Move &e)
 {
 	mouse = {
 		(float)e.xPos / screen.x * 2 - 1,
 		(float)e.yPos / screen.y * -2 + 1};
 }
 
-void onWindowResize(const Coel::Window::ResizeEvent &e)
+void onWindowResize(const Coel::Event::Window::Resize &e)
 {
 	Coel::Graphics::Renderer::resizeViewport(0, 0, e.width, e.height);
 	screen = {(float)e.width, (float)e.height};
 }
 
-void onMousePress(const Coel::Mouse::PressEvent &e)
+void onMousePress(const Coel::Event::Mouse::Press &e)
 {
 	mouseIsPressed = true;
-	if (e.button == COEL_MOUSE_BUTTON_LEFT) {
+	if (e.button == Coel::Mouse::Left) {
 		unsigned int deadParticles = 0;
 		for (unsigned int i = 0; i < particleCount; ++i) {
 			if (!particles[i].isAlive() && deadParticles < newParticlesToAdd) {
@@ -128,7 +128,7 @@ void onMousePress(const Coel::Mouse::PressEvent &e)
 	}
 }
 
-void onMouseRelease(const Coel::Mouse::ReleaseEvent &e)
+void onMouseRelease(const Coel::Event::Mouse::Release &e)
 {
 	mouseIsPressed = false;
 }

@@ -17,7 +17,7 @@ namespace Coel {
 			LOG_INFO(VertexBuffer, "Creating static vertex buffer...\n");
 			VertexBuffer result;
 			result.size = size;
-			glCreateBuffers(1, &result.id);
+			glGenBuffers(1, &result.id);
 			glBindBuffer(GL_ARRAY_BUFFER, result.id);
 			glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -28,7 +28,7 @@ namespace Coel {
 		{
 			LOG_INFO(VertexBuffer, "Creating dynamic vertex buffer...\n");
 			VertexBuffer result;
-			glCreateBuffers(1, &result.id);
+			glGenBuffers(1, &result.id);
 			glBindBuffer(GL_ARRAY_BUFFER, result.id);
 			resizeVertexBuffer(&result, size);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -63,7 +63,7 @@ namespace Coel {
 			LOG_INFO(IndexBuffer, "Creating index buffer...\n");
 			IndexBuffer result;
 			result.count = count;
-			glCreateBuffers(1, &result.id);
+			glGenBuffers(1, &result.id);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, result.id);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned short), data, GL_STATIC_DRAW);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

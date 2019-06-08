@@ -5,8 +5,8 @@
 namespace Coel {
 	namespace Internals {
 #define __IMPLIMENT_EVENT_CALLBACK(_namespace_, _eventName_)                                         \
-	static void empty##_namespace_##_eventName_##Func(const _namespace_::##_eventName_##Event &e) {} \
-	static void (*on##_namespace_##_eventName_##Callback)(const _namespace_::_eventName_##Event &) = &empty##_namespace_##_eventName_##Func;
+	static void empty ## _namespace_ ## _eventName_ ## Func(const Event::_namespace_::_eventName_ &e) {} \
+	static void (*on ## _namespace_ ## _eventName_ ## Callback)(const Event::_namespace_::_eventName_ &) = &empty ## _namespace_ ## _eventName_ ## Func;
 
 		__IMPLIMENT_EVENT_CALLBACK(Key, Press)
 		__IMPLIMENT_EVENT_CALLBACK(Key, Release)

@@ -84,7 +84,7 @@ namespace Coel {
 		void close() { glfwTerminate(); }
 	} // namespace WindowManager
 #define __ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(_namespace_, _eventName_) \
-	void setOn##_namespace_##_eventName_##Callback(void (*func)(const _namespace_::_eventName_##Event &)) { Internals::on##_namespace_##_eventName_##Callback = func; }
+	void setOn##_namespace_##_eventName_##Callback(void (*func)(const Event::_namespace_::_eventName_ &)) { Internals::on##_namespace_##_eventName_##Callback = func; }
 
 	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Key, Press)
 	__ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(Key, Release)

@@ -10,7 +10,7 @@ namespace Coel {
 		int shouldRun();
 	} // namespace WindowManager
 #define __ENGINE_DECLARE_EVENT_CALLBACK_SETTER(_namespace_, _eventName_) \
-	void setOn##_namespace_##_eventName_##Callback(void (*func)(const _namespace_::_eventName_##Event &))
+	void setOn##_namespace_##_eventName_##Callback(void (*func)(const Event::_namespace_::_eventName_ &))
 
 	__ENGINE_DECLARE_EVENT_CALLBACK_SETTER(Key, Press);
 	__ENGINE_DECLARE_EVENT_CALLBACK_SETTER(Key, Release);
