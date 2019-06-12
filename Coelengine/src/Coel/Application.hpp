@@ -7,6 +7,9 @@ namespace Coel {
 		constexpr static const unsigned int TICK_RATE = 128;
 		void start();
 		void reset();
+		void close();
+		void maximize();
+		void minimize();
 	} // namespace Application
 	void setOnStartCallback(void (*func)());
 	void setOnResetCallback(void (*func)());

@@ -6,8 +6,10 @@ namespace Coel {
 	namespace WindowManager {
 		unsigned int init();
 		void update();
-		void close();
 		int shouldRun();
+		void shutdown();
+		void maximize();
+		void minimize();
 	} // namespace WindowManager
 #define __ENGINE_DECLARE_EVENT_CALLBACK_SETTER(_namespace_, _eventName_) \
 	void setOn##_namespace_##_eventName_##Callback(void (*func)(const Event::_namespace_::_eventName_ &))

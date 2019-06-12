@@ -1,154 +1,116 @@
 #include "Coel.hpp"
+#include "GUI.hpp"
 #include "clm.hpp"
 
-#include <stdio.h>
-#include <random>
-
-Coel::vec2 mouse = {0, 0}, screen = {800, 600};
-Coel::vec2 mousePressedLoc = mouse;
-bool mouseIsPressed = false;
-
-unsigned int particleCount = 200;
-constexpr static const unsigned int newParticlesToAdd = 100, particleMaxLife = 1000;
-constexpr const float dampening = 0.0, friction = 0.97;
-unsigned int upt = 0;
-
-struct Particle {
-	Coel::vec2 pos, vel = randomVel();
-	Coel::vec2 size = randomSize();
-	unsigned int tickLifetime = 0;
-	inline void draw()
-	{
-		if (isAlive())
-			Coel::Graphics::Renderer::drawRect(pos.x, pos.y, size.x, size.y);
-	}
-	inline void update()
-	{
-		if (isAlive()) {
-			if (pos.x < -1) {
-				vel.x *= -dampening;
-				vel.y *= friction;
-				pos.x = -1;
-			} else if (pos.x > 1 - size.x) {
-				vel.x *= -dampening;
-				vel.y *= friction;
-				pos.x = 1 - size.x;
-			}
-
-			if (pos.y < -1) {
-				vel.x *= friction;
-				vel.y *= -dampening;
-				pos.y = -1;
-			} else if (pos.y > 1 - size.y) {
-				vel.x *= friction;
-				vel.y *= -dampening;
-				pos.y = 1 - size.y;
-			}
-			vel.y -= 9.8 / Coel::Application::TICK_RATE;
-
-			pos.x += vel.x / Coel::Application::TICK_RATE;
-			pos.y += vel.y / Coel::Application::TICK_RATE;
-		}
-
-		tickLifetime++;
-	}
-	static Coel::vec2 randomVel()
-	{
-		return Coel::vec2::polar(float(rand() % 10000 - 5000), float(rand() % 10000) / 2000);
-	}
-	static Coel::vec2 randomSize()
-	{
-		return {float(rand() % 10000 + 10000) / 500 / screen.x, float(rand() % 10000 + 10000) / 500 / screen.y};
-	}
-	inline bool isAlive()
-	{
-		return tickLifetime < particleMaxLife;
-	}
-};
-
-Particle *particles;
+static Coel::vec2 mouse = {0, 0}, screen = {800, 600};
+static GUI::Button::Data closeButton = {780, 0, 20, 20, {40, 40, 40, 255}},
+						 maximizeButton = {760, 0, 20, 20, {40, 40, 40, 255}},
+						 minimizeButton = {740, 0, 20, 20, {40, 40, 40, 255}};
 
 void onTick()
 {
-	printf("updates per tick: %d\n", upt);
-	upt = 0;
-	for (unsigned int i = 0; i < particleCount; ++i)
-		particles[i].update();
 }
 
 void onUpdate()
 {
-	for (unsigned int i = 0; i < particleCount; ++i)
-		particles[i].draw();
-	upt++;
-}
+	Coel::Graphics::Renderer::drawRect(0, 0, screen.x, 20, Coel::cvec4({40, 40, 40, 255}));
+	Coel::cvec4 col1 = {36, 36, 36, 255}, col2 = {50, 50, 50, 255}, col3 = {255, 50, 50, 255};
+	GUI::Button::draw(closeButton);
+	GUI::Button::draw(maximizeButton);
+	GUI::Button::draw(minimizeButton);
 
-void onKeyPress(const Coel::Event::Key::Press &e)
-{
+	if (GUI::Button::checkIfHovered(closeButton, mouse)) {
+		Coel::Graphics::Renderer::drawRect(
+			closeButton.x + 1,
+			closeButton.y + 1,
+			closeButton.w - 2,
+			closeButton.h - 2,
+			col3);
+	} else {
+		Coel::Graphics::Renderer::drawRect(
+			closeButton.x + 1,
+			closeButton.y + 1,
+			closeButton.w - 2,
+			closeButton.h - 2,
+			col1);
+	}
+	if (GUI::Button::checkIfHovered(maximizeButton, mouse)) {
+		Coel::Graphics::Renderer::drawRect(
+			maximizeButton.x + 1,
+			maximizeButton.y + 1,
+			maximizeButton.w - 1,
+			maximizeButton.h - 2,
+			col2);
+	} else {
+		Coel::Graphics::Renderer::drawRect(
+			maximizeButton.x + 1,
+			maximizeButton.y + 1,
+			maximizeButton.w - 1,
+			maximizeButton.h - 2,
+			col1);
+	}
+	if (GUI::Button::checkIfHovered(minimizeButton, mouse)) {
+		Coel::Graphics::Renderer::drawRect(
+			minimizeButton.x + 1,
+			minimizeButton.y + 1,
+			minimizeButton.w - 1,
+			minimizeButton.h - 2,
+			col2);
+	} else {
+		Coel::Graphics::Renderer::drawRect(
+			minimizeButton.x + 1,
+			minimizeButton.y + 1,
+			minimizeButton.w - 1,
+			minimizeButton.h - 2,
+			col1);
+	}
 }
 
 void onMouseMove(const Coel::Event::Mouse::Move &e)
 {
-	mouse = {
-		(float)e.xPos / screen.x * 2 - 1,
-		(float)e.yPos / screen.y * -2 + 1};
+	mouse = {(float)e.xPos, (float)e.yPos};
 }
 
 void onWindowResize(const Coel::Event::Window::Resize &e)
 {
-	Coel::Graphics::Renderer::resizeViewport(0, 0, e.width, e.height);
 	screen = {(float)e.width, (float)e.height};
+	closeButton.x = screen.x - 20;
+	maximizeButton.x = screen.x - 40;
+	minimizeButton.x = screen.x - 60;
 }
 
 void onMousePress(const Coel::Event::Mouse::Press &e)
 {
-	mouseIsPressed = true;
-	if (e.button == Coel::Mouse::Left) {
-		unsigned int deadParticles = 0;
-		for (unsigned int i = 0; i < particleCount; ++i) {
-			if (!particles[i].isAlive() && deadParticles < newParticlesToAdd) {
-				particles[i].pos = mouse;
-				particles[i].tickLifetime = 0;
-				particles[i].vel = Particle::randomVel();
-				deadParticles++;
-			}
-		}
-		if (deadParticles < newParticlesToAdd + 1) {
-			Particle *tempParticles = new Particle[particleCount + newParticlesToAdd - deadParticles];
-			for (unsigned int i = 0; i < particleCount; ++i)
-				tempParticles[i] = particles[i];
-			for (unsigned int i = particleCount; i < particleCount + newParticlesToAdd - deadParticles; ++i) {
-				tempParticles[i] = Particle();
-				tempParticles[i].pos = mouse;
-			}
-			delete[] particles;
-			particles = tempParticles;
-			particleCount += newParticlesToAdd - deadParticles;
-		}
-	}
+	GUI::Button::checkIfPressed(closeButton, mouse);
+	GUI::Button::checkIfPressed(closeButton, mouse);
+	GUI::Button::checkIfPressed(closeButton, mouse);
 }
 
-void onMouseRelease(const Coel::Event::Mouse::Release &e)
+void onClosePress()
 {
-	mouseIsPressed = false;
+	Coel::Application::close();
+}
+void onMaximizePress()
+{
+	Coel::Application::maximize();
+}
+void onMinimizePress()
+{
+	Coel::Application::minimize();
 }
 
 int main()
 {
+	GUI::Button::setPressCallback(closeButton, onClosePress);
+	GUI::Button::setPressCallback(maximizeButton, onMaximizePress);
+	GUI::Button::setPressCallback(minimizeButton, onMinimizePress);
+
 	Coel::setOnTickCallback(&onTick);
 	Coel::setOnUpdateCallback(&onUpdate);
 
-	particles = new Particle[particleCount];
-	for (unsigned int i = 0; i < particleCount; ++i)
-		particles[i] = Particle();
-
-	Coel::setOnKeyPressCallback(&onKeyPress);
 	Coel::setOnMouseMoveCallback(&onMouseMove);
 	Coel::setOnWindowResizeCallback(&onWindowResize);
 	Coel::setOnMousePressCallback(&onMousePress);
-	Coel::setOnMouseReleaseCallback(&onMouseRelease);
 
 	Coel::Application::start();
-
-	delete[] particles;
 }

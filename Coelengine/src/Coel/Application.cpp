@@ -5,13 +5,16 @@
 #include "Internals/AppCallbacks.hpp"
 #include "Graphics/Renderer.hpp"
 
+//#include <chrono>
 #include <time.h>
 #include "Application.hpp"
 
 namespace Coel {
 	namespace Application {
-		constexpr static const float MILLIS_PER_TICK = 1000.f / TICK_RATE;
-		static float totalTickTime = 0, millisElapsed;
+		//std::chrono::high_resolution_clock::time_point timeElapsed, startTime;
+		constexpr static const double TIME_PER_TICK = 1000.f / TICK_RATE;
+		static unsigned int totalTickCount = 0, millisElapsed = 0;
+		static bool s_shouldRun = true;
 		static unsigned int init()
 		{
 			LOG_INFO(Application, "Initializing application...\n");
@@ -37,31 +40,49 @@ namespace Coel {
 				Internals::onStartCallback();
 				LOG_SUCCESS(Application, "Started application\n");
 				reset();
-				while (WindowManager::shouldRun()) {
+				while (WindowManager::shouldRun() && s_shouldRun) {
 					WindowManager::update();
 					Graphics::Renderer::clear();
 					Graphics::Renderer::begin();
 					Internals::onUpdateCallback();
 					Graphics::Renderer::end();
 					Graphics::Renderer::flush();
-					millisElapsed = clock() - totalTickTime;
-					if (millisElapsed > MILLIS_PER_TICK) {
-						totalTickTime += MILLIS_PER_TICK;
+					//timeElapsed = std::chrono::high_resolution_clock::now();
+					//std::chrono::duration<double> timeSinceStart = timeElapsed - startTime;
+					//if (timeSinceStart.count() > SECONDS_PER_TICK + totalTickCount * SECONDS_PER_TICK) {
+					millisElapsed = unsigned int(clock() - TIME_PER_TICK * totalTickCount);
+					if (millisElapsed > TIME_PER_TICK) {
 						Internals::onTickCallback();
+						totalTickCount++;
 					}
 				}
 				LOG_INFO(Application, "Closing application...\n");
 				Internals::onCloseCallback();
-				WindowManager::close();
+				WindowManager::shutdown();
 				LOG_SUCCESS(Application, "Closed application\n");
 			}
 		}
 		void reset()
 		{
 			LOG_INFO(Application, "Resetting application...\n");
-			totalTickTime = (float)clock();
+			totalTickCount = unsigned int((double)clock() / TIME_PER_TICK);
+			millisElapsed = 0;
+			//startTime = std::chrono::high_resolution_clock::now();
+			//timeElapsed = std::chrono::high_resolution_clock::now();
 			Internals::onResetCallback();
 			LOG_SUCCESS(Application, "Reset application\n");
+		}
+		void close()
+		{
+			s_shouldRun = false;
+		}
+		void maximize()
+		{
+			WindowManager::maximize();
+		}
+		void minimize()
+		{
+			WindowManager::minimize();
 		}
 	} // namespace Application
 	void setOnStartCallback(void (*func)()) { Internals::onStartCallback = func; }

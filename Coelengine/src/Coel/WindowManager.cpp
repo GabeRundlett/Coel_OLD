@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include "Internals/Utilities/Log.hpp"
 #include "Internals/EventCallbacks.hpp"
+#include "Graphics/Renderer.hpp"
+#include "WindowManager.hpp"
 
 namespace Coel {
 	namespace WindowManager {
@@ -30,9 +32,13 @@ namespace Coel {
 			}
 			glfwSwapInterval(0);
 
+			//glfwSetWindowAttrib(s_window, GLFW_DECORATED, GLFW_FALSE);
+
 			glEnable(GL_CULL_FACE);
-			glFrontFace(GL_CCW);
+			glFrontFace(GL_CW);
 			glCullFace(GL_BACK);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glfwSetKeyCallback(s_window, [](GLFWwindow *w, int key, int scancode, int action, int mods) {
 				switch (action) {
@@ -69,6 +75,7 @@ namespace Coel {
 				Internals::onWindowMoveCallback({xPos, yPos});
 			});
 			glfwSetWindowSizeCallback(s_window, [](GLFWwindow *w, int width, int height) {
+				Graphics::Renderer::resizeViewport(0, 0, width, height);
 				Internals::onWindowResizeCallback({width, height});
 			});
 
@@ -81,7 +88,9 @@ namespace Coel {
 			glfwSwapBuffers(s_window);
 		}
 		int shouldRun() { return !glfwWindowShouldClose(s_window); }
-		void close() { glfwTerminate(); }
+		void shutdown() { glfwTerminate(); }
+		void maximize() { glfwMaximizeWindow(s_window); }
+		void minimize() { glfwIconifyWindow(s_window); }
 	} // namespace WindowManager
 #define __ENGINE_IMPLIMENT_EVENT_CALLBACK_SETTER(_namespace_, _eventName_) \
 	void setOn##_namespace_##_eventName_##Callback(void (*func)(const Event::_namespace_::_eventName_ &)) { Internals::on##_namespace_##_eventName_##Callback = func; }

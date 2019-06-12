@@ -4,9 +4,12 @@
 
 namespace Coel {
 	namespace Graphics {
-		struct VertexData {
-			vec3 pos;
-			vec2 tex;
-		};
+		namespace Vertex {
+			struct Data {
+				vec3 pos;
+				vec2 tex;
+				unsigned int col;
+			};
+		} // namespace Vertex
 	} // namespace Graphics
 } // namespace Coel
