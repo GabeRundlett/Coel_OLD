@@ -1,21 +1,18 @@
-workspace "engine"
+workspace "coel"
 	architecture "x64"
 	configurations { "Debug", "DebugOptimized", "Release" }
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-include_dir = {}
-include_dir["coel"] = "%{wks.location}/coel/src"
-include_dir["glad"] = "%{wks.location}/glad/include"
-include_dir["glfw"] = "%{wks.location}/glfw/include"
-include_dir["stb"] = "%{wks.location}/stb/src"
-include_dir["math"] = "%{wks.location}/math/src"
+inc = {}
+inc["engine"] = "%{wks.location}/engine/src"
+inc["glad"] = "%{wks.location}/glad/include"
+inc["glfw"] = "%{wks.location}/glfw/include"
+inc["stb"] = "%{wks.location}/stb/src"
+inc["math"] = "%{wks.location}/math/src"
 
 startproject "test"
 
-include "coel"
-include "glad"
-include "glfw"
-include "stb"
+include "engine"
 include "math"
 include "test"
 
