@@ -1,4 +1,4 @@
-./Build/Premake/premake5 gmake
+./build/premake/premake5 gmake2
 if [ "$#" -eq  "0" ]
 then
 	make
