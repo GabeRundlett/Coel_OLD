@@ -5,7 +5,7 @@ project "test"
 	objdir("%{wks.location}/build/bin/intermediates/" .. outputdir .. "/%{prj.name}")
 	files { "src/**.hpp", "src/**.cpp" }
 	includedirs { "%{inc.engine}", "%{inc.math}" }
-	links { "engine" }
+	links { "engine", "math" }
 	warnings "Extra"
 	filter "configurations:Debug"
 		defines "_CONFIG_DEBUG"
@@ -24,7 +24,7 @@ project "test"
 		defines "_CONFIG_PLATFORM_WINDOWS"
 	filter "system:linux"
 		defines "_CONFIG_PLATFORM_LINUX"
-        links { "glfw", "glad", "math", "stb" }
+        links { "glfw", "glad", "stb" }
         links { "X11", "dl", "pthread" }
 	filter "system:macosx"
 		defines "_CONFIG_PLATFORM_MACOS"
