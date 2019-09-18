@@ -1,4 +1,5 @@
 #include <coel.hpp>
+#include <iostream>
 #include <math.hpp>
 
 namespace test {
@@ -50,17 +51,22 @@ int main() {
 
     math::Vec2 pos = {-0.5, -0.3}, vel = {0.421, 0.157};
 
-    float prev_time = window.get_time();
-
+    float prev_time = window.get_time(), prev_tick_time = prev_time;
+    unsigned int fpt = 0;
     while (!window.should_close()) {
-        window.update();
-        coel::renderer::clear(0.3, 0.3, 0.3, 1);
-
-        coel::renderer::batch2d::submit_rect(pos.x, pos.y, 1, 1, 4);
-        coel::renderer::batch2d::flush();
-
         const float time = window.get_time(), elapsed = time - prev_time;
-        prev_time = time;
+
+        if (time - prev_tick_time > 1.f) {
+            std::cout << fpt << '\n';
+            prev_tick_time += 1.f;
+            fpt = 0;
+        }
+
+        window.update();
+        coel::renderer::clear(0.1, 0.1, 0.12, 1);
+
+        coel::renderer::batch2d::submit_rect(pos.x, pos.y, 1, 1, 4.f);
+        coel::renderer::batch2d::flush();
 
         pos += vel * elapsed;
 
@@ -79,6 +85,9 @@ int main() {
             vel.y *= -1;
             pos.y = -1.f;
         }
+
+        prev_time = time;
+        ++fpt;
     }
 }
 // hi honey i love you !
