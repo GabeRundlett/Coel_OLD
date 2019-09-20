@@ -4,39 +4,75 @@
 
 namespace test {
     static constexpr char vert_src[] = R"(
-    #version 330 core
-    layout(location = 0) in vec2 pos;
-    layout(location = 1) in vec2 tex;
-    layout(location = 2) in vec4 col;
-    layout(location = 3) in float tid;
-    out vec2 v_tex;
-    out vec4 v_col;
-    out float v_tid;
-    void main() {
-        v_tex = tex;
-        v_col = col / 255;
-        v_tid = tid;
-        gl_Position = vec4(pos, 0, 1);
-    }
-    )";
+#version 330 core
+layout(location = 0) in vec2 pos;
+layout(location = 1) in vec2 tex;
+layout(location = 2) in vec4 col;
+layout(location = 3) in float tid;
+
+out VS_OUT {
+	vec2 tex;
+	vec4 col;
+	float tid;
+} v;
+
+void main() {
+    v.tex = tex;
+    v.col = col / 255;
+    v.tid = tid;
+    gl_Position = vec4(pos, 0, 1);
+}
+)";
+
+    static constexpr char geom_src[] = R"(
+#version 330 core
+layout (triangles) in;
+layout (triangle_strip, max_vertices = 3) out;
+
+in VS_OUT {
+	vec2 tex;
+	vec4 col;
+	float tid;
+} g_i;
+
+out GS_OUT {
+	vec2 tex;
+	vec4 col;
+	float tid;
+} g_o;
+
+void main() {
+	gl_Position = g_i[0].gl_Position + vec4(0, 0, 0, 0);
+	EmitVertex();
+	gl_Position = g_i[1].gl_Position + vec4(0, 0, 0, 0);
+	EmitVertex();
+	gl_Position = g_i[2].gl_Position + vec4(0, 0, 0, 0);
+	EmitVertex();
+	EndPrimitive();
+}
+)";
 
     static constexpr char frag_src[] = R"(
-    #version 330 core
-    in vec2 v_tex;
-    in vec4 v_col;
-    in float v_tid;
-    uniform sampler2D tex0;
-    uniform sampler2D tex1;
-    out vec4 color;
-    void main() {
-        switch (int(v_tid + 0.5 * sign(v_tid))) {
-        case -1: color = v_col; break;
-        case 0: color = texture(tex0, v_tex); break;
-        case 1: color = texture(tex1, v_tex); break;
-        default: color = vec4(ivec3(gl_FragCoord.x + gl_FragCoord.y) / 50 % 2, 1);
-        }
+#version 330 core
+
+in GS_OUT {
+	vec2 tex;
+	vec4 col;
+	float tid;
+} f;
+
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+out vec4 color;
+void main() {
+    switch (int(f.tid + 0.5 * sign(f.tid))) {
+    case -1: color = f.col; break;
+    case 0: color = texture(tex0, f.tex); break;
+    case 1: color = texture(tex1, f.tex); break;
+    default: color = vec4(ivec3(gl_FragCoord.x + gl_FragCoord.y) / 500 % 2, 1);
     }
-    )";
+}
+)";
 } // namespace test
 
 int main() {
@@ -44,7 +80,8 @@ int main() {
 
     coel::Texture ball_t("assets/player.png");
     coel::Texture dirt_t("assets/ground.png");
-    coel::Shader shader(test::vert_src, test::frag_src);
+    coel::Shader shader(coel::ShaderType::Vertex, test::vert_src, coel::ShaderType::Geometry, test::geom_src,
+                        coel::ShaderType::Fragment, test::frag_src);
     coel::Material material(&shader, &ball_t, "tex0", &dirt_t, "tex1");
 
     coel::renderer::batch2d::init();
