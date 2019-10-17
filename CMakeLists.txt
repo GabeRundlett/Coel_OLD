@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 
 project(Coelengine)
 
-set(ENGINE_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/enigne/src")
+set(ENGINE_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/engine/src")
 set(MATH_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/math/src")
 
 add_subdirectory(engine)
