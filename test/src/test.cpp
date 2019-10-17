@@ -108,8 +108,7 @@ int main() {
             fpt = 0;
         }
 
-        window.update();
-        coel::renderer::clear(0.1, 0.1, 0.12, 1);
+        coel::renderer::clear(0.1, 0.1, 0.11, 1);
 
         coel::renderer::batch2d::submit_rect(pos.x, pos.y, 1, 1, 4.f);
         coel::renderer::batch2d::flush();
@@ -132,6 +131,7 @@ int main() {
             pos.y = -1.f;
         }
 
+        window.update();
         prev_time = time;
         ++fpt;
     }
