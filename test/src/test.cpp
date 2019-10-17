@@ -33,7 +33,7 @@ in VS_OUT {
 	vec2 tex;
 	vec4 col;
 	float tid;
-} g_i;
+} g_i[];
 
 out GS_OUT {
 	vec2 tex;
@@ -42,11 +42,20 @@ out GS_OUT {
 } g_o;
 
 void main() {
-	gl_Position = g_i[0].gl_Position + vec4(0, 0, 0, 0);
+	gl_Position = gl_in[0].gl_Position + vec4(0, 0, 0, 0);
+	g_o.tex = g_i[0].tex;
+	g_o.col = g_i[0].col;
+	g_o.tid = g_i[0].tid;
 	EmitVertex();
-	gl_Position = g_i[1].gl_Position + vec4(0, 0, 0, 0);
+	gl_Position = gl_in[1].gl_Position + vec4(0, 0, 0, 0);
+	g_o.tex = g_i[1].tex;
+	g_o.col = g_i[1].col;
+	g_o.tid = g_i[1].tid;
 	EmitVertex();
-	gl_Position = g_i[2].gl_Position + vec4(0, 0, 0, 0);
+	gl_Position = gl_in[2].gl_Position + vec4(0, 0, 0, 0);
+	g_o.tex = g_i[2].tex;
+	g_o.col = g_i[2].col;
+	g_o.tid = g_i[2].tid;
 	EmitVertex();
 	EndPrimitive();
 }
@@ -86,7 +95,7 @@ int main() {
 
     coel::renderer::batch2d::init();
 
-    math::Vec2 pos = {-0.5, -0.3}, vel = {0.421, 0.157};
+    math::Vec2 pos = {-0.5, -0.3}, vel = {0.421, 0.1565};
 
     float prev_time = window.get_time(), prev_tick_time = prev_time;
     unsigned int fpt = 0;
