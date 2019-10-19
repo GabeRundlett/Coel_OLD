@@ -1,6 +1,3 @@
 [submodule "engine"]
 	path = engine
 	url = https://github.com/GabeRundlett/engine
-[submodule "math"]
-	path = math
-	url = https://github.com/GabeRundlett/math
