@@ -6,7 +6,6 @@ set(ENGINE_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/engine/src")
 set(MATH_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/math/src")
 
 add_subdirectory(engine)
-add_subdirectory(math)
 add_subdirectory(test)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
