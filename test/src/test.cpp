@@ -1,36 +1,72 @@
 #include <coel.hpp>
 
 namespace test {
-    static constexpr math::Color background_col = {18, 18, 18, 255}, col1 = {180, 180, 180, 100}, col2 = {255, 180, 100, 100};
-    static float total_frame_time = 0.f;
-    static unsigned int fpt = 0;
+    static constexpr math::Color            //
+        background_col = {18, 18, 18, 255}, //
+        col1 = {30, 30, 30, 255},           //
+        col2 = {150, 60, 60, 255},          //
+        col3 = {60, 60, 150, 255};          //
+
+    static inline void draw_x(const math::Vec2 &pos, const float size, const float radius) {
+        using namespace coel::renderer::batch2d;
+        fill_color(col2);
+        fill_line({{pos.x - size + radius, pos.y - size + radius}, {pos.x + size - radius, pos.y + size - radius}, {radius}});
+        fill_line({{pos.x + size - radius, pos.y - size + radius}, {pos.x - size + radius, pos.y + size - radius}, {radius}});
+    }
+
+    static inline void draw_o(const math::Vec2 &pos, const float size, const float radius) {
+        using namespace coel::renderer::batch2d;
+        fill_color(col3);
+        fill_ellipse({{pos.x - size, pos.y - size}, {size * 2, size * 2}});
+        fill_color(background_col);
+        fill_ellipse({{pos.x - size + radius * 2, pos.y - size + radius * 2}, {size * 2 - radius * 4, size * 2 - radius * 4}});
+    } // namespace test
 
     struct Window : coel::Window {
-        math::Vec2 mouse = {0, 0};
-
         Window(const unsigned int w, const unsigned int h, const char *const t) : coel::Window(w, h, t) {
             coel::renderer::batch2d::init(w, h);
             coel::renderer::clear_color(background_col);
             coel::renderer::clear();
         }
 
-        void mouse_move(const coel::MouseMove &e) override { //
-            mouse = {float(e.x), float(e.y)};
-        }
-
         void on_update() override {
-            // coel::renderer::batch2d::fill_rect({{mouse.x, mouse.y}, {400, 400}});
-            coel::renderer::batch2d::fill_color(col2);
-            coel::renderer::batch2d::fill_line({{mouse.x, mouse.y}, {400, 400}, {10}});
-            coel::renderer::batch2d::fill_color(col1);
-            coel::renderer::batch2d::fill_ellipse({{mouse.x - 5, mouse.y - 5}, {10, 10}});
-            coel::renderer::batch2d::fill_ellipse({{400 - 5, 400 - 5}, {10, 10}});
+            const float border_x = 10, border_y = 10;
+            const float grid_size = ((width > height ? height : width) - border_y * 2) / 3;
+            float thickness = grid_size / 100;
+            thickness = thickness < 1 ? 1 : thickness;
+            const float row1y = border_y + grid_size / 2, row2y = row1y + grid_size, row3y = row2y + grid_size;
+            const float col1x = border_x + grid_size / 2, col2x = col1x + grid_size, col3x = col2x + grid_size;
+
+            using namespace coel::renderer::batch2d;
+            fill_color(col1);
+            fill_line({{col1x + grid_size / 2, row1y - grid_size / 2},
+                       {col1x + grid_size / 2, row1y + grid_size * 2.5f},
+                       {thickness}});
+            fill_line({{col2x + grid_size / 2, row1y - grid_size / 2},
+                       {col2x + grid_size / 2, row1y + grid_size * 2.5f},
+                       {thickness}});
+            fill_line({{col1x - grid_size / 2, row1y + grid_size / 2},
+                       {col1x + grid_size * 2.5f, row1y + grid_size / 2},
+                       {thickness}});
+            fill_line({{col1x - grid_size / 2, row2y + grid_size / 2},
+                       {col1x + grid_size * 2.5f, row2y + grid_size / 2},
+                       {thickness}});
+
+            draw_x({col1x, row1y}, grid_size / 2 * 0.8, thickness);
+            draw_o({col2x, row1y}, grid_size / 2 * 0.8, thickness);
+            draw_o({col3x, row1y}, grid_size / 2 * 0.8, thickness);
+            draw_o({col1x, row2y}, grid_size / 2 * 0.8, thickness);
+            draw_x({col2x, row2y}, grid_size / 2 * 0.8, thickness);
+            draw_x({col3x, row2y}, grid_size / 2 * 0.8, thickness);
+            draw_o({col1x, row3y}, grid_size / 2 * 0.8, thickness);
+            draw_x({col2x, row3y}, grid_size / 2 * 0.8, thickness);
+            draw_o({col3x, row3y}, grid_size / 2 * 0.8, thickness);
         }
     };
 } // namespace test
 
 int main() {
-    test::Window window(1600, 900, "title");
+    test::Window window(1600, 800, "title");
     while (!window.should_close()) {
         window.update();
         coel::renderer::batch2d::flush();
