@@ -1,58 +1,7 @@
 #include <coel.hpp>
-#include <iostream>
 
 namespace test {
-#if 1
-    static constexpr math::Color background_col = {18, 18, 18, 255}, button_col = {30, 30, 30, 255},
-                                 button_shadow_col = {0, 0, 0, 180};
-#else
-    static constexpr math::Color background_col = {200, 200, 200, 255}, button_col = {255, 255, 255, 255},
-                                 button_shadow_col = {0, 0, 0, 50};
-#endif
-
-    struct Button {
-        math::Vec3 pos;
-        math::Vec2 size;
-        bool hovered = false, pressed = false, animate = false;
-        float animate_speed = 0.1f;
-
-        Button(float x, float y, float w, float h) : pos{x, y, 0}, size{w, h} {}
-        Button(const math::Vec2 &pos, const math::Vec2 &size) : pos{pos.x, pos.y, 0}, size{size} {}
-
-        inline void hover(const math::Vec2 &mouse_pos) {
-            const bool prev_hovered = hovered;
-            hovered = mouse_pos.x > pos.x && mouse_pos.x < pos.x + size.x && //
-                      mouse_pos.y > pos.y && mouse_pos.y < pos.y + size.y;
-            if (prev_hovered != hovered) {
-                if (hovered)
-                    animate_speed = 0.01f;
-                else
-                    animate_speed = -0.01f;
-                animate = true;
-            }
-        }
-
-        inline void press() {
-            pressed = hovered;
-            //
-        }
-
-        inline void update() {
-            if (animate) {
-                pos.z += animate_speed;
-                if (pos.z > 0.3f) {
-                    pos.z = 0.3f;
-                    animate = false;
-                } else if (pos.z < 0.f) {
-                    pos.z = 0.f;
-                    animate = false;
-                }
-            }
-        }
-
-        inline void draw() { coel::renderer::batch2d::fill_rect({pos, size}); }
-    };
-
+    static constexpr math::Color background_col = {18, 18, 18, 255}, col1 = {180, 180, 180, 100}, col2 = {255, 180, 100, 100};
     static float total_frame_time = 0.f;
     static unsigned int fpt = 0;
 
@@ -70,8 +19,12 @@ namespace test {
         }
 
         void on_update() override {
-            coel::renderer::batch2d::fill_color(button_col);
-            coel::renderer::batch2d::fill_rect({{0.5f * width - 200, 0.5f * height - 200}, {400, 400}});
+            // coel::renderer::batch2d::fill_rect({{mouse.x, mouse.y}, {400, 400}});
+            coel::renderer::batch2d::fill_color(col2);
+            coel::renderer::batch2d::fill_line({{mouse.x, mouse.y}, {400, 400}, {10}});
+            coel::renderer::batch2d::fill_color(col1);
+            coel::renderer::batch2d::fill_ellipse({{mouse.x - 5, mouse.y - 5}, {10, 10}});
+            coel::renderer::batch2d::fill_ellipse({{400 - 5, 400 - 5}, {10, 10}});
         }
     };
 } // namespace test
@@ -119,4 +72,51 @@ Material
             rect_and_shadow(156 + 16, 100, 140, 180, 5);
             rect_and_shadow(000 + 16, 216, 140, 160, 5);
             rect_and_shadow(156 + 16, 296, 140, 110, 5);
+
+Button
+
+
+    struct Button {
+        math::Vec3 pos;
+        math::Vec2 size;
+        bool hovered = false, pressed = false, animate = false;
+        float animate_speed = 0.1f;
+
+        Button(float x, float y, float w, float h) : pos{x, y, 0}, size{w, h} {}
+        Button(const math::Vec2 &pos, const math::Vec2 &size) : pos{pos.x, pos.y, 0}, size{size} {}
+
+        inline void hover(const math::Vec2 &mouse_pos) {
+            const bool prev_hovered = hovered;
+            hovered = mouse_pos.x > pos.x && mouse_pos.x < pos.x + size.x && //
+                      mouse_pos.y > pos.y && mouse_pos.y < pos.y + size.y;
+            if (prev_hovered != hovered) {
+                if (hovered)
+                    animate_speed = 0.01f;
+                else
+                    animate_speed = -0.01f;
+                animate = true;
+            }
+        }
+
+        inline void press() {
+            pressed = hovered;
+            //
+        }
+
+        inline void update() {
+            if (animate) {
+                pos.z += animate_speed;
+                if (pos.z > 0.3f) {
+                    pos.z = 0.3f;
+                    animate = false;
+                } else if (pos.z < 0.f) {
+                    pos.z = 0.f;
+                    animate = false;
+                }
+            }
+        }
+
+        inline void draw() { coel::renderer::batch2d::fill_rect({pos, size}); }
+    };
+
 */
