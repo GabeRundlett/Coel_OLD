@@ -1,4 +1,6 @@
 #include <coel.hpp>
+#include <iostream>
+#include <string>
 
 namespace test {
     static constexpr math::Color            //
@@ -6,6 +8,8 @@ namespace test {
         col1 = {30, 30, 30, 255},           //
         col2 = {150, 60, 60, 255},          //
         col3 = {60, 60, 150, 255};          //
+
+    static std::string text_box_string = "Hello, World!";
 
     static inline void draw_x(const math::Vec2 &pos, const float size, const float radius) {
         using namespace coel::renderer::batch2d;
@@ -29,38 +33,40 @@ namespace test {
             coel::renderer::clear();
         }
 
+        void key_press(const coel::KeyPress &e) override {
+            char text[2] = "1";
+            switch (e.key) {
+            case coel::Backspace:
+                //
+                break;
+            case coel::Tab:
+                //
+                break;
+            case coel::Enter:
+            case coel::NumpadEnter:
+                //
+                break;
+            default:
+                //
+                switch (e.mods) {
+                case coel::Shift: break;
+                case coel::Alt: break;
+                case coel::Control: break;
+                default: break;
+                }
+                break;
+            }
+            text[0] = e.key;
+            // text_box_string.append(text);
+            std::cout << char(e.key);
+        }
+
         void on_update() override {
-            const float border_x = 10, border_y = 10;
-            const float grid_size = ((width > height ? height : width) - border_y * 2) / 3;
-            float thickness = grid_size / 100;
-            thickness = thickness < 1 ? 1 : thickness;
-            const float row1y = border_y + grid_size / 2, row2y = row1y + grid_size, row3y = row2y + grid_size;
-            const float col1x = border_x + grid_size / 2, col2x = col1x + grid_size, col3x = col2x + grid_size;
-
             using namespace coel::renderer::batch2d;
-            fill_color(col1);
-            fill_line({{col1x + grid_size / 2, row1y - grid_size / 2},
-                       {col1x + grid_size / 2, row1y + grid_size * 2.5f},
-                       {thickness}});
-            fill_line({{col2x + grid_size / 2, row1y - grid_size / 2},
-                       {col2x + grid_size / 2, row1y + grid_size * 2.5f},
-                       {thickness}});
-            fill_line({{col1x - grid_size / 2, row1y + grid_size / 2},
-                       {col1x + grid_size * 2.5f, row1y + grid_size / 2},
-                       {thickness}});
-            fill_line({{col1x - grid_size / 2, row2y + grid_size / 2},
-                       {col1x + grid_size * 2.5f, row2y + grid_size / 2},
-                       {thickness}});
-
-            draw_x({col1x, row1y}, grid_size / 2 * 0.8, thickness);
-            draw_o({col2x, row1y}, grid_size / 2 * 0.8, thickness);
-            draw_o({col3x, row1y}, grid_size / 2 * 0.8, thickness);
-            draw_o({col1x, row2y}, grid_size / 2 * 0.8, thickness);
-            draw_x({col2x, row2y}, grid_size / 2 * 0.8, thickness);
-            draw_x({col3x, row2y}, grid_size / 2 * 0.8, thickness);
-            draw_o({col1x, row3y}, grid_size / 2 * 0.8, thickness);
-            draw_x({col2x, row3y}, grid_size / 2 * 0.8, thickness);
-            draw_o({col3x, row3y}, grid_size / 2 * 0.8, thickness);
+            fill_color({30, 30, 30, 255});
+            fill_rect({{90, 110}, {400, -34}});
+            fill_color({150, 150, 150, 255});
+            fill_text({text_box_string.c_str(), {100, 100}});
         }
     };
 } // namespace test
