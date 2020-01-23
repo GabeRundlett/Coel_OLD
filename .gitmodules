@@ -1,3 +1,3 @@
-[submodule "engine"]
-	path = engine
-	url = https://github.com/GabeRundlett/engine
+[submodule "Coelengine"]
+	path = Coelengine
+	url = https://github.com/GabeRundlett/Coelengine
