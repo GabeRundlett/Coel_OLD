@@ -1,7 +1,3 @@
+link_libraries(Coelengine)
 
-set(CoelTestSources
-    CoelTest.cpp
-)
-
-add_executable(CoelTest ${CoelTestSources})
-target_link_libraries(CoelTest Coelengine)
+add_executable(Main Main.cpp)

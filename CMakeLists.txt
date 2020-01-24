@@ -3,3 +3,4 @@ project(Coel)
 
 add_subdirectory(Coelengine)
 add_subdirectory(Tests)
+add_subdirectory(Examples)
