@@ -13,7 +13,7 @@ int main() {
         Coel::Renderer::Command::clear();
 
         for (int i = 0; i < QUAD_COUNT; ++i) {
-            float s = std::sinf(window.getTime() + 6.28 / QUAD_COUNT * i);
+            float s = (float)std::sin(window.getTime() + 6.28 / QUAD_COUNT * i);
             renderer.submitRect(2.f / QUAD_COUNT * i - 1, s, 2.f / QUAD_COUNT, 2.f / QUAD_COUNT);
         }
 

@@ -18,7 +18,7 @@ struct Particle {
     Math::Vec2 pos, vel;
 
     void update(float elapsed) {
-        constexpr float COLLISION_DAMPENING = 0.3, COLLISION_FRICTION = 0.1, AIR_RESISTANCE = 0.001;
+        constexpr float COLLISION_DAMPENING = 0.3f, COLLISION_FRICTION = 0.1f, AIR_RESISTANCE = 0.001f;
         constexpr float D1 = 1.f - COLLISION_DAMPENING, D2 = 1.f - COLLISION_FRICTION, D3 = 1.f - AIR_RESISTANCE;
 
         if (pos.x < -1)
@@ -69,9 +69,9 @@ int main() {
         for (int i = 0; i < PARTICLE_COUNT; ++i) {
             auto &p = particles[i];
             float l = p.vel.length();
-            Math::Vec2 size = {0.05, 0.05};
+            Math::Vec2 size = {0.05f, 0.05f};
             renderer.submitRect(p.pos.x - size.x / 2, p.pos.y - size.y / 2, size.x, size.y);
-            p.update(elapsed);
+            p.update((float)elapsed);
         }
 
         renderer.flush();

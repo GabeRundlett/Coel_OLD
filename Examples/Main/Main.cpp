@@ -31,20 +31,8 @@ Math::Mat4 viewMat;
 
 int main() {
     window.onResize = [](Coel::Window &w) {
-        viewMat = Math::Mat4::ortho(0, w.size.x, w.size.y, 0, -1, 1);
+        viewMat = Math::Mat4::ortho(0, (float)w.size.x, (float)w.size.y, 0, -1, 1);
         shader.sendMat4("viewMat", &viewMat);
-    };
-
-    window.onMouseMove = [](Coel::Window &w) {
-        // std::cout << "Mouse Moved"; //
-    };
-
-    window.onMouseButton = [](Coel::Window &w) {
-        switch (w.mouse.button) {
-        default:
-            std::cout << "Mouse Pressed"; //
-            break;
-        }
     };
 
     window.onMouseButton = [](Coel::Window &w) {

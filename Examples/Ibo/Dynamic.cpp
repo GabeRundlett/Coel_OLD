@@ -12,9 +12,7 @@ struct Quad {
 int main() {
     Coel::Window window(800, 600, "Simple Dynamic Index Buffer Example");
 
-    Coel::Vbo vbo(nullptr, VERTEX_COUNT * sizeof(Vertex), {
-        {Coel::Element::F32, 2},
-    });
+    Coel::Vbo vbo(nullptr, VERTEX_COUNT * sizeof(Vertex), {{Coel::Element::F32, 2}});
 
     Coel::Vao vao;
     vao.add(vbo);
@@ -31,7 +29,7 @@ int main() {
         ibo.open(&indices);
 
         for (int i = 0; i < QUAD_COUNT; ++i) {
-            float s = std::sinf(window.getTime() + 6.28 / QUAD_COUNT * i);
+            float s = (float)std::sin(window.getTime() + 6.28 / QUAD_COUNT * i);
             quads[i] = {
                 {-1.f / QUAD_COUNT + (2.f * i - QUAD_COUNT + 1.f) / QUAD_COUNT, -1.f / QUAD_COUNT + s},
                 {1.f / QUAD_COUNT + (2.f * i - QUAD_COUNT + 1.f) / QUAD_COUNT, -1.f / QUAD_COUNT + s},
@@ -57,7 +55,7 @@ int main() {
 
         ibo.close();
         vbo.close();
-        
+
         vao.drawIndexed(INDEX_COUNT);
 
         window.update();
