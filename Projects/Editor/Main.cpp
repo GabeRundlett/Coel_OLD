@@ -9,7 +9,7 @@ Coel::Window window(1400, 900, "Editor");
 Coel::Renderer::Batch2d renderer;
 Coel::Shader shader(vertSrc, fragSrc);
 
-Math::Mat4 viewMat;
+Math::Mat4 viewMat{0};
 
 std::vector<Node> nodes;
 int closestNodeIndex = -1, grabbedNodeIndex = -1;

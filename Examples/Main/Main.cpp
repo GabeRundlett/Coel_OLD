@@ -27,7 +27,7 @@ Coel::Window window(1400, 900, "Main");
 Coel::Renderer::Batch2d renderer;
 Coel::Shader shader(vertSrc, fragSrc);
 
-Math::Mat4 viewMat;
+Math::Mat4 viewMat{1};
 
 int main() {
     window.onResize = [](Coel::Window &w) {

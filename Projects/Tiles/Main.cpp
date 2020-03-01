@@ -30,7 +30,7 @@ static SpriteVertices *spriteVertices = nullptr;
 static SpriteIndices *spriteIndices = nullptr;
 
 Coel::Shader shader(vertSrc, fragSrc);
-Math::Mat4 viewMat;
+Math::Mat4 viewMat{1};
 
 Coel::Texture spriteAtlas("C:/Dev/Coel/Projects/Tiles/Assets/Atlas.png");
 
