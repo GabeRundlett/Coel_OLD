@@ -53,6 +53,7 @@ void main() {
 		vec2 size = abs(v_size);
 		vec2 uv = v_tex * size;
 		float a = clamp(line(uv, vec2(v_border), size - vec2(v_border), v_border), 0, 1);
+		if (a < 0.1) discard;
 		color.w *= a;
 		break;
 	}
@@ -60,6 +61,7 @@ void main() {
 		float l = length(v_tex - 0.5) * 2;
 		float s = length(v_size) / 2;
 		float a = clamp((1.f - l) * s, 0, 1);
+		if (a < 0.1) discard;
 		color.w *= a;
 		break;
 	}
