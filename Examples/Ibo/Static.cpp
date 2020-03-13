@@ -25,7 +25,7 @@ int main() {
     Coel::Ibo ibo(idata, sizeof(idata));
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
 
         ibo.bind();
         vao.drawIndexed(6);

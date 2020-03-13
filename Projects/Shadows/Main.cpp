@@ -63,8 +63,8 @@ namespace Scene {
     }
 
     void render() {
-        Coel::Renderer::Command::setClearColor(0.1, 0.1, 0.1, 1);
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::setClearColor(0.1, 0.1, 0.1, 1);
+        Coel::Renderer::clear();
 
         shader.bind();
         ibo.bind();
@@ -76,7 +76,7 @@ namespace Shadow {
     Coel::Shader shader(vertSrc, fragSrc);
 
     void render() {
-        Coel::Renderer::Command::clearDepth();
+        Coel::Renderer::clearDepth();
 
         shader.bind();
         Scene::ibo.bind();
@@ -107,8 +107,8 @@ namespace Quad {
     }
 
     void render() {
-        Coel::Renderer::Command::setClearColor(0, 0, 0, 1);
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::setClearColor(0, 0, 0, 1);
+        Coel::Renderer::clear();
 
         shader.bind();
         shader.sendInt("tex", 0);
@@ -122,9 +122,9 @@ int main() {
 
     Coel::Fbo shadowFbo(1024, 1024, Coel::Buffer::Depth);
 
-    Coel::Renderer::Command::enableBlend(true);
-    Coel::Renderer::Command::enableDepthTest(true);
-    Coel::Renderer::Command::enableCulling(true);
+    Coel::Renderer::enableBlend(true);
+    Coel::Renderer::enableDepthTest(true);
+    Coel::Renderer::enableCulling(true);
 
     while (window.isOpen()) {
         Math::Vec3 viewPos{0, 0, -5};
@@ -156,7 +156,7 @@ int main() {
 
         // Render fbo to quad
         Coel::Fbo::unbind();
-        Coel::Renderer::Command::resizeViewport(0, 0, window.size.x, window.size.y);
+        Coel::Renderer::resizeViewport(0, 0, window.size.x, window.size.y);
 
         Scene::shader.bind();
         Scene::shader.sendInt("shadowMap", 0);

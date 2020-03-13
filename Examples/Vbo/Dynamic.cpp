@@ -18,7 +18,7 @@ int main() {
     vao.add(vbo);
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
 
         vbo.open(&triangles);
         for (int i = 0; i < TRIANGLE_COUNT; ++i) {

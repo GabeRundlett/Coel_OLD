@@ -17,7 +17,7 @@ int main() {
     vao.add(vbo);
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
         vao.draw(3);
         window.update();
     }

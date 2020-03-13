@@ -25,7 +25,7 @@ int main() {
     vao.add(vbo);
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
 
         shader.bind();
         texture.bind(0);

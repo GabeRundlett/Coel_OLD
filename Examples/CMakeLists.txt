@@ -19,3 +19,5 @@ add_executable(TexturedQuad TexturedQuad/Main.cpp)
 add_executable(SimpleFbo Fbo/Simple.cpp)
 add_executable(BlurFbo Fbo/Blur.cpp)
 add_executable(GaussianFbo Fbo/Gaussian.cpp)
+
+add_executable(Imgui Imgui/Main.cpp)

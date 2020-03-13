@@ -48,20 +48,17 @@ void main() {
 }
 )";
 
-
 int main() {
     Coel::Window window(800, 600, "Simple Framebuffer Example");
 
     // Lets render the triangle from the static Vbo example
     float vdata[]{
         -0.5, -0.5, // bottom left
-         0.5, -0.5, // bottom right
-         0.0,  0.5,  // top middle
+        0.5,  -0.5, // bottom right
+        0.0,  0.5,  // top middle
     };
 
-    Coel::Vbo vbo(vdata, sizeof(vdata), {
-        {Coel::Element::F32, 2},
-    });
+    Coel::Vbo vbo(vdata, sizeof(vdata), {{Coel::Element::F32, 2}});
 
     Coel::Vao vao;
     vao.add(vbo);
@@ -72,39 +69,36 @@ int main() {
 
     float quadVdata[]{
         -1, -1, 0, 0, //
-         1, -1, 1, 0, //
-        -1,  1, 0, 1, //
-                 
-        -1,  1, 0, 1, //
-         1, -1, 1, 0, //
-         1,  1, 1, 1, //
+        1,  -1, 1, 0, //
+        -1, 1,  0, 1, //
+
+        -1, 1,  0, 1, //
+        1,  -1, 1, 0, //
+        1,  1,  1, 1, //
     };
 
-    Coel::Vbo quadVbo(quadVdata, sizeof(quadVdata), {
-        {Coel::Element::F32, 2},
-        {Coel::Element::F32, 2},
-    });
+    Coel::Vbo quadVbo(quadVdata, sizeof(quadVdata), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
 
     Coel::Vao quadVao;
     quadVao.add(quadVbo);
 
-    Coel::Renderer::Command::enableBlend(true);
-    Coel::Renderer::Command::enableCulling(true);
+    Coel::Renderer::enableBlend(true);
+    Coel::Renderer::enableCulling(true);
 
     while (window.isOpen()) {
         fbo.bind();
-        Coel::Renderer::Command::enableDepthTest(true);
-        Coel::Renderer::Command::setClearColor(0, 1, 0, 1);
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::enableDepthTest(true);
+        Coel::Renderer::setClearColor(0, 1, 0, 1);
+        Coel::Renderer::clear();
 
         shader.bind();
         vao.draw(3);
 
         Coel::Fbo::unbind();
-        Coel::Renderer::Command::resizeViewport(0, 0, window.size.x, window.size.y);
-        Coel::Renderer::Command::enableDepthTest(false);
-        Coel::Renderer::Command::setClearColor(1, 0, 0, 1);
-        Coel::Renderer::Command::clearColor();
+        Coel::Renderer::resizeViewport(0, 0, window.size.x, window.size.y);
+        Coel::Renderer::enableDepthTest(false);
+        Coel::Renderer::setClearColor(1, 0, 0, 1);
+        Coel::Renderer::clearColor();
 
         quadShader.bind();
         quadShader.sendInt("tex", 0);

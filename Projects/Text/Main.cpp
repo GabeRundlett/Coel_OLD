@@ -10,13 +10,13 @@ int main() {
     };
     window.onResize(window);
 
-    Coel::Renderer::Command::setClearColor(0.1f, 0.1f, 0.1f, 1.f);
+    Coel::Renderer::setClearColor(0.1f, 0.1f, 0.1f, 1.f);
 
     textRenderer.fill({0x666666ff});
     // renderer.fill(0x313131ff);
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
 
         // renderer.submitRect(0, 0, 1, 1);
         // renderer.flush();

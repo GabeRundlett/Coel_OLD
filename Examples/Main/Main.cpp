@@ -50,10 +50,10 @@ int main() {
     };
 
     window.onResize(window);
-    Coel::Renderer::Command::setClearColor(0.2f, 0.4f, 0.8f, 1.f);
+    Coel::Renderer::setClearColor(0.2f, 0.4f, 0.8f, 1.f);
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
         shader.bind();
 
         renderer.submitRect(20, 20, 100, 100);

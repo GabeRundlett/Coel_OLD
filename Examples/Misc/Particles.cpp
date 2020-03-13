@@ -46,7 +46,7 @@ int main() {
     std::vector<Particle> particles(PARTICLE_COUNT);
 
     Coel::Renderer::Batch2d renderer;
-    Coel::Renderer::Command::setClearColor(0.2f, 0.4f, 0.8f, 1.f);
+    Coel::Renderer::setClearColor(0.2f, 0.4f, 0.8f, 1.f);
 
     for (unsigned int i = 0; i < PARTICLE_COUNT; ++i) {
         particles[i].pos = {0.f, 0.f};
@@ -63,7 +63,7 @@ int main() {
         time = window.getTime();
         double elapsed = time - prevTime;
 
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
         shader.bind();
 
         for (int i = 0; i < PARTICLE_COUNT; ++i) {

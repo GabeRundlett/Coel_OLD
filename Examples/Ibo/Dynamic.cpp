@@ -23,7 +23,7 @@ int main() {
     unsigned short *indices = nullptr;
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
 
         vbo.open(&quads);
         ibo.open(&indices);

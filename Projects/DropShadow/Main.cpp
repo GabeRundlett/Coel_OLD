@@ -85,14 +85,14 @@ int main() {
     quadVao.add(quadVbo);
 
     Coel::Shader quadShader(quadVertSrc, quadFragSrc);
-    Coel::Renderer::Command::enableCulling(true);
-    Coel::Renderer::Command::enableBlend(true);
-    Coel::Renderer::Command::setClearColor(0.1, 0.1, 0.1, 1);
+    Coel::Renderer::enableCulling(true);
+    Coel::Renderer::enableBlend(true);
+    Coel::Renderer::setClearColor(0.1, 0.1, 0.1, 1);
 
     while (window.isOpen()) {
         pass1Fbo.bind();
-        Coel::Renderer::Command::enableDepthTest(true);
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::enableDepthTest(true);
+        Coel::Renderer::clear();
 
         {
             Vertex *vertices;
@@ -134,10 +134,10 @@ int main() {
         }
 
         Coel::Fbo::unbind();
-        Coel::Renderer::Command::resizeViewport(0, 0, window.size.x, window.size.y);
+        Coel::Renderer::resizeViewport(0, 0, window.size.x, window.size.y);
 
-        Coel::Renderer::Command::enableDepthTest(false);
-        Coel::Renderer::Command::clearColor();
+        Coel::Renderer::enableDepthTest(false);
+        Coel::Renderer::clearColor();
 
         {
             quadShader.bind();

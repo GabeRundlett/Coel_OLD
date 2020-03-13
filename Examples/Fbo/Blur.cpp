@@ -47,7 +47,8 @@ vec4 sq(in vec4 col) {
 }
 
 void main() {
-	color = vec4(0);
+	color = texture(tex, vTex);
+    return;
     for (float y = -10; y < 10; y += 1) {
         for (float x = -10; x < 10; x += 1) {
             color += sq(texture(tex, vTex + vec2(x / 800 * 2, y / 600 * 2))) / 21 / 21;
@@ -58,20 +59,17 @@ void main() {
 }
 )";
 
-
 int main() {
     Coel::Window window(800, 600, "Simple Framebuffer Example");
 
     // Lets render the triangle from the static Vbo example
     float vdata[]{
         -0.5, -0.5, // bottom left
-         0.5, -0.5, // bottom right
-         0.0,  0.5,  // top middle
+        0.0,  0.5,  // top middle
+        0.5,  -0.5, // bottom right
     };
 
-    Coel::Vbo vbo(vdata, sizeof(vdata), {
-        {Coel::Element::F32, 2},
-    });
+    Coel::Vbo vbo(vdata, sizeof(vdata), {{Coel::Element::F32, 2}});
 
     Coel::Vao vao;
     vao.add(vbo);
@@ -79,47 +77,31 @@ int main() {
 
     Coel::Fbo fbo(window.size.x / 4, window.size.y / 4, Coel::Buffer::Color | Coel::Buffer::RenderDepth);
     Coel::Shader quadShader(quadVertSrc, quadFragSrc);
+    Coel::Renderer::Quad2d quad;
 
-    float quadVdata[]{
-        -1, -1, 0, 0, //
-         1, -1, 1, 0, //
-        -1,  1, 0, 1, //
-                 
-        -1,  1, 0, 1, //
-         1, -1, 1, 0, //
-         1,  1, 1, 1, //
-    };
-
-    Coel::Vbo quadVbo(quadVdata, sizeof(quadVdata), {
-        {Coel::Element::F32, 2},
-        {Coel::Element::F32, 2},
-    });
-
-    Coel::Vao quadVao;
-    quadVao.add(quadVbo);
-
-    Coel::Renderer::Command::enableBlend(true);
-    Coel::Renderer::Command::enableCulling(true);
+    Coel::Renderer::enableBlend(true);
+    Coel::Renderer::enableCulling(true);
 
     while (window.isOpen()) {
         fbo.bind();
-        Coel::Renderer::Command::enableDepthTest(true);
-        Coel::Renderer::Command::setClearColor(0, 1, 0, 1);
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::enableDepthTest(true);
+        Coel::Renderer::setClearColor(0, 1, 0, 1);
+        Coel::Renderer::clear();
 
         shader.bind();
         vao.draw(3);
 
         Coel::Fbo::unbind();
-        Coel::Renderer::Command::resizeViewport(0, 0, window.size.x, window.size.y);
-        Coel::Renderer::Command::enableDepthTest(false);
-        Coel::Renderer::Command::setClearColor(1, 0, 0, 1);
-        Coel::Renderer::Command::clearColor();
+        Coel::Renderer::resizeViewport(0, 0, window.size.x, window.size.y);
+
+        Coel::Renderer::enableDepthTest(false);
+        Coel::Renderer::setClearColor(0, 0, 0, 1);
+        Coel::Renderer::clearColor();
 
         quadShader.bind();
         quadShader.sendInt("tex", 0);
         fbo.bindColorTexture(0);
-        quadVao.draw(6);
+        quad.draw();
 
         window.update();
     }

@@ -20,7 +20,7 @@ int main() {
     Coel::Renderer::Batch2d renderer;
     Coel::Shader shader(vertSrc, fragSrc);
 
-    Coel::Renderer::Command::setClearColor(0.9f, 0.7f, 0.2f, 1.f);
+    Coel::Renderer::setClearColor(0.9f, 0.7f, 0.2f, 1.f);
     renderer.fill(0xff00ffff);
 
     Particle particles[10] /* = {
@@ -44,7 +44,7 @@ int main() {
     auto time = window.getTime(), prevTime = time, timeStep = 0.1;
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
         prevTime = time;
         time = window.getTime();
         auto elapsed = time - prevTime;

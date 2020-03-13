@@ -1,5 +1,5 @@
-#include <Coel.hpp>
 #include "Assets/Shaders.hpp"
+#include <Coel.hpp>
 
 Coel::Window window(1280, 960, "Minecraft Clone");
 
@@ -32,7 +32,7 @@ class ImageRenderer {
 
     void render() {
         m_fbo.bind();
-        Coel::Renderer::Command::resizeViewport(0, 0, m_width, m_height);
+        Coel::Renderer::resizeViewport(0, 0, m_width, m_height);
         m_shader.bind();
         m_shader.sendInt("image", 0);
         m_texture.bind(0);
@@ -53,7 +53,6 @@ int main() {
 
     while (window.isOpen()) {
         image.render();
-
         window.update();
     }
 }

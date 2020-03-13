@@ -219,12 +219,12 @@ int main() {
 
     spriteAtlas.bind(0);
 
-    Coel::Renderer::Command::setClearColor(0.4f, 0.4f, 1.f, 1.f);
+    Coel::Renderer::setClearColor(0.4f, 0.4f, 1.f, 1.f);
 
     static constexpr int TILE_PADDING = 2;
 
     while (window.isOpen()) {
-        Coel::Renderer::Command::clear();
+        Coel::Renderer::clear();
 
         prevTime = time;
         time = window.getTime();
