@@ -1,32 +1,21 @@
 #pragma once
 
 static constexpr const char *const vertSrc = R"(
-#version 440
-
-layout (location = 0) in vec2 pos;
-layout (location = 1) in vec2 tex;
-
-uniform mat4 viewMat;
-
-out vec2 v_tex;
-
+#version 450 core
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in vec4 aCol;
+out vec4 vCol;
 void main() {
-	v_tex = tex;
-	gl_Position = viewMat * vec4(pos, 0, 1);
+	vCol = aCol;
+	gl_Position = vec4(aPos, 0, 1);
 }
 )";
 
 static constexpr const char *const fragSrc = R"(
-#version 440
-
-in vec2 v_tex;
-
-uniform sampler2D tex;
-
-out vec4 color;
-
+#version 450 core
+in vec4 vCol;
+out vec4 fragColor;
 void main() {
-	color = vec4(0.3, 0.3, 0.3, 1);
-	color = texture(tex, v_tex);
+	fragColor = vCol;
 }
 )";

@@ -8,7 +8,7 @@ int main() {
     Coel::Renderer::Batch2d batch;
 
     Coel::Renderer::setClearColor(0.2f, 0.4f, 0.8f, 1.f);
-    batch.fill(0xffffffff);
+    batch.fill({1, 1, 1, 1});
     batch.resize({-1, -1}, {2, 2});
 
     while (window.isOpen()) {

@@ -1,267 +1,134 @@
 #include <Coel.hpp>
 #include "Shaders.hpp"
-#include <iostream>
 
-#include "Noise.hpp"
-
-Coel::Window window(1400, 900, "Tiles");
-
+constexpr unsigned int COUNT_X = 800 / 4, COUNT_Y = 600 / 4, QUAD_COUNT = COUNT_X * COUNT_Y, VERTEX_COUNT = QUAD_COUNT * 4,
+                       INDEX_COUNT = QUAD_COUNT * 6;
 struct Vertex {
-    Math::Vec2 pos, size;
+    float x, y;
+    glm::vec4 col;
 };
-struct Index {
-    unsigned short id;
-};
-struct SpriteVertices {
+struct QuadVertices {
     Vertex a, b, c, d;
 };
-struct SpriteIndices {
-    Index data[6];
+struct QuadIndices {
+    unsigned int a1, a2, a3, b1, b2, b3;
 };
 
-static constexpr unsigned int SPRITE_COUNT = 10000;
-static unsigned int spriteCount = 0;
+struct HeightMapOptions {
+    float octaves = 4, roughness = 0.6, smoothness = 40, seed = 0;
+    inline constexpr bool operator==(const HeightMapOptions &o) {
+        return o.octaves == octaves && roughness == o.roughness && smoothness == o.smoothness && seed == o.seed;
+    }
+} heightMapOptions, prevOptions;
+float heightMap[COUNT_Y][COUNT_X];
 
-Coel::Vao vao;
-Coel::Vbo vbo(nullptr, SPRITE_COUNT * sizeof(SpriteVertices), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
-Coel::Ibo ibo(nullptr, SPRITE_COUNT * sizeof(SpriteIndices));
+float waterHeight = 0.4, sandHeight = 0.44, snowHeight = 0.67;
+glm::vec4 waterColor{0.5, 0.6, 0.9, 1}, sandColor{0.9, 0.8, 0.5, 1}, grassColor{0.4, 0.7, 0.2, 1}, snowColor{0.9, 0.9, 0.95, 1};
 
-static SpriteVertices *spriteVertices = nullptr;
-static SpriteIndices *spriteIndices = nullptr;
+void regenHeightMap() {
+    for (int yi = 0; yi < COUNT_Y; ++yi) {
+        for (int xi = 0; xi < COUNT_X; ++xi) {
+            float value = 0;
+            float accumulatedAmps = 0;
 
-Coel::Shader shader(vertSrc, fragSrc);
-Math::Mat4 viewMat{1};
+            for (int i = 0; i < heightMapOptions.octaves; i++) {
+                float frequency = glm::pow(2.0f, i);
+                float amplitude = glm::pow(heightMapOptions.roughness, i);
 
-Coel::Texture spriteAtlas("C:/Dev/Coel/Projects/Tiles/Assets/Atlas.png");
+                float x = xi * frequency / heightMapOptions.smoothness;
+                float y = yi * frequency / heightMapOptions.smoothness;
 
-Math::Vec2 camPos = {0, 0};
-float camSpeed = 1.5f;
+                float noise =
+                    glm::simplex(glm::vec3{heightMapOptions.seed + x, heightMapOptions.seed + y, heightMapOptions.seed});
+                noise = (noise + 1.0f) / 2.0f;
+                value += noise * amplitude;
+                accumulatedAmps += amplitude;
+            }
 
-float zoom = 10.f, aspect = 1.f;
-double time = 0, prevTime = 0;
-
-bool moveCamUp = false, moveCamDown = false, moveCamLeft = false, moveCamRight = false;
-const auto upKey = Coel::Key::W, downKey = Coel::Key::S, leftKey = Coel::Key::A, rightKey = Coel::Key::D;
-
-struct Tile {
-    unsigned char id, var;
-};
-static constexpr unsigned int TILE_COUNT_X = 100, TILE_COUNT_Y = 100;
-Tile tiles[TILE_COUNT_X][TILE_COUNT_Y];
-Tile tileToBePlaced = {0, 0};
-bool placeTile = false;
-
-static inline void begin() {
-    spriteCount = 0;
-
-    vbo.open(&spriteVertices);
-    ibo.open(&spriteIndices);
-
-    shader.bind();
-}
-
-static inline void flush() {
-    vbo.close();
-    ibo.close();
-
-    vao.drawIndexed(spriteCount * 6);
-
-    begin();
-}
-
-struct SpriteProp {
-    Math::Vec2 pos, size, texPos, texSize;
-};
-
-static inline void drawSprite(const SpriteProp &sprite) {
-    if (spriteCount > SPRITE_COUNT - 1) flush();
-
-    *spriteVertices = {
-        {sprite.pos, sprite.texPos},
-        {sprite.pos.x, sprite.pos.y + sprite.size.y, sprite.texPos.x, sprite.texPos.y + sprite.texSize.y},
-        {sprite.pos.x + sprite.size.x, sprite.pos.y, sprite.texPos.x + sprite.texSize.x, sprite.texPos.y},
-        {sprite.pos + sprite.size, sprite.texPos + sprite.texSize},
-    };
-
-    unsigned short offset = spriteCount * 4;
-
-    *spriteIndices = {
-        unsigned short(offset + 1), 
-        unsigned short(offset + 2), 
-        unsigned short(offset + 0), 
-        unsigned short(offset + 1), 
-        unsigned short(offset + 3), 
-        unsigned short(offset + 2),
-    };
-
-    ++spriteVertices;
-    ++spriteIndices;
-    ++spriteCount;
-}
-
-float random() { return float(rand() % 1000) / 1000; }
-
-Tile *tileFromMouse(const Coel::Window &w) {
-    float xOff = 2.f * w.mouse.pos.x / w.size.x - 1.f;
-    float yOff = 1.f - 2.f * w.mouse.pos.y / w.size.y;
-
-    int xIndex = (xOff * aspect - camPos.x) * zoom + TILE_COUNT_X / 2;
-    int yIndex = (yOff - camPos.y) * zoom + TILE_COUNT_Y / 2;
-
-    if (xIndex < 0 || xIndex > TILE_COUNT_X - 1 || yIndex < 0 || yIndex > TILE_COUNT_Y - 1) return nullptr;
-
-    return &tiles[xIndex][yIndex];
+            heightMap[yi][xi] = value / accumulatedAmps;
+        }
+    }
 }
 
 int main() {
-    window.onResize = [](Coel::Window &w) {
-        aspect = (float)w.size.x / w.size.y;
-        viewMat = Math::Mat4::ortho(-aspect, aspect, -1, 1, -1, 1);
-        shader.sendMat4("viewMat", &viewMat);
-    };
-    window.onResize(window);
+    Coel::Window window(800, 600, "Tile Game");
+    Coel::Shader shader(vertSrc, fragSrc);
 
-    window.onMouseButton = [](Coel::Window &w) {
-        switch (w.mouse.action) {
-        case Coel::Action::Press:
-            switch (w.mouse.button) {
-            case Coel::Button::Left: {
-                placeTile = true;
-                auto *tile = tileFromMouse(w);
-                if (tile) *tile = tileToBePlaced;
-                break;
-            }
-            case Coel::Button::Right: {
-                auto *tile = tileFromMouse(w);
-                if (tile) {
-                    tile->var++;
-                    tile->var %= 3;
-                }
-                break;
-            }
-            case Coel::Button::Middle: {
-                auto *tile = tileFromMouse(w);
-                if (tile) tileToBePlaced = *tile;
-                break;
-            }
-            default: break;
-            }
-            break;
-        case Coel::Action::Release:
-            switch (w.mouse.button) {
-            case Coel::Button::Left:
-                placeTile = false; 
-                break;
-            default: break;
-            }
-            break;
-        default: break;
-        }
-    };
+    Coel::Renderer::ImGuiRenderer imgui(window);
 
-    window.onMouseMove = [](Coel::Window &w) {
-        if (placeTile) {
-            auto *tile = tileFromMouse(w);
-            if (tile) *tile = tileToBePlaced;
-        }
-    };
+    Coel::Vbo vbo(nullptr, VERTEX_COUNT * sizeof(Vertex), {{Coel::Element::F32, 2}, {Coel::Element::F32, 4}});
+    QuadVertices *quadVertices = nullptr;
 
-    window.onKey = [](Coel::Window &w) {
-        switch (w.key.action) {
-        case Coel::Action::Press:
-            switch (w.key.code) {
-            case upKey: moveCamUp = true; break;
-            case downKey: moveCamDown = true; break;
-            case leftKey: moveCamLeft = true; break;
-            case rightKey: moveCamRight = true; break;
-            default: break;
-            }
-            break;
-        case Coel::Action::Release:
-            switch (w.key.code) {
-            case upKey: moveCamUp = false; break;
-            case downKey: moveCamDown = false; break;
-            case leftKey: moveCamLeft = false; break;
-            case rightKey: moveCamRight = false; break;
-            default: break;
-            }
-            break;
-            default: break;
-        }
-    };
+    Coel::Ibo ibo(nullptr, INDEX_COUNT * sizeof(unsigned int));
+    QuadIndices *quadIndices = nullptr;
 
-    for (int yi = 0; yi < TILE_COUNT_Y; ++yi) {
-        for (int xi = 0; xi < TILE_COUNT_X; ++xi) {
-            auto gen = random();
-            if (gen < 0.9)
-                tiles[xi][yi].var = 0;
-            else if (gen < 0.95)
-                tiles[xi][yi].var = 1;
-            else
-                tiles[xi][yi].var = 2;
-            
-            gen = ValueNoise_2D(10.0 * xi, 10.0 * yi);
-            if (gen < -0.05)
-                tiles[xi][yi].id = 1;
-            else if (gen < 0.05) {
-                if (gen > 0.02) tiles[xi][yi].var = 2;
-                tiles[xi][yi].id = 0;
-            }
-            else
-                tiles[xi][yi].id = 2;
-        }
-    }
-
-    vbo.bind();
-    ibo.bind();
+    Coel::Vao vao;
     vao.add(vbo);
-    begin();
 
-    spriteAtlas.bind(0);
-
-    Coel::Renderer::setClearColor(0.4f, 0.4f, 1.f, 1.f);
-
-    static constexpr int TILE_PADDING = 2;
+    regenHeightMap();
 
     while (window.isOpen()) {
         Coel::Renderer::clear();
 
-        prevTime = time;
-        time = window.getTime();
-        auto elapsed = time - prevTime;
+        vbo.open(&quadVertices);
+        ibo.open(&quadIndices);
+        for (int yi = 0; yi < COUNT_Y; ++yi) {
+            for (int xi = 0; xi < COUNT_X; ++xi) {
+                const auto index = xi + yi * COUNT_X;
 
-        if (moveCamUp) camPos.y -= camSpeed * elapsed;
-        if (moveCamDown) camPos.y += camSpeed * elapsed;
-        if (moveCamLeft) camPos.x += camSpeed * elapsed;
-        if (moveCamRight) camPos.x -= camSpeed * elapsed;
+                const auto h = heightMap[yi][xi];
+                glm::vec4 color = grassColor;
+                if (h < waterHeight)
+                    color = waterColor;
+                else if (h < sandHeight)
+                    color = sandColor;
+                else if (h > snowHeight)
+                    color = snowColor;
 
-        for (int yi = -zoom - TILE_PADDING; yi < zoom + TILE_PADDING; ++yi) {
-            for (int xi = -zoom * aspect - TILE_PADDING; xi < zoom * aspect + TILE_PADDING; ++xi) {
-                float x = (float)xi / zoom + camPos.x;
-                float y = (float)yi / zoom + camPos.y;
-
-                float w = 1.f / zoom;
-                float h = 1.f / zoom;
-
-                int xOff = camPos.x * zoom;
-                int yOff = camPos.y * zoom;
-
-                int xIndex = xi + TILE_COUNT_X / 2 - xOff;
-                int yIndex = yi + TILE_COUNT_Y / 2 - yOff;
-
-                bool insideTileRange = true;
-                if (xIndex < 0 || xIndex > TILE_COUNT_X - 1 || yIndex < 0 || yIndex > TILE_COUNT_Y - 1) insideTileRange = false;
-
-                if (insideTileRange) {
-                    auto &tile = tiles[xIndex][yIndex];
-                    int varOff = tile.var, idOff = tile.id;
-
-                    drawSprite({x - (float)xOff / zoom, y - (float)yOff / zoom, w, h, 0.25f * idOff, 0.25f * varOff, 0.25, 0.25});
-                }
+                quadVertices[index] = {
+                    {-1.f / COUNT_X + (2.f * xi - COUNT_X + 1.f) / COUNT_X,
+                     -1.f / COUNT_Y + (2.f * yi - COUNT_Y + 1.f) / COUNT_Y, color},
+                    {1.f / COUNT_X + (2.f * xi - COUNT_X + 1.f) / COUNT_X,
+                     -1.f / COUNT_Y + (2.f * yi - COUNT_Y + 1.f) / COUNT_Y, color},
+                    {-1.f / COUNT_X + (2.f * xi - COUNT_X + 1.f) / COUNT_X,
+                     1.f / COUNT_Y + (2.f * yi - COUNT_Y + 1.f) / COUNT_Y, color},
+                    {1.f / COUNT_X + (2.f * xi - COUNT_X + 1.f) / COUNT_X, 1.f / COUNT_Y + (2.f * yi - COUNT_Y + 1.f) / COUNT_Y,
+                     color},
+                };
+                const unsigned int offset = index * 4;
+                quadIndices[index] = {
+                    offset + 0, offset + 1, offset + 2, offset + 1, offset + 3, offset + 2,
+                };
             }
         }
+        ibo.close();
+        vbo.close();
+        vao.drawIndexed(INDEX_COUNT);
 
-        flush();
+        imgui.begin();
+        ImGui::Begin("Settings");
+        ImGui::Text("Noise options");
+        ImGui::SliderFloat("octaves", &heightMapOptions.octaves, 1, 5);
+        ImGui::SliderFloat("roughness", &heightMapOptions.roughness, 0, 0.99);
+        ImGui::SliderFloat("smoothness", &heightMapOptions.smoothness, 0.1, 100);
+        ImGui::SliderFloat("seed", &heightMapOptions.seed, -10, 10);
+        ImGui::Separator();
+        ImGui::Text("Blockgen settings");
+        ImGui::SliderFloat("water", &waterHeight, 0, 0.99);
+        ImGui::ColorEdit4("water", (float *)&waterColor);
+        ImGui::SliderFloat("sand", &sandHeight, 0, 0.99);
+        ImGui::ColorEdit4("sand", (float *)&sandColor);
+        ImGui::ColorEdit4("grass", (float *)&grassColor);
+        ImGui::SliderFloat("snow", &snowHeight, 0, 0.99);
+        ImGui::ColorEdit4("snow", (float *)&snowColor);
+        ImGui::End();
+        imgui.end(window);
+
+        if (!(heightMapOptions == prevOptions)) {
+            regenHeightMap();
+            prevOptions = heightMapOptions;
+        }
+
         window.update();
     }
 }

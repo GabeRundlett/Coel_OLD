@@ -1,23 +1,15 @@
 
 link_libraries(Coelengine)
 
-add_executable(Main Main/Main.cpp)
-
-add_executable(Window Window/Main.cpp)
-
-add_executable(StaticVbo Vbo/Static.cpp)
-add_executable(DynamicVbo Vbo/Dynamic.cpp)
-
-add_executable(StaticIbo Ibo/Static.cpp)
-add_executable(DynamicIbo Ibo/Dynamic.cpp)
-
-add_executable(Batch2dRenderer Renderer/Batch2d.cpp)
-
-add_executable(Particles Misc/Particles.cpp)
-
-add_executable(TexturedQuad TexturedQuad/Main.cpp)
-add_executable(SimpleFbo Fbo/Simple.cpp)
-add_executable(BlurFbo Fbo/Blur.cpp)
-add_executable(GaussianFbo Fbo/Gaussian.cpp)
-
-add_executable(Imgui Imgui/Main.cpp)
+add_executable(Examples_Window_Main Window/Main.cpp)
+add_executable(Examples_Vbo_Static Vbo/Static.cpp)
+add_executable(Examples_Vbo_Dynamic Vbo/Dynamic.cpp)
+add_executable(Examples_Ibo_Static Ibo/Static.cpp)
+add_executable(Examples_Ibo_Dynamic Ibo/Dynamic.cpp)
+add_executable(Examples_Renderer_Batch2d Renderer/Batch2d.cpp)
+add_executable(Examples_Texture_Quad Texture/Quad.cpp)
+add_executable(Examples_Fbo_Simple Fbo/Simple.cpp)
+add_executable(Examples_Fbo_Blur Fbo/Blur.cpp)
+add_executable(Examples_Fbo_Gaussian Fbo/Gaussian.cpp)
+add_executable(Examples_Imgui_Main Imgui/Main.cpp)
+add_executable(Examples_Model_loadObj Model/loadObj.cpp)

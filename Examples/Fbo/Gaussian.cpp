@@ -17,7 +17,7 @@ static constexpr const char *const fragSrc = R"(
 out vec4 color;
 
 void main() {
-	color = vec4(1, 0, 1, 1);
+	color = vec4(1, 0, 0, 1);
 }
 )";
 
@@ -36,11 +36,11 @@ int main() {
     vao.add(vbo);
     Coel::Shader shader(vertSrc, fragSrc);
 
-    Coel::Fbo gaussFboH[2]{
+    Coel::Fbo gaussFboH[]{
         Coel::Fbo(window.size.x / 2, window.size.y / 2, Coel::Buffer::Color | Coel::Buffer::RenderDepth),
         Coel::Fbo(window.size.x / 4, window.size.y / 4, Coel::Buffer::Color | Coel::Buffer::RenderDepth),
     };
-    Coel::Fbo gaussFboV[2]{
+    Coel::Fbo gaussFboV[]{
         Coel::Fbo(window.size.x / 2, window.size.y / 2, Coel::Buffer::Color | Coel::Buffer::RenderDepth),
         Coel::Fbo(window.size.x / 4, window.size.y / 4, Coel::Buffer::Color | Coel::Buffer::RenderDepth),
     };
@@ -52,7 +52,7 @@ int main() {
 
     Coel::Renderer::enableBlend(true);
     Coel::Renderer::enableCulling(true);
-    Coel::Renderer::setClearColor(0, 1, 0, 1);
+    Coel::Renderer::setClearColor(0.4, 0.4, 0.4, 1);
 
     while (window.isOpen()) {
         gaussFboH[0].bind();

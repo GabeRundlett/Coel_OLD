@@ -25,7 +25,7 @@ int main() {
     Coel::Window window(1280, 960, "Window");
     Coel::Renderer::ImGuiRenderer imgui(window);
 
-    Math::Vec4 color{1, 0, 0, 1};
+    glm::vec4 color{1, 0, 0, 1};
     Coel::Shader quadShader(vertSrc, fragSrc);
     Coel::Renderer::Quad2d quad;
 
