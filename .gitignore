@@ -37,3 +37,4 @@ build
 out
 # generated files
 *.json
+*.ini
