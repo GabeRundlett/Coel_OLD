@@ -15,7 +15,7 @@ int main() {
         textBatch.resize({0, 0}, window.size);
 
         textBatch.begin();
-        textBatch.submitText(0, 0, 0.25, "Hello, Text!");
+        textBatch.submitText(0, 0, 4, "Hello, Text!");
 
         textBatch.flush();
 

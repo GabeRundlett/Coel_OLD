@@ -37,9 +37,9 @@ int main() {
     Coel::Shader shader(vertSrc, fragSrc);
 
     auto u_tex1 = shader.findInt("u_tex1");
-    Coel::Texture texture1("Assets/face.png");
+    Coel::Texture texture1("Assets/UVGrid.png");
     auto u_tex2 = shader.findInt("u_tex2");
-    Coel::Texture texture2("Assets/stall.png");
+    Coel::Texture texture2("Assets/ColorGrid.png");
 
     while (window.isOpen()) {
         Coel::Renderer::clearColor();
