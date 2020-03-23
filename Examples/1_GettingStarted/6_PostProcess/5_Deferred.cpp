@@ -3,39 +3,39 @@
 
 int main() {
     // Code originates from Model/Simple.cpp
-    Coel::Window window(800, 600, "Deferred Rendering Example");
+    Coel::Window window(1280, 960, "Deferred Rendering Example");
 
     const char *const vertSrc = R"(
     #version 450 core
     layout (location = 0) in vec3 a_pos;
     layout (location = 1) in vec3 a_nrm;
     layout (location = 2) in vec2 a_tex;
-    out vec3 v_pos;
+    out vec4 v_pos;
     out vec3 v_nrm;
     out vec2 v_tex;
     uniform mat4 u_projMat;
     uniform mat4 u_viewMat;
     uniform mat4 u_modlMat;
     void main() {
-        vec4 worldPos = u_modlMat * vec4(a_pos, 1);
-        v_pos = worldPos.xyz;
+        v_pos = u_modlMat * vec4(a_pos, 1);
         v_nrm =  (u_modlMat * vec4(a_nrm, 1)).xyz;
         v_tex = a_tex;
-        gl_Position = u_projMat * u_viewMat * worldPos;
+        gl_Position = u_projMat * u_viewMat * v_pos;
     }
     )";
 
     const char *const fragSrc = R"(
     #version 450 core
-    in vec3 v_pos;
+    in vec4 v_pos;
     in vec3 v_nrm;
     in vec2 v_tex;
-    layout (location = 0) out vec3 g_pos;
+    layout (location = 0) out vec4 g_pos;
     layout (location = 1) out vec3 g_nrm;
     layout (location = 2) out vec4 g_col;
+    uniform sampler2D u_tex;
     void main() {
         g_pos = v_pos, g_nrm = v_nrm;
-        g_col = vec4(vec3(0.95), 0);
+        g_col = texture(u_tex, v_tex);
     }
     )";
 
@@ -82,11 +82,13 @@ int main() {
     auto u_modlMat = shader.findMat4("u_modlMat");
     glm::mat4 projMat, viewMat, modlMat;
 
-    Coel::Model model("Assets/dragon.obj");
+    Coel::Model model("Assets/stall.obj");
+    auto u_tex = shader.findInt("u_tex");
+    Coel::Texture texture("Assets/stall.png");
 
     // We'll create 3 color attachments, the zero-th for position, first for normals, and second for color/specular
-    Coel::Fbo gbufferFbo(window.size.x, window.size.y,
-                         {Coel::ColorBuffer::RGB16, Coel::ColorBuffer::RGB16, Coel::ColorBuffer::RGBA8});
+    Coel::Fbo gbufferFbo(window.size.x / 2, window.size.y / 2,
+                         {Coel::ColorBuffer::RGBA16, Coel::ColorBuffer::RGB16, Coel::ColorBuffer::RGBA8});
     Coel::Shader quadShader(quadVertSrc, quadFragSrc);
     auto u_posTex = quadShader.findInt("u_posTex");
     auto u_nrmTex = quadShader.findInt("u_nrmTex");
@@ -94,8 +96,6 @@ int main() {
     Coel::Renderer::Quad2d quadRenderer;
 
     while (window.isOpen()) {
-        Coel::Renderer::clear();
-
         gbufferFbo.bind();
 
         shader.bind();
@@ -104,13 +104,16 @@ int main() {
         Coel::Renderer::setClearColor(0.6, 0.6, 0.8, 1);
         Coel::Renderer::clear();
 
-        projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 100.f);
-        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -5, -18});
+        projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 20.f);
+        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -2, -12});
         modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)window.getTime(), {0, 1, 0});
 
         shader.send(u_projMat, &projMat);
         shader.send(u_viewMat, &viewMat);
         shader.send(u_modlMat, &modlMat);
+
+        shader.send(u_tex, 0);
+        texture.bind(0);
 
         model.draw();
 

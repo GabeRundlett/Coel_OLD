@@ -54,3 +54,5 @@ CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
 CREATE_EXAMPLE(3_RealWorld 2_MarchingCubes 1_PointGen)
 
 CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
+
+CREATE_EXAMPLE(3_RealWorld 4_Bezier Main)
