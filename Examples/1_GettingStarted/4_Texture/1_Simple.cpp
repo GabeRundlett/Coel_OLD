@@ -1,13 +1,13 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Simple Textured Quad Example");
+    Coel::Window window(512, 512, "Simple Textured Quad Example");
 
     float vertex_data[]{
-        -0.5, -0.5, 0, 0, //
-        -0.5, 0.5,  0, 1, //
-        0.5,  -0.5, 1, 0, //
-        0.5,  0.5,  1, 1  //
+        -1, -1, 0, 0, //
+        -1, 1,  0, 1, //
+        1,  -1, 1, 0, //
+        1,  1,  1, 1  //
     };
     // New Attrib {F32, 2}
     Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
@@ -63,7 +63,7 @@ int main() {
     // We'll load one from a file. We'll specify the file relative
     // to the invocation directory, which is assumed to be the root
     // directory of this repository.
-    Coel::Texture texture("Assets/face.png");
+    Coel::Texture texture("Assets/UVGrid.png");
     // --------------------------------------------------------------
 
     while (window.isOpen()) {

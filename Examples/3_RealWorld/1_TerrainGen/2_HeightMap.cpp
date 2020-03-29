@@ -1,11 +1,13 @@
 #include "0_Resources/Player.hpp"
 #include <Coel.hpp>
 
+#include <iostream>
+
 Player player;
 bool inputMode = true;
 
 int main() {
-    Coel::Window window(1400, 800, "Terrain Generation - Part 1: Plane Generation");
+    Coel::Window window(1400, 800, "Terrain Generation - Part 2: Height Map");
     Coel::Renderer::ImGuiRenderer imgui(window);
 
     window.onResize = [](Coel::Window &w) {
@@ -142,16 +144,11 @@ int main() {
     player.setRot({0, 0, 0});
 
     while (window.isOpen()) {
-        Coel::Renderer::enableDepthTest(true);
-        Coel::Renderer::clear();
-
         prevTime = time, time = window.getTime();
         elapsed = time - prevTime;
-        player.update(elapsed);
 
-        shader.send(u_projMat, &player.cam.projMat);
-        shader.send(u_viewMat, &player.cam.viewMat);
-        shader.send(u_modlMat, &modlMat);
+        Coel::Renderer::enableDepthTest(true);
+        Coel::Renderer::clear();
 
         for (int yi = 0; yi < SIZE_Y; ++yi) {
             for (int xi = 0; xi < SIZE_X; ++xi) {
@@ -169,6 +166,27 @@ int main() {
             }
         }
 
+        float x = -player.pos.x * viewScale, y = -player.pos.z * viewScale;
+        int xi = y, yi = y;
+        if (xi < 0)
+            xi = 0;
+        else if (xi > SIZE_X - 1)
+            xi = SIZE_X - 1;
+        if (yi < 0)
+            yi = 0;
+        else if (yi > SIZE_Y - 1)
+            yi = SIZE_Y - 1;
+        float terrainHeight = noiseValues[yi][xi]; //* (x - xi);
+        // terrainHeight += noiseValues[yi][xi + 1] * (1.f - (x - xi));
+        // terrainHeight += noiseValues[yi][xi];
+        // terrainHeight += noiseValues[yi][xi];
+
+        player.update(elapsed, terrainHeight);
+
+        shader.send(u_projMat, &player.cam.projMat);
+        shader.send(u_viewMat, &player.cam.viewMat);
+        shader.send(u_modlMat, &modlMat);
+
         flush();
 
         if (!inputMode) {
@@ -178,7 +196,7 @@ int main() {
             imgui.begin();
             ImGui::Begin("Settings");
 
-            ImGui::DragFloat("Sensitivity", &player.mouseSensitivity, 0.01f);
+            ImGui::DragFloat("Sensitivity", &player.mouseSensitivity, 0.001f);
 
             ImGui::End();
             imgui.end(window);

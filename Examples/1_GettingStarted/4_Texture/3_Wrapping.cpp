@@ -1,9 +1,9 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Multiple Textures Example");
+    Coel::Window window(512, 512, "Textured Quad with Sample Wrapping Example");
 
-    float vertex_data[]{-0.5, -0.5, 0, 0, -0.5, 0.5, 0, 1, 0.5, -0.5, 1, 0, 0.5, 0.5, 1, 1};
+    float vertex_data[]{-1, -1, 0, 0, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1};
     Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
 
     Coel::Vao vao;
@@ -27,32 +27,28 @@ int main() {
     #version 450 core
     in vec2 v_tex;
     out vec4 frag_color;
-    uniform sampler2D u_tex1;
-    uniform sampler2D u_tex2;
+
+    uniform sampler2D u_tex;
+    
     void main() {
-        frag_color = (texture(u_tex1, v_tex) + texture(u_tex2, v_tex)) / 2;
+        frag_color = texture(u_tex, v_tex * 4);
     }
     )";
 
     Coel::Shader shader(vertSrc, fragSrc);
+    auto u_tex = shader.findInt("u_tex");
+    Coel::Texture texture("Assets/ColorGrid.png");
 
-    auto u_tex1 = shader.findInt("u_tex1");
-    Coel::Texture texture1("Assets/UVGrid.png");
-    auto u_tex2 = shader.findInt("u_tex2");
-    Coel::Texture texture2("Assets/ColorGrid.png");
+    texture.setMagFilter(Coel::Filter::Linear);
+    texture.setMinFilter(Coel::Filter::Linear);
+    texture.setWrap(Coel::Wrap::Repeat);
 
     while (window.isOpen()) {
         Coel::Renderer::clearColor();
-
         shader.bind();
-
-        shader.send(u_tex1, 0);
-        texture1.bind(0);
-        shader.send(u_tex2, 1);
-        texture2.bind(1);
-
+        shader.send(u_tex, 0);
+        texture.bind(0);
         vao.drawIndexed(6);
-
         window.update();
     }
 }

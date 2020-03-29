@@ -19,7 +19,9 @@ CREATE_EXAMPLE(1_GettingStarted 3_Shader 2_Uniform)
 CREATE_EXAMPLE(1_GettingStarted 3_Shader 3_Varying)
 
 CREATE_EXAMPLE(1_GettingStarted 4_Texture 1_Simple)
-CREATE_EXAMPLE(1_GettingStarted 4_Texture 2_Multiple)
+CREATE_EXAMPLE(1_GettingStarted 4_Texture 2_Filtering)
+CREATE_EXAMPLE(1_GettingStarted 4_Texture 3_Wrapping)
+CREATE_EXAMPLE(1_GettingStarted 4_Texture 4_Multiple)
 
 CREATE_EXAMPLE(1_GettingStarted 5_Model 1_Simple)
 CREATE_EXAMPLE(1_GettingStarted 5_Model 2_Textured)
@@ -29,6 +31,7 @@ CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 2_Sharpen)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 3_SimpleBlur)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 4_GaussianBlur)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 5_Deferred)
+CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 6_SSAO)
 
 CREATE_EXAMPLE(1_GettingStarted 7_Text 1_Simple)
 CREATE_EXAMPLE(1_GettingStarted 7_Text 2_Input)
@@ -41,7 +44,6 @@ CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
 
 CREATE_EXAMPLE(2_Lighting 2_Fog 1_Simple)
 CREATE_EXAMPLE(2_Lighting 3_Shadow 1_Simple)
-CREATE_EXAMPLE(2_Lighting 4_AmbientOcclusion 1_SSAO)
 
 CREATE_EXAMPLE(2_Lighting 5_PBR 1_BRDF)
 CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
@@ -52,7 +54,5 @@ CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 2_HeightMap)
 CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
 
 CREATE_EXAMPLE(3_RealWorld 2_MarchingCubes 1_PointGen)
-
 CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
-
 CREATE_EXAMPLE(3_RealWorld 4_Bezier Main)

@@ -12,7 +12,7 @@ struct Player {
         shouldMoveDown : 1, shouldJump : 1, shouldSprint : 1, shouldSneak : 1, isFalling : 1;
 
     float sneakMult = 0.2f, sprintMult = 1.5f, height = 1.8f;
-    float mouseSensitivity = 0.0001f, movementSpeed = 100.f;
+    float mouseSensitivity = 0.001f, movementSpeed = 100.f;
 
     void keyUpdate(const Coel::KeyInfo &kInfo) {
         switch (kInfo.action) {
@@ -44,9 +44,7 @@ struct Player {
         }
     }
     void mouseButtonUpdate(const Coel::MouseInfo &mInfo) {}
-    void mouseScrollUpdate(const Coel::MouseInfo &mInfo) {
-        cam.updateFov(cam.fov - 0.01f * (float)mInfo.scrollOffset.y);
-    }
+    void mouseScrollUpdate(const Coel::MouseInfo &mInfo) { cam.updateFov(cam.fov - 0.01f * (float)mInfo.scrollOffset.y); }
     void mouseMoveUpdate(const Coel::MouseInfo &mInfo) {
         auto offset = (mInfo.pos - mouseCenter) * (double)mouseSensitivity;
         if (UPDATE_ROTATION) {
@@ -61,7 +59,7 @@ struct Player {
         cam.updateAspect(size);
     }
 
-    void update(const float elapsed) {
+    void update(const float elapsed, const float terrainHeight = 0.f) {
         if constexpr (UPDATE_POSITION) {
             auto acceleration = movementSpeed;
             if (shouldSneak)
@@ -85,8 +83,8 @@ struct Player {
                 if (shouldJump) isFalling = true, vel.y = -10;
             }
 
+            isFalling = true;
             const auto c = std::cos(rot.y), s = std::sin(rot.y);
-
             auto speed = vel.length();
 
             if (shouldMoveForward) {
@@ -108,8 +106,8 @@ struct Player {
 
             pos += vel * elapsed;
 
-            if (pos.y > -height) {
-                pos.y = -height, vel.y = 0;
+            if (pos.y > -height - terrainHeight) {
+                pos.y = -height - terrainHeight, vel.y = 0;
                 isFalling = false;
             }
         }

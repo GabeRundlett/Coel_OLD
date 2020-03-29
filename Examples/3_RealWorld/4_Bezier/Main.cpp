@@ -97,7 +97,7 @@ int main() {
             vec3 r2 = sdBezier(cp[2], cp[3], cp[4], v_tex);
             float r = r1.x;
             if (r1.x > r2.x) r = r2.x;
-            float m = (abs(r * 200) / 200 - 0.01) * 600;
+            float m = (abs(r * 400) / 400 - 0.001) * 600;
             fragCol = vec4(vec3(clamp(mix(0.0, 0.5, m), 0.f, 0.5)), 1);
 
             for (int i = 0; i < 4; ++i)
