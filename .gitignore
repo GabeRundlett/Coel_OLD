@@ -30,11 +30,13 @@
 *.list
 *.rule
 *.dir
+*cmake*
 # generated directories
 build
 .vscode
 .vs
 out
+.idea
 # generated files
 *.json
 *.ini

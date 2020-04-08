@@ -10,6 +10,7 @@ endfunction()
 # GETTING STARTED EXAMPLES
 CREATE_EXAMPLE(1_GettingStarted 1_Window 1_Simple)
 CREATE_EXAMPLE(1_GettingStarted 1_Window 2_Clear)
+CREATE_EXAMPLE(1_GettingStarted 1_Window 3_Events)
 
 CREATE_EXAMPLE(1_GettingStarted 2_Triangle 1_Simple)
 CREATE_EXAMPLE(1_GettingStarted 2_Triangle 2_Indexed)
@@ -37,22 +38,26 @@ CREATE_EXAMPLE(1_GettingStarted 7_Text 1_Simple)
 CREATE_EXAMPLE(1_GettingStarted 7_Text 2_Input)
 CREATE_EXAMPLE(1_GettingStarted 7_Text 3_ImGui)
 
+CREATE_EXAMPLE(1_GettingStarted 8_Renderers 2_Batch2d)
+CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
+
 # 3D LIGHTING EXAMPLES
-CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
-CREATE_EXAMPLE(2_Lighting 1_Phong 2_Specular)
-CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
+# CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
+# CREATE_EXAMPLE(2_Lighting 1_Phong 2_Specular)
+# CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
 
-CREATE_EXAMPLE(2_Lighting 2_Fog 1_Simple)
-CREATE_EXAMPLE(2_Lighting 3_Shadow 1_Simple)
+# CREATE_EXAMPLE(2_Lighting 2_Fog 1_Simple)
+# CREATE_EXAMPLE(2_Lighting 3_Shadow 1_Simple)
 
-CREATE_EXAMPLE(2_Lighting 5_PBR 1_BRDF)
-CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
+# CREATE_EXAMPLE(2_Lighting 5_PBR 1_BRDF)
+# CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
 
 # REAL WORLD EXAMPLES
-CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 1_PlaneGen)
-CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 2_HeightMap)
-CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
+# CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 1_PlaneGen)
+# CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 2_HeightMap)
+# CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
 
-CREATE_EXAMPLE(3_RealWorld 2_MarchingCubes 1_PointGen)
-CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
-CREATE_EXAMPLE(3_RealWorld 4_Bezier Main)
+# CREATE_EXAMPLE(3_RealWorld 2_MarchingCubes 1_PointGen)
+# CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
+# CREATE_EXAMPLE(3_RealWorld 4_Splines 1_Bezier)
+# CREATE_EXAMPLE(3_RealWorld 4_Splines 2_CatmullRom)

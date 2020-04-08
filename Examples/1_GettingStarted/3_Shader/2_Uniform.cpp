@@ -1,16 +1,18 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Shader Uniforms Example");
-
-    float vertex_data[]{-0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5};
-    Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}});
+    Coel::Window window{"Shader Uniforms Example"};
+    Coel::create(window);
 
     Coel::Vao vao;
-    vao.add(vbo);
-
+    Coel::create(vao);
+    float vertex_data[]{-0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5};
+    Coel::Vbo vbo{{{Coel::F32, 2}}};
+    Coel::create(vbo, vertex_data, sizeof(vertex_data));
+    Coel::link(vao, vbo);
     unsigned int index_data[]{0, 1, 2, 1, 3, 2};
-    Coel::Ibo ibo(index_data, sizeof(index_data));
+    Coel::Ibo ibo;
+    Coel::create(ibo, index_data, sizeof(index_data));
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -44,7 +46,7 @@ int main() {
     auto u_color = shader.findFloat4("u_color");
     // --------------------------------------------------------------
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
 
         shader.bind();
@@ -55,15 +57,15 @@ int main() {
 
         // In this, I'll also grab the time and modulo it to modify
         // the color uniform every frame.
-        int value = (int)(window.getTime() * 100) % 100;
+        int value = (int)(Coel::getTime() * 100) % 100;
         // Then we'll create our color variable:
-        glm::vec4 color{(float)value / 100, 0, 0, 1};
+        glm::vec4 color{(float)value / 100, 0, 1, 1};
         // and finally send it to the shader via our uniform.
         shader.send(Coel::Shader::Uniform<glm::vec4>{1}, &color);
         // --------------------------------------------------------------
 
-        vao.drawIndexed(6);
+        Coel::Renderer::drawIndexed(vao, 6);
 
-        window.update();
+        Coel::update(window);
     }
 }

@@ -1,7 +1,11 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Shader Varying Variables Example");
+    Coel::Window window{"Shader Varying Variables Example"};
+    Coel::create(window);
+
+    Coel::Vao vao;
+    Coel::create(vao);
 
     float vertex_data[]{
         -0.5, -0.5, 0, 0, 0, 1, // Black
@@ -9,14 +13,14 @@ int main() {
         0.5,  -0.5, 0, 1, 0, 1, // Green
         0.5,  0.5,  0, 0, 1, 1  // Blue
     };
-    // New Attrib {F32, 4}
-    Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}, {Coel::Element::F32, 4}});
 
-    Coel::Vao vao;
-    vao.add(vbo);
+    Coel::Vbo vbo{{{Coel::F32, 2}, {Coel::F32, 4}}};
+    Coel::create(vbo, vertex_data, sizeof(vertex_data));
+    Coel::link(vao, vbo);
 
     unsigned int index_data[]{0, 1, 2, 1, 3, 2};
-    Coel::Ibo ibo(index_data, sizeof(index_data));
+    Coel::Ibo ibo;
+    Coel::create(ibo, index_data, sizeof(index_data));
 
     // --------------------------------------------------------------
     // We add a varying variable to both of our shaders. We can
@@ -55,12 +59,12 @@ int main() {
 
     Coel::Shader shader(vertSrc, fragSrc);
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
 
         shader.bind();
-        vao.drawIndexed(6);
+        Coel::Renderer::drawIndexed(vao, 6);
 
-        window.update();
+        Coel::update(window);
     }
 }

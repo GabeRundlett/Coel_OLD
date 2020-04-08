@@ -1,16 +1,18 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Simplest Window Example");
-
-    float vertex_data[]{-0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5};
-    Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}});
+    Coel::Window window{"Simple Shader Example"};
+    Coel::create(window);
 
     Coel::Vao vao;
-    vao.add(vbo);
-
+    Coel::create(vao);
+    float vertex_data[]{-0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5};
+    Coel::Vbo vbo{{{Coel::F32, 2}}};
+    Coel::create(vbo, vertex_data, sizeof(vertex_data));
+    Coel::link(vao, vbo);
     unsigned int index_data[]{0, 1, 2, 1, 3, 2};
-    Coel::Ibo ibo(index_data, sizeof(index_data));
+    Coel::Ibo ibo;
+    Coel::create(ibo, index_data, sizeof(index_data));
 
     // --------------------------------------------------------------
     // To keep things simple, I'll write the shaders inline in a
@@ -44,7 +46,7 @@ int main() {
     Coel::Shader shader(vertSrc, fragSrc);
     // --------------------------------------------------------------
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
 
         // --------------------------------------------------------------
@@ -54,8 +56,8 @@ int main() {
         // multiple, so I'll show it now.
         shader.bind();
         // --------------------------------------------------------------
-        vao.drawIndexed(6);
+        Coel::Renderer::drawIndexed(vao, 6);
 
-        window.update();
+        Coel::update(window);
     }
 }

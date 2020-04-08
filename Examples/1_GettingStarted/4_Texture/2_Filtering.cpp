@@ -1,16 +1,20 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(512, 512, "Textured Quad with Sample Filtering Example");
-
-    float vertex_data[]{-1, -1, 0, 0, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1};
-    Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
+    Coel::Window window{{1024, 1024}, "Textured Quad with Sample Filtering Example"};
+    Coel::create(window);
 
     Coel::Vao vao;
-    vao.add(vbo);
+    Coel::create(vao);
+
+    float vertex_data[]{-1, -1, 0, 0, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1};
+    Coel::Vbo vbo{{{Coel::F32, 2}, {Coel::F32, 2}}};
+    Coel::create(vbo, vertex_data, sizeof(vertex_data));
+    Coel::link(vao, vbo);
 
     unsigned int index_data[]{0, 1, 2, 1, 3, 2};
-    Coel::Ibo ibo(index_data, sizeof(index_data));
+    Coel::Ibo ibo;
+    Coel::create(ibo, index_data, sizeof(index_data));
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -41,12 +45,12 @@ int main() {
 
     texture.setMagFilter(Coel::Filter::Nearest);
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
         shader.bind();
         shader.send(u_tex, 0);
         texture.bind(0);
-        vao.drawIndexed(6);
-        window.update();
+        Coel::Renderer::drawIndexed(vao, 6);
+        Coel::update(window);
     }
 }

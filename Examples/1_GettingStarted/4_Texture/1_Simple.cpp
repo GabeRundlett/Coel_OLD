@@ -1,7 +1,11 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(512, 512, "Simple Textured Quad Example");
+    Coel::Window window{{512, 512}, "Simple Textured Quad Example"};
+    Coel::create(window);
+
+    Coel::Vao vao;
+    Coel::create(vao);
 
     float vertex_data[]{
         -1, -1, 0, 0, //
@@ -10,13 +14,13 @@ int main() {
         1,  1,  1, 1  //
     };
     // New Attrib {F32, 2}
-    Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
-
-    Coel::Vao vao;
-    vao.add(vbo);
+    Coel::Vbo vbo{{{Coel::F32, 2}, {Coel::F32, 2}}};
+    Coel::create(vbo, vertex_data, sizeof(vertex_data));
+    Coel::link(vao, vbo);
 
     unsigned int index_data[]{0, 1, 2, 1, 3, 2};
-    Coel::Ibo ibo(index_data, sizeof(index_data));
+    Coel::Ibo ibo;
+    Coel::create(ibo, index_data, sizeof(index_data));
 
     // --------------------------------------------------------------
     // We'll turn our second attribute and the varying variable
@@ -66,7 +70,7 @@ int main() {
     Coel::Texture texture("Assets/UVGrid.png");
     // --------------------------------------------------------------
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
 
         shader.bind();
@@ -79,8 +83,8 @@ int main() {
         texture.bind(0);
         // --------------------------------------------------------------
 
-        vao.drawIndexed(6);
+        Coel::Renderer::drawIndexed(vao, 6);
 
-        window.update();
+        Coel::update(window);
     }
 }

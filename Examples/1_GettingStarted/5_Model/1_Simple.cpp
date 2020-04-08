@@ -2,7 +2,8 @@
 #include <iostream>
 
 int main() {
-    Coel::Window window(800, 600, "Simple Model Loading Example");
+    Coel::Window window{"Simple Model Loading Example"};
+    Coel::create(window);
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -36,20 +37,20 @@ int main() {
     auto u_modlMat = shader.findMat4("u_modlMat");
     glm::mat4 projMat{1}, viewMat{1}, modlMat{1};
 
-    Coel::Model model("Assets/sponzaJoined.obj");
+    Coel::Model model("Assets/dragon.obj");
 
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(true);
     Coel::Renderer::setClearColor(0.6, 0.6, 0.8, 1);
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clear();
 
         shader.bind();
 
         projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 100.f);
-        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, 0, 0});
-        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)window.getTime(), {0, 1, 0});
+        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -5, -20});
+        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)Coel::getTime(), {0, 1, 0});
 
         shader.send(u_projMat, &projMat);
         shader.send(u_viewMat, &viewMat);
@@ -57,6 +58,6 @@ int main() {
 
         model.draw();
 
-        window.update();
+        Coel::update(window);
     }
 }

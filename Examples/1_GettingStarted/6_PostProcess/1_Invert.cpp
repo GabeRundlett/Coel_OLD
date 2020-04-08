@@ -3,7 +3,8 @@
 
 int main() {
     // Code originates from Model/Simple.cpp
-    Coel::Window window(800, 600, "Color Inversion Filter Example");
+    Coel::Window window{"Color Inversion Filter Example"};
+    Coel::create(window);
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -66,7 +67,7 @@ int main() {
     auto u_fboTex = quadShader.findInt("u_fboTex");
     Coel::Renderer::Quad2d quadRenderer;
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clear();
 
         // --------------------------------------------------------------
@@ -87,7 +88,7 @@ int main() {
 
         projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 100.f);
         viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -5, -18});
-        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)window.getTime(), {0, 1, 0});
+        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)Coel::getTime(), {0, 1, 0});
 
         shader.send(u_projMat, &projMat);
         shader.send(u_viewMat, &viewMat);
@@ -110,6 +111,6 @@ int main() {
         quadRenderer.draw();
         // --------------------------------------------------------------
 
-        window.update();
+        Coel::update(window);
     }
 }

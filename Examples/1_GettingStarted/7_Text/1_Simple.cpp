@@ -1,7 +1,8 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(1400, 800, "Text Rendering Example");
+    Coel::Window window({1400, 800}, "Text Rendering Example");
+    Coel::create(window);
 
     Coel::Renderer::BatchText textBatch;
     textBatch.fill({112, 112, 112, 255});
@@ -9,7 +10,7 @@ int main() {
     Coel::Renderer::setClearColor(0.1, 0.1, 0.1, 1);
     Coel::Renderer::enableBlend(true);
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
 
         textBatch.resize({0, 0}, window.size);
@@ -19,6 +20,6 @@ int main() {
 
         textBatch.flush();
 
-        window.update();
+        Coel::update(window);
     }
 }

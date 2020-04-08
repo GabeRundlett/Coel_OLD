@@ -1,16 +1,20 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(512, 512, "Multiple Textures Example");
-
-    float vertex_data[]{-1, -1, 0, 0, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1};
-    Coel::Vbo vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}, {Coel::Element::F32, 2}});
+    Coel::Window window{{512, 512}, "Multiple Textures Example"};
+    Coel::create(window);
 
     Coel::Vao vao;
-    vao.add(vbo);
+    Coel::create(vao);
+
+    float vertex_data[]{-1, -1, 0, 0, -1, 1, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1};
+    Coel::Vbo vbo{{{Coel::F32, 2}, {Coel::F32, 2}}};
+    Coel::create(vbo, vertex_data, sizeof(vertex_data));
+    Coel::link(vao, vbo);
 
     unsigned int index_data[]{0, 1, 2, 1, 3, 2};
-    Coel::Ibo ibo(index_data, sizeof(index_data));
+    Coel::Ibo ibo;
+    Coel::create(ibo, index_data, sizeof(index_data));
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -41,18 +45,14 @@ int main() {
     auto u_tex2 = shader.findInt("u_tex2");
     Coel::Texture texture2("Assets/ColorGrid.png");
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
-
         shader.bind();
-
         shader.send(u_tex1, 0);
         texture1.bind(0);
         shader.send(u_tex2, 1);
         texture2.bind(1);
-
-        vao.drawIndexed(6);
-
-        window.update();
+        Coel::Renderer::drawIndexed(vao, 6);
+        Coel::update(window);
     }
 }

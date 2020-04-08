@@ -1,12 +1,14 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Simplest Triangle (With VBO) Example");
+    Coel::Window window{"Simplest Triangle (With VBO) Example"};
+    Coel::create(window);
 
     // --------------------------------------------------------------
     // First, we must create a vertex array. This allows us to
     // control all of our vertex buffers with one object.
     Coel::Vao triangle_vao;
+    Coel::create(triangle_vao);
 
     // Then we create the data for each vertex. This is laid out
     // in a specific order that we'll need to specify when we create
@@ -20,16 +22,17 @@ int main() {
     // to the data, the size in bytes of the buffer, and then an initializer
     // list specifying the aforementioned layout. This takes a list of
     // "Elements", which are constructed as such: {Enum(type), count}
-    Coel::Vbo triangle_vbo(vertex_data, sizeof(vertex_data), {{Coel::Element::F32, 2}});
+    Coel::Vbo triangle_vbo{{{Coel::F32, 2}}};
+    Coel::create(triangle_vbo, vertex_data, sizeof(vertex_data));
 
     // Now that our buffer is created, we can attach it to the vertex
     // array. This is done via a member function of Vao. We must keep the
     // triangle_vbo object alive (and thus can't construct it as an argument)
     // because its destructor does the necessary cleanup, deleting the vbo.
-    triangle_vao.add(triangle_vbo);
+    Coel::link(triangle_vao, triangle_vbo);
     // --------------------------------------------------------------
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clearColor();
 
         // --------------------------------------------------------------
@@ -41,9 +44,13 @@ int main() {
         // the buffer, it would render the maximum number of triangles
         // constructable from the specified count, which is always a
         // multiple of 3.
-        triangle_vao.draw(3);
+        Coel::Renderer::draw(triangle_vao, 3);
         // --------------------------------------------------------------
 
-        window.update();
+        Coel::update(window);
     }
+
+    Coel::destroy(triangle_vbo);
+    Coel::destroy(triangle_vao);
+    Coel::destroy(window);
 }
