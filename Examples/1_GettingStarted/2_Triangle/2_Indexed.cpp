@@ -50,4 +50,9 @@ int main() {
 
         Coel::update(window);
     }
+
+    Coel::destroy(ibo);
+    Coel::destroy(vbo);
+    Coel::destroy(vao);
+    Coel::destroy(window);
 }

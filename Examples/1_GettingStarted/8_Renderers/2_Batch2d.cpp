@@ -20,5 +20,7 @@ int main() {
         Coel::update(window);
     }
 
+    batch.deinit();
+
     Coel::destroy(window);
 }

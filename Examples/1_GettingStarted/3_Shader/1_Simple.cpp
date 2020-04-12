@@ -28,8 +28,7 @@ int main() {
     layout (location = 0) in vec2 a_pos;
     void main() {
         gl_Position = vec4(a_pos, 0, 1);
-    }
-    )";
+    })";
 
     // Then in our fragment shader, we'll just define an output color
     // `frag_color`, which is a vec4, which is the default output of
@@ -39,25 +38,34 @@ int main() {
     out vec4 frag_color;
     void main() {
         frag_color = vec4(1, 0, 1, 1);
-    }
-    )";
+    })";
 
     // Then we can just use these strings to compile a shader program
-    Coel::Shader shader(vertSrc, fragSrc);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
     // --------------------------------------------------------------
 
     while (window.isOpen) {
         Coel::Renderer::clearColor();
-
         // --------------------------------------------------------------
         // Now all we do in the application loop is bind the shader
         // before we submit our draw call. This is not entirely necessary
         // since we only have 1 shader, but would be if we were using
         // multiple, so I'll show it now.
-        shader.bind();
+        Coel::bind(shader);
         // --------------------------------------------------------------
         Coel::Renderer::drawIndexed(vao, 6);
-
         Coel::update(window);
     }
+
+    // --------------------------------------------------------------
+    // And, of course, we mustn't forget to destroy the shader once
+    // we end the program.
+    Coel::destroy(shader);
+    // --------------------------------------------------------------
+
+    Coel::destroy(ibo);
+    Coel::destroy(vbo);
+    Coel::destroy(vao);
+    Coel::destroy(window);
 }

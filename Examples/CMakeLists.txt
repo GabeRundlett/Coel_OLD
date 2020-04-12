@@ -25,24 +25,27 @@ CREATE_EXAMPLE(1_GettingStarted 4_Texture 3_Wrapping)
 CREATE_EXAMPLE(1_GettingStarted 4_Texture 4_Multiple)
 
 CREATE_EXAMPLE(1_GettingStarted 5_Model 1_Simple)
-CREATE_EXAMPLE(1_GettingStarted 5_Model 2_Textured)
+# CREATE_EXAMPLE(1_GettingStarted 5_Model 2_Textured)
 
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 1_Invert)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 2_Sharpen)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 3_SimpleBlur)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 4_GaussianBlur)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 5_Deferred)
-CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 6_SSAO)
+CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 6_SuperSample)
+# CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 7_SSAO)
 
-CREATE_EXAMPLE(1_GettingStarted 7_Text 1_Simple)
-CREATE_EXAMPLE(1_GettingStarted 7_Text 2_Input)
-CREATE_EXAMPLE(1_GettingStarted 7_Text 3_ImGui)
+# CREATE_EXAMPLE(1_GettingStarted 7_Text 1_Simple)
+# CREATE_EXAMPLE(1_GettingStarted 7_Text 2_Input)
 
-CREATE_EXAMPLE(1_GettingStarted 8_Renderers 2_Batch2d)
-CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
+# CREATE_EXAMPLE(1_GettingStarted 8_Renderers 2_Batch2d)
+# CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
+
+CREATE_EXAMPLE(1_GettingStarted 9_ImGui 1_Demo)
+CREATE_EXAMPLE(1_GettingStarted 9_ImGui 2_Dockspace)
 
 # 3D LIGHTING EXAMPLES
-# CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
+CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
 # CREATE_EXAMPLE(2_Lighting 1_Phong 2_Specular)
 # CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
 
@@ -61,3 +64,6 @@ CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
 # CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
 # CREATE_EXAMPLE(3_RealWorld 4_Splines 1_Bezier)
 # CREATE_EXAMPLE(3_RealWorld 4_Splines 2_CatmullRom)
+
+# CREATE_EXAMPLE(3_RealWorld 5_Minecraft 1_Renderer)
+# CREATE_EXAMPLE(3_RealWorld 5_Minecraft 2_Player)

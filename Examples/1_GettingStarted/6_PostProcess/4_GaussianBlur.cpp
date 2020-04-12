@@ -1,56 +1,38 @@
-#include <Coel.hpp>
-#include <iostream>
+#include "0_Common/Scene.hpp"
+#include "0_Common/Shaders/Simple.hpp"
 
 int main() {
-    // Code originates from Model/Simple.cpp
-    Coel::Window window({1400, 1000}, "Blurring Filter Example");
+    Coel::Window window("Blurring Filter Example");
     Coel::create(window);
+    Scene::init(Simple::vertSrc, Simple::fragSrc);
 
-    const char *const vertSrc = R"(
-    #version 450 core
-    layout (location = 0) in vec3 a_pos;
-    layout (location = 1) in vec3 a_nrm;
-    layout (location = 2) in vec2 a_tex;
-    out vec3 v_nrm;
-    uniform mat4 u_projMat;
-    uniform mat4 u_viewMat;
-    uniform mat4 u_modlMat;
-    void main() {
-        vec4 worldPos = u_modlMat * vec4(a_pos, 1);
-        v_nrm =  (u_modlMat * vec4(a_nrm, 1)).xyz;
-        gl_Position = u_projMat * u_viewMat * worldPos;
-    }
-    )";
-
-    const char *const gaussHorizontalVertSrc = R"(
+    const char *const gaussVertSrc[2]{
+        R"(
     #version 440
     layout (location = 0) in vec2 pos;
     layout (location = 1) in vec2 tex;
     out vec2 vTex[11];
-    uniform float u_renderTargetWidth;
+    uniform float u_renderTargetSize;
     void main() {
         gl_Position = vec4(pos, 0, 1);
-        float pixelWidth = 1.f / u_renderTargetWidth;
+        float pixelWidth = 1.f / u_renderTargetSize;
         for (int i = -5; i < 5; ++i) {
             vTex[i + 5] = tex + vec2(pixelWidth * i, 0);
         }
-    }
-    )";
-
-    const char *const gaussVerticalVertSrc = R"(
+    })",
+        R"(
     #version 440
     layout (location = 0) in vec2 pos;
     layout (location = 1) in vec2 tex;
     out vec2 vTex[11];
-    uniform float u_renderTargetHeight;
+    uniform float u_renderTargetSize = 100;
     void main() {
         gl_Position = vec4(pos, 0, 1);
-        float pixelHeight = 1.f / u_renderTargetHeight;
+        float pixelHeight = 1.f / u_renderTargetSize;
         for (int i = -5; i < 5; ++i) {
             vTex[i + 5] = tex + vec2(0, pixelHeight * i);
         }
-    }
-    )";
+    })"};
 
     const char *const gaussFragSrc = R"(
     #version 440
@@ -75,17 +57,7 @@ int main() {
         color += gammaUndistort(texture(u_tex, vTex[10])) * 0.0093;
         color = gammaRedistort(color);
         color.w = 1;
-    }
-    )";
-
-    const char *const fragSrc = R"(
-    #version 450 core
-    in vec3 v_nrm;
-    out vec4 frag_color;
-    void main() {
-        frag_color = vec4(v_nrm, 1);
-    }
-    )";
+    })";
 
     const char *const quadVertSrc = R"(
     #version 440
@@ -95,140 +67,86 @@ int main() {
     void main() {
         v_tex = a_tex;
         gl_Position = vec4(a_pos, 0, 1);
-    }
-    )";
+    })";
 
     const char *const quadFragSrc = R"(
     #version 440
     in vec2 v_tex;
     out vec4 color;
-    uniform sampler2D u_fboTex;
     uniform sampler2D u_blurredTex;
     void main() {
         vec4 blurCol = texture(u_blurredTex, v_tex);
         color = blurCol;
         color.w = 1;
+    })";
+
+    Coel::Fbo gaussFbos[4];
+    Coel::Rbo gaussFboRbos[4];
+    Coel::Texture gaussFboTexs[4];
+    Coel::Shader gaussShader[2];
+    Coel::Uniform<int> u_gaussTex[2];
+    Coel::Uniform<float> u_renderTargetSize[2];
+
+    for (int i = 0; i < 4; ++i) {
+        const int scale = (i % 2 + 1) * 2;
+        const auto size = window.size / scale;
+        Coel::create(gaussFboTexs[i], size, Coel::RGBA, nullptr);
+        Coel::setMagFilter(gaussFboTexs[i], Coel::Linear);
+        Coel::setMinFilter(gaussFboTexs[i], Coel::Linear);
+        Coel::setWrapMode(gaussFboTexs[i], Coel::ClampToEdge);
+        Coel::create(gaussFboRbos[i], size);
+        Coel::create(gaussFbos[i], size);
+        Coel::attach(gaussFbos[i], {gaussFboTexs[i]});
+        Coel::attach(gaussFbos[i], gaussFboRbos[i]);
     }
-    )";
 
-    Coel::Shader shader(vertSrc, fragSrc);
+    for (int i = 0; i < 2; ++i) {
+        Coel::create(gaussShader[i], gaussVertSrc[i], gaussFragSrc);
+        u_gaussTex[i] = Coel::findInt(gaussShader[i], "u_tex");
+        u_renderTargetSize[i] = Coel::findFloat(gaussShader[i], "u_renderTargetSize");
+    }
 
-    auto u_projMat = shader.findMat4("u_projMat");
-    auto u_viewMat = shader.findMat4("u_viewMat");
-    auto u_modlMat = shader.findMat4("u_modlMat");
-    glm::mat4 projMat, viewMat, modlMat;
-
-    Coel::Model model("Assets/dragon.obj");
-
-    Coel::Fbo gaussFboH[]{
-        Coel::Fbo(window.size.x / 2, window.size.y / 2, {Coel::ColorBuffer::RGBA8}),
-        Coel::Fbo(window.size.x / 4, window.size.y / 4, {Coel::ColorBuffer::RGBA8}),
-    };
-    Coel::Fbo gaussFboV[]{
-        Coel::Fbo(window.size.x / 2, window.size.y / 2, {Coel::ColorBuffer::RGBA8}),
-        Coel::Fbo(window.size.x / 4, window.size.y / 4, {Coel::ColorBuffer::RGBA8}),
-    };
-
-    Coel::Shader gaussHorizontalShader(gaussHorizontalVertSrc, gaussFragSrc);
-    auto u_gaussHorizontalTex = gaussHorizontalShader.findInt("u_tex");
-    auto u_renderTargetWidth = gaussHorizontalShader.findFloat("u_renderTargetWidth");
-    Coel::Shader gaussVerticalShader(gaussVerticalVertSrc, gaussFragSrc);
-    auto u_gaussVerticalTex = gaussVerticalShader.findInt("u_tex");
-    auto u_renderTargetHeight = gaussVerticalShader.findFloat("u_renderTargetHeight");
-
-    Coel::Fbo fbo(window.size.x, window.size.y, {Coel::ColorBuffer::RGBA8});
-    Coel::Shader quadShader(quadVertSrc, quadFragSrc);
-    auto u_fboTex = quadShader.findInt("u_fboTex");
-    auto u_blurredTex = quadShader.findInt("u_blurredTex");
-    auto u_kernelSize = quadShader.findInt("u_kernelSize");
-    auto u_mousePosX = quadShader.findFloat("u_mousePosX");
+    Coel::Fbo fbo;
+    Coel::Shader quadShader;
+    Coel::Texture fboColTex;
+    Coel::Rbo fboDepthRbo;
     Coel::Renderer::Quad2d quadRenderer;
+    Coel::create(quadShader, quadVertSrc, quadFragSrc);
+    auto u_blurredTex = Coel::findInt(quadShader, "u_blurredTex");
+    Coel::create(fboColTex, window.size, Coel::RGBA, nullptr);
+    Coel::setMagFilter(fboColTex, Coel::Linear);
+    Coel::setMinFilter(fboColTex, Coel::Linear);
+    Coel::setWrapMode(fboColTex, Coel::ClampToEdge);
+    Coel::create(fboDepthRbo, window.size);
+    Coel::create(fbo, window.size);
+    Coel::attach(fbo, {fboColTex});
+    Coel::attach(fbo, fboDepthRbo);
 
     while (window.isOpen) {
-        Coel::Renderer::clear();
-
-        // Render pass
-        fbo.bind();
-
-        shader.bind();
-        Coel::Renderer::enableDepthTest(true);
-        Coel::Renderer::enableCulling(true);
-        Coel::Renderer::setClearColor(0.6, 0.6, 0.8, 1);
-        Coel::Renderer::clear();
-
-        projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 100.f);
-        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -5, -18});
-        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)Coel::getTime(), {0, 1, 0});
-
-        shader.send(u_projMat, &projMat);
-        shader.send(u_viewMat, &viewMat);
-        shader.send(u_modlMat, &modlMat);
-
-        model.draw();
-
-        // First horizontal pass
-        gaussFboH[0].bind();
+        Coel::bind(fbo);
+        Scene::draw(window.size);
         Coel::Renderer::enableCulling(false);
         Coel::Renderer::enableDepthTest(false);
+
+        for (int i = 0; i < 4; ++i) {
+            const int id = i % 2;
+            Coel::bind(gaussFbos[i]);
+            Coel::Renderer::clearColor();
+            Coel::bind(gaussShader[id]);
+            Coel::send(u_gaussTex[id], 0);
+            if (i == 0)
+                Coel::bind(fboColTex, 0);
+            else
+                Coel::bind(gaussFboTexs[i - 1], 0);
+            Coel::send(u_renderTargetSize[id], gaussFbos[i].size[id]);
+            quadRenderer.draw();
+        }
+
+        Coel::bind(window.fbo);
         Coel::Renderer::clearColor();
-
-        gaussHorizontalShader.bind();
-        gaussHorizontalShader.bind();
-        gaussHorizontalShader.send(u_gaussHorizontalTex, 0);
-        gaussHorizontalShader.send(u_renderTargetWidth, window.size.x / 2);
-        fbo.bindColorAttachmentTexture(0, 0);
-        quadRenderer.draw();
-
-        // First vertical pass
-        gaussFboV[0].bind();
-        Coel::Renderer::enableCulling(false);
-        Coel::Renderer::enableDepthTest(false);
-        Coel::Renderer::clearColor();
-
-        gaussVerticalShader.bind();
-        gaussVerticalShader.bind();
-        gaussVerticalShader.send(u_gaussVerticalTex, 0);
-        gaussVerticalShader.send(u_renderTargetHeight, window.size.y / 2);
-        gaussFboH[0].bindColorAttachmentTexture(0, 0);
-        quadRenderer.draw();
-
-        // Second horizontal pass
-        gaussFboH[1].bind();
-        Coel::Renderer::clearColor();
-
-        gaussHorizontalShader.bind();
-        gaussHorizontalShader.bind();
-        gaussHorizontalShader.send(u_gaussHorizontalTex, 0);
-        gaussHorizontalShader.send(u_renderTargetWidth, window.size.x / 4);
-        gaussFboV[0].bindColorAttachmentTexture(0, 0);
-        quadRenderer.draw();
-
-        // Second vertical pass
-        gaussFboV[1].bind();
-        Coel::Renderer::clearColor();
-
-        gaussVerticalShader.bind();
-        gaussVerticalShader.bind();
-        gaussVerticalShader.send(u_gaussVerticalTex, 0);
-        gaussVerticalShader.send(u_renderTargetHeight, window.size.y / 4);
-        gaussFboH[1].bindColorAttachmentTexture(0, 0);
-        quadRenderer.draw();
-
-        // Final draw pass
-        Coel::Fbo::unbind();
-        Coel::Renderer::resizeViewport(0, 0, window.size.x, window.size.y);
-        Coel::Renderer::enableDepthTest(false);
-        Coel::Renderer::enableCulling(false);
-        Coel::Renderer::setClearColor(1, 0, 0, 1);
-        Coel::Renderer::clearColor();
-
-        quadShader.bind();
-        quadShader.send(u_fboTex, 0);
-        fbo.bindColorAttachmentTexture(0, 0);
-        quadShader.send(u_blurredTex, 1);
-        gaussFboV[1].bindColorAttachmentTexture(0, 1);
-        quadShader.send(u_mousePosX, (float)window.mouse.pos.x / window.size.x);
-
+        Coel::bind(quadShader);
+        Coel::send(u_blurredTex, 0);
+        Coel::bind(gaussFboTexs[1], 0);
         quadRenderer.draw();
 
         Coel::update(window);

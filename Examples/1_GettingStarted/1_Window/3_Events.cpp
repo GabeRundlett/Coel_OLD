@@ -19,6 +19,7 @@ int main() {
     // window object:
 
     //  - onResize
+    //  - onFboResize
 
     //  - onMouseButton
     //  - onMouseMove
