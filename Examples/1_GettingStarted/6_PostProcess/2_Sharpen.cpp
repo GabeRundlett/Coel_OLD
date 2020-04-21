@@ -55,6 +55,7 @@ int main() {
     Coel::attach(fbo, fboDepthRbo);
 
     while (window.isOpen) {
+        Coel::bind(Scene::shader);
         Coel::bind(fbo);
         Scene::draw(window.size);
 

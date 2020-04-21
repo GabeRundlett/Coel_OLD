@@ -54,6 +54,7 @@ int main() {
     window.onFboResize(window);
 
     while (window.isOpen) {
+        Coel::bind(Scene::shader);
         Coel::bind(renderTarget.fbo);
         Scene::draw(window.size);
 

@@ -16,15 +16,14 @@ namespace Scene {
         u_modlMat = Coel::findMat4(shader, "u_modlMat");
         u_stallTex = Coel::findInt(shader, "u_stallTex");
 
-        Coel::create(stallModel, "Assets/stall.obj");
-        Coel::create(stallTexture, "Assets/stall.png");
+        Coel::create(stallModel, "Assets/Models/stall.obj");
+        Coel::create(stallTexture, "Assets/Textures/stall.png");
     }
 
     void draw(const glm::ivec2 &size, float rotation = -1.f) {
         Coel::Renderer::enableDepthTest(true);
         Coel::Renderer::enableCulling(true);
         Coel::Renderer::clear();
-        Coel::bind(shader);
         if (rotation == -1.f) rotation = (float)Coel::getTime();
         projMat = glm::perspective(glm::radians(45.f), (float)size.x / size.y, 0.01f, 100.f);
         viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -3, -15});

@@ -35,7 +35,7 @@ int main() {
     auto u_modlMat = Coel::findMat4(shader, "u_modlMat");
     glm::mat4 projMat{1}, viewMat{1}, modlMat{1};
     Coel::Model model;
-    Coel::create(model, "Assets/stall.obj");
+    Coel::create(model, "Assets/Models/stall.obj");
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(true);
     Coel::Renderer::setClearColor(0.6, 0.6, 0.8, 1);

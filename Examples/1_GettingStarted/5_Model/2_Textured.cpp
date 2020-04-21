@@ -38,9 +38,9 @@ int main() {
     auto u_modlMat = shader.findMat4("u_modlMat");
     glm::mat4 projMat, viewMat, modlMat;
 
-    Coel::Model model("Assets/stall.obj");
+    Coel::Model model("Assets/Models/stall.obj");
     auto u_tex = shader.findInt("u_tex");
-    Coel::Texture texture("Assets/stall.png");
+    Coel::Texture texture("Assets/Textures/stall.png");
 
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(true);

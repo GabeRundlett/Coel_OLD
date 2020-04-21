@@ -37,7 +37,6 @@ int main() {
             else
                 color = vec4(col.w);
         }
-        color.w = 1;
     })";
 
     Coel::Fbo gbufferFbo;
@@ -59,14 +58,15 @@ int main() {
     Coel::Renderer::Quad2d quadRenderer;
 
     while (window.isOpen) {
+        Coel::Renderer::setClearColor(0, 0, 0, 0);
+        Coel::Renderer::clearColor();
+        Coel::bind(Scene::shader);
         Coel::bind(gbufferFbo);
         Scene::draw(window.size);
 
         Coel::bind(window.fbo);
         Coel::Renderer::enableDepthTest(false);
         Coel::Renderer::enableCulling(false);
-        Coel::Renderer::setClearColor(1, 0, 0, 1);
-        Coel::Renderer::clearColor();
 
         Coel::bind(quadShader);
         Coel::send(u_posTex, 0);

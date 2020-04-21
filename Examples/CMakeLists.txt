@@ -33,13 +33,14 @@ CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 3_SimpleBlur)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 4_GaussianBlur)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 5_Deferred)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 6_SuperSample)
-# CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 7_SSAO)
+CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 7_SSAO)
 
 # CREATE_EXAMPLE(1_GettingStarted 7_Text 1_Simple)
 # CREATE_EXAMPLE(1_GettingStarted 7_Text 2_Input)
 
 # CREATE_EXAMPLE(1_GettingStarted 8_Renderers 2_Batch2d)
 # CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
+CREATE_EXAMPLE(1_GettingStarted 8_Renderers 4_Sprites)
 
 CREATE_EXAMPLE(1_GettingStarted 9_ImGui 1_Demo)
 CREATE_EXAMPLE(1_GettingStarted 9_ImGui 2_Dockspace)
@@ -61,9 +62,11 @@ CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
 # CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
 
 # CREATE_EXAMPLE(3_RealWorld 2_MarchingCubes 1_PointGen)
-# CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
+CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
 # CREATE_EXAMPLE(3_RealWorld 4_Splines 1_Bezier)
 # CREATE_EXAMPLE(3_RealWorld 4_Splines 2_CatmullRom)
 
 # CREATE_EXAMPLE(3_RealWorld 5_Minecraft 1_Renderer)
 # CREATE_EXAMPLE(3_RealWorld 5_Minecraft 2_Player)
+
+CREATE_EXAMPLE(3_RealWorld 6_SpriteAnimation 1_SpriteAnimation)
