@@ -26,7 +26,7 @@ namespace Scene {
         Coel::Renderer::clear();
         if (rotation == -1.f) rotation = (float)Coel::getTime();
         projMat = glm::perspective(glm::radians(45.f), (float)size.x / size.y, 0.01f, 100.f);
-        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -3, -15});
+        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -1, -5});
         modlMat = glm::rotate(glm::identity<glm::mat4>(), rotation, {0, 1, 0});
         Coel::send(u_projMat, &projMat);
         Coel::send(u_viewMat, &viewMat);

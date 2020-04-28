@@ -37,6 +37,9 @@ build
 .vs
 out
 .idea
+Debug
+Release
+Testing
 # generated files
 *.json
 *.ini
