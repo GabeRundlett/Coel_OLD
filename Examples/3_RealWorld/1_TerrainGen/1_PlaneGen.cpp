@@ -1,147 +1,64 @@
 #include "0_Resources/Player.hpp"
-#include <Coel.hpp>
-
-Player player;
-bool inputMode = true;
+#include "0_Resources/Shaders.hpp"
 
 int main() {
-    Coel::Window window(1400, 800, "Terrain Generation - Part 1: Plane Generation");
-    Coel::Renderer::ImGuiRenderer imgui(window);
+    Player player;
 
-    window.onResize = [](Coel::Window &w) {
-        if (inputMode) {
-            player.windowSizeUpdate(w.size);
-            w.cursorTo(player.mouseCenter);
-        }
+    Coel::Window window("Simple Plane Generation");
+    window.onMouseMove = [&player](Coel::Window &w) {
+        player.mouseMoveUpdate(w.mouse); //
+        Coel::cursorTo(w, player.mouseCenter);
     };
-    window.cursorMode(Coel::Window::CursorMode::Disabled);
-    window.onKey = [](Coel::Window &w) {
-        if (w.key.code == Coel::Key::Escape)
-            if (w.key.action == Coel::Action::Press) {
-                if (inputMode) {
-                    w.cursorMode(Coel::Window::CursorMode::Normal);
-                    inputMode = false;
-                } else {
-                    w.cursorMode(Coel::Window::CursorMode::Disabled);
-                    inputMode = true;
-                }
-            }
-        if (inputMode) player.keyUpdate(w.key);
+    window.onMouseButton = [&player](Coel::Window &w) {
+        player.mouseButtonUpdate(w.mouse); //
     };
-    window.onMouseScroll = [](Coel::Window &w) {
-        if (inputMode) player.mouseScrollUpdate(w.mouse);
+    window.onMouseScroll = [&player](Coel::Window &w) {
+        player.mouseScrollUpdate(w.mouse); //
     };
-    window.onMouseMove = [](Coel::Window &w) {
-        if (inputMode) {
-            player.mouseMoveUpdate(w.mouse);
-            w.cursorTo(player.mouseCenter);
-        }
+    window.onKey = [&player](Coel::Window &w) {
+        player.keyUpdate(w.key); //
+    };
+    window.onResize = [&player](Coel::Window &w) {
+        player.windowSizeUpdate(w.size); //
     };
 
-    const char *const vertSrc = R"(
-    #version 450 core
-    layout (location = 0) in vec3 a_pos;
-    uniform mat4 u_projMat;
-    uniform mat4 u_viewMat;
-    uniform mat4 u_modlMat;
-    void main() {
-        vec4 worldPos = u_modlMat * vec4(a_pos, 1);
-        gl_Position = u_projMat * u_viewMat * worldPos;
-    }
-    )";
+    Coel::create(window);
+    Coel::cursorMode(window, Coel::Disabled);
 
-    const char *const fragSrc = R"(
-    #version 450 core
-    out vec4 frag_color;
-    void main() {
-        frag_color = vec4(1, 1, 1, 1);
-    }
-    )";
+    Coel::Renderer::Batch3d renderer;
+    Coel::Renderer::init(renderer);
 
-    Coel::Shader shader(vertSrc, fragSrc);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
 
-    auto u_projMat = shader.findMat4("u_projMat");
-    auto u_viewMat = shader.findMat4("u_viewMat");
-    auto u_modlMat = shader.findMat4("u_modlMat");
+    auto u_proj = Coel::findMat4(shader, "u_proj");
+    auto u_view = Coel::findMat4(shader, "u_view");
 
-    glm::mat4 modlMat{1};
-
-    static constexpr unsigned int SIZE_Y = 20, SIZE_X = 20;
-    static constexpr unsigned int MAX_VERTEX_COUNT = SIZE_X * SIZE_Y * 6;
-
-    struct Vertex {
-        glm::vec3 pos;
-    } * vertices;
-    unsigned int vertexCount = 0;
-    Coel::Vao vao;
-    Coel::Vbo vbo(nullptr, sizeof(Vertex) * MAX_VERTEX_COUNT, {{Coel::Element::F32, 3}});
-    vao.add(vbo);
-    vbo.open(&vertices);
-
-    auto flush = [&vao, &vbo, &vertices, &vertexCount]() {
-        vbo.close();
-        vao.draw(vertexCount);
-        vbo.open(&vertices);
-        vertexCount = 0;
-    };
-    auto setPlaneXZ = [&vertices, &vertexCount, &flush](const float x, const float y, const float z, const float size) {
-        if (vertexCount > MAX_VERTEX_COUNT) flush();
-        *vertices = {{x, y, z}};
-        ++vertices;
-        *vertices = {{x, y, z + size}};
-        ++vertices;
-        *vertices = {{x + size, y, z}};
-        ++vertices;
-        *vertices = {{x, y, z + size}};
-        ++vertices;
-        *vertices = {{x + size, y, z}};
-        ++vertices;
-        *vertices = {{x + size, y, z + size}};
-        ++vertices;
-        vertexCount += 6;
-    };
-
-    Coel::Renderer::enableBlend(true);
-    Coel::Renderer::setClearColor(0.1, 0.1, 0.1, 1);
-    auto time = window.getTime(), prevTime = time, elapsed = time;
-
-    window.resize();
-    player.setPos({0, 2, 0});
-    player.setRot({0, 0, 0});
-
-    while (window.isOpen()) {
-        Coel::Renderer::enableDepthTest(true);
+    while (window.isOpen) {
         Coel::Renderer::clear();
 
-        prevTime = time, time = window.getTime();
-        elapsed = time - prevTime;
-        player.update(elapsed);
-
-        shader.send(u_projMat, &player.cam.projMat);
-        shader.send(u_viewMat, &player.cam.viewMat);
-        shader.send(u_modlMat, &modlMat);
-
-        for (int yi = 0; yi < SIZE_Y; ++yi) {
-            for (int xi = 0; xi < SIZE_X; ++xi) {
-                setPlaneXZ(xi - SIZE_X / 2, 0, yi - SIZE_Y / 2, 1);
+        renderer.begin();
+        for (float z = 0; z < 10; ++z) {
+            for (float x = 0; x < 10; ++x) {
+                auto s = sin((x + z) / 2) / 4;
+                renderer.submitQuad({
+                    {{x + 0, s, z + 0}, {0, 0}},
+                    {{x + 0, s, z + 1}, {0, 1}},
+                    {{x + 1, s, z + 0}, {1, 0}},
+                    {{x + 1, s, z + 1}, {1, 1}},
+                });
             }
         }
+        Coel::send(u_proj, &player.cam.projMat);
+        Coel::send(u_view, &player.cam.viewMat);
+        Coel::bind(shader);
+        renderer.flush();
 
-        flush();
-
-        if (!inputMode) {
-            Coel::Renderer::enableDepthTest(false);
-            Coel::Renderer::clearDepth();
-
-            imgui.begin();
-            ImGui::Begin("Settings");
-
-            ImGui::DragFloat("Sensitivity", &player.mouseSensitivity);
-
-            ImGui::End();
-            imgui.end(window);
-        }
-
-        window.update();
+        Coel::update(window);
+        player.update(window.elapsed);
     }
+
+    Coel::destroy(shader);
+    Coel::Renderer::deinit(renderer);
+    Coel::destroy(window);
 }

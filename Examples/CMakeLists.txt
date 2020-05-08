@@ -57,7 +57,7 @@ CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
 # CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
 
 # REAL WORLD EXAMPLES
-# CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 1_PlaneGen)
+CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 1_PlaneGen)
 # CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 2_HeightMap)
 # CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
 

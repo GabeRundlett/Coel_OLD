@@ -1,6 +1,32 @@
 #pragma once
 #include <Coel.hpp>
 
+template <typename T> struct Animatable {
+    T base, low_bound, high_bound;
+    double speed = 1.f, val = (base - low_bound) / (high_bound - low_bound);
+    int modifier = 0;
+
+    inline void set_bounds(const T l, const T h) {
+        low_bound = l, high_bound = h; //
+    }
+
+    void update(const float elapsed) {
+        val += elapsed * speed * modifier; //
+        if (val > 1) val = 1, modifier = 0;
+        if (val < 0) val = 0, modifier = 0;
+    }
+
+    inline void play_forward() { modifier = 1; }
+    inline void play_reverse() { modifier = -1; }
+
+    inline T get() {
+        auto width = high_bound - low_bound;
+        return static_cast<T>(val * width + low_bound);
+    }
+
+    void reset() { val = base; }
+};
+
 struct Player {
     glm::dvec2 mouseCenter{};
     glm::vec3 pos{}, vel{}, rot{};
@@ -11,32 +37,62 @@ struct Player {
     unsigned int shouldMoveForward : 1, shouldMoveBackward : 1, shouldMoveLeft : 1, shouldMoveRight : 1, shouldMoveUp : 1,
         shouldMoveDown : 1, shouldJump : 1, shouldSprint : 1, shouldSneak : 1, isFalling : 1;
 
-    float sneakMult = 0.2f, sprintMult = 1.5f, height = 1.8f;
-    float mouseSensitivity = 0.001f, movementSpeed = 100.f;
+    float sneakMult = 0.2f, sprintMult = 1.5f;
+    float mouseSensitivity = 0.0001f, movementSpeed = 1000.f;
+
+    Animatable<float> fov{cam.fov, cam.fov, cam.fov * 1.05f, 10};
+    Animatable<float> height{1.8, 1.2, 1.8, 10};
+
+    Player()
+        : shouldMoveForward(false), shouldMoveBackward(false), shouldMoveLeft(false), shouldMoveRight(false),
+          shouldMoveUp(false), shouldMoveDown(false), shouldJump(false), shouldSprint(false), shouldSneak(false),
+          isFalling(false) {}
+
+    static inline constexpr Coel::Key::KeyboardKeyID //
+        keycodeForward = Coel::Key::W,               //
+        keycodeLeft = Coel::Key::A,                  //
+        keycodeBackward = Coel::Key::S,              //
+        keycodeRight = Coel::Key::D,                 //
+        keycodeJump = Coel::Key::Space,              //
+        keycodeSprint = Coel::Key::LeftShift,        //
+        keycodeSneak = Coel::Key::LeftControl        //
+        ;
 
     void keyUpdate(const Coel::KeyInfo &kInfo) {
         switch (kInfo.action) {
         case Coel::Action::Press:
             switch (kInfo.code) {
-            case Coel::Key::W: shouldMoveForward = true; break;
-            case Coel::Key::S: shouldMoveBackward = true; break;
-            case Coel::Key::A: shouldMoveLeft = true; break;
-            case Coel::Key::D: shouldMoveRight = true; break;
-            case Coel::Key::Space: shouldJump = true; break;
-            case Coel::Key::LeftControl: shouldSprint = true; break;
-            case Coel::Key::LeftShift: shouldSneak = true, height = 1.2f, pos.y += 0.6f; break;
+            case keycodeForward: shouldMoveForward = true; break;
+            case keycodeBackward: shouldMoveBackward = true; break;
+            case keycodeLeft: shouldMoveLeft = true; break;
+            case keycodeRight: shouldMoveRight = true; break;
+            case keycodeJump: shouldJump = true; break;
+            case keycodeSprint:
+                shouldSprint = true;
+                fov.play_forward();
+                break;
+            case keycodeSneak:
+                shouldSneak = true;
+                height.play_reverse();
+                break;
             default: break;
             }
             break;
         case Coel::Action::Release:
             switch (kInfo.code) {
-            case Coel::Key::W: shouldMoveForward = false; break;
-            case Coel::Key::S: shouldMoveBackward = false; break;
-            case Coel::Key::A: shouldMoveLeft = false; break;
-            case Coel::Key::D: shouldMoveRight = false; break;
-            case Coel::Key::Space: shouldJump = false; break;
-            case Coel::Key::LeftControl: shouldSprint = false; break;
-            case Coel::Key::LeftShift: shouldSneak = false, height = 1.8f, pos.y -= 0.6f; break;
+            case keycodeForward: shouldMoveForward = false; break;
+            case keycodeBackward: shouldMoveBackward = false; break;
+            case keycodeLeft: shouldMoveLeft = false; break;
+            case keycodeRight: shouldMoveRight = false; break;
+            case keycodeJump: shouldJump = false; break;
+            case keycodeSprint:
+                shouldSprint = false;
+                fov.play_reverse();
+                break;
+            case keycodeSneak:
+                shouldSneak = false;
+                height.play_forward();
+                break;
             default: break;
             }
             break;
@@ -44,11 +100,15 @@ struct Player {
         }
     }
     void mouseButtonUpdate(const Coel::MouseInfo &mInfo) {}
-    void mouseScrollUpdate(const Coel::MouseInfo &mInfo) { cam.updateFov(cam.fov - 0.01f * (float)mInfo.scrollOffset.y); }
+    void mouseScrollUpdate(const Coel::MouseInfo &mInfo) {
+        fov.base = cam.fov - 0.01f * (float)mInfo.scrollOffset.y;
+        fov.set_bounds(cam.fov, cam.fov * 1.25);
+        cam.updateFov(fov.base);
+    }
     void mouseMoveUpdate(const Coel::MouseInfo &mInfo) {
         auto offset = (mInfo.pos - mouseCenter) * (double)mouseSensitivity;
         if (UPDATE_ROTATION) {
-            rot.x -= (float)offset.y * cam.fov, rot.y -= (float)offset.x * cam.fov;
+            rot.x -= (float)offset.y * fov.base, rot.y -= (float)offset.x * fov.base;
             if (rot.x < -glm::radians(90.f)) rot.x = -glm::radians(90.f);
             if (rot.x > glm::radians(90.f)) rot.x = glm::radians(90.f);
         }
@@ -106,12 +166,19 @@ struct Player {
 
             pos += vel * elapsed;
 
-            if (pos.y > -height - terrainHeight) {
-                pos.y = -height - terrainHeight, vel.y = 0;
+            if (pos.y > -terrainHeight) {
+                pos.y = -terrainHeight, vel.y = 0;
                 isFalling = false;
             }
         }
-        cam.updatePosition(pos);
+        fov.update(elapsed);
+        height.update(elapsed);
+
+        auto temp_pos = pos;
+        temp_pos.y -= height.get();
+
+        cam.updatePosition(temp_pos);
+        cam.updateFov(fov.get());
     }
 
     void setPos(const glm::vec3 &p) {
