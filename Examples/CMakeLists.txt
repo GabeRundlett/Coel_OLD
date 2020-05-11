@@ -70,3 +70,5 @@ CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
 # CREATE_EXAMPLE(3_RealWorld 5_Minecraft 2_Player)
 
 CREATE_EXAMPLE(3_RealWorld 6_SpriteAnimation 1_SpriteAnimation)
+CREATE_EXAMPLE(3_RealWorld 7_CellularAutomata 1_gameoflife)
+CREATE_EXAMPLE(3_RealWorld 7_CellularAutomata 2_CellEditor)
