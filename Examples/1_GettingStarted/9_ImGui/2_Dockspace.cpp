@@ -13,7 +13,8 @@ void dockspace() {
     window_flags |=
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
     window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoDecoration;
-    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) window_flags |= ImGuiWindowFlags_NoBackground;
+    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+        window_flags |= ImGuiWindowFlags_NoBackground;
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("DockSpace Demo", &open, window_flags);
     ImGui::PopStyleVar();
@@ -40,7 +41,8 @@ void dockspace() {
             if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))
                 dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar;
             ImGui::Separator();
-            if (ImGui::MenuItem("Close DockSpace", NULL, false)) open = false;
+            if (ImGui::MenuItem("Close DockSpace", NULL, false))
+                open = false;
             ImGui::EndMenu();
         }
 
