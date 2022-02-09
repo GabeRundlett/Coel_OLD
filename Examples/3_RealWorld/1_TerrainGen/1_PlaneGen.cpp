@@ -55,7 +55,7 @@ int main() {
         renderer.flush();
 
         Coel::update(window);
-        player.update(window.elapsed);
+        player.update(static_cast<float>(window.elapsed));
     }
 
     Coel::destroy(shader);

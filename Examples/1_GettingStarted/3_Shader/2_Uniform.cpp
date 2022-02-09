@@ -51,11 +51,11 @@ int main() {
 
         // In this, I'll also grab the time and modulo it to modify
         // the color uniform every frame.
-        int value = (int)(Coel::getTime() * 100) % 100;
+        int value = static_cast<int>(Coel::getTime() * 100) % 100;
         // Then we'll create our color variable:
-        glm::vec4 color{(float)value / 100, 0, 1, 1};
+        glm::vec4 color{static_cast<float>(value) / 100, 0, 1, 1};
         // and finally send it to the shader via our uniform.
-        Coel::send(Coel::Uniform<glm::vec4>{1}, &color);
+        Coel::send(u_color, &color);
         // --------------------------------------------------------------
         Coel::Renderer::drawIndexed(vao, 6);
         Coel::update(window);

@@ -1,9 +1,53 @@
 #include <Coel.hpp>
 #include <iostream>
 
+#include "0_Player.hpp"
+
 int main() {
     Coel::Window window{"Textured Model Loading Example"};
     Coel::create(window);
+
+    Player player{};
+    player.pos = {-1.75, -2.5, -3};
+    player.rot = {glm::radians(-30.0f), glm::radians(90-65.0f), 0.0f};
+    Camera camera{};
+    bool is_paused = true;
+
+    auto toggle_pause = [&]() {
+        double center_x = static_cast<double>(window.size.x) / 2;
+        double center_y = static_cast<double>(window.size.y) / 2;
+        Coel::cursorTo(window, {center_x, center_y});
+        if (is_paused) {
+            Coel::cursorMode(window, Coel::CursorMode::Hidden);
+            is_paused = false;
+        } else {
+            Coel::cursorMode(window, Coel::CursorMode::Normal);
+            is_paused = true;
+        }
+    };
+
+    toggle_pause();
+    
+    window.onKey = [&](Coel::Window &window) {
+        if (window.key.code == input::keybinds::TOGGLE_PAUSE && window.key.action == GLFW_PRESS)
+            toggle_pause();
+        if (!is_paused) {
+            player.on_key(window.key.code, window.key.action);
+        }
+    };
+    window.onMouseMove = [&](Coel::Window &window) {
+        double center_x = static_cast<double>(window.size.x) / 2;
+        double center_y = static_cast<double>(window.size.y) / 2;
+
+        auto x = window.mouse.pos.x;
+        auto y = window.mouse.pos.y;
+        auto dx = x - center_x;
+        auto dy = y - center_y;
+        if (!is_paused) {
+            player.on_mouse_move(dx, -dy);
+            Coel::cursorTo(window, {center_x, center_y});
+        }
+    };
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -18,8 +62,7 @@ int main() {
         v_tex = a_tex;
         vec4 worldPos = u_modlMat * vec4(a_pos, 1);
         gl_Position = u_projMat * u_viewMat * worldPos;
-    }
-    )";
+    })";
 
     const char *const fragSrc = R"(
     #version 450 core
@@ -28,41 +71,48 @@ int main() {
     uniform sampler2D u_tex;
     void main() {
         frag_color = texture(u_tex, v_tex);
-    }
-    )";
+        // frag_color = vec4(v_tex, 0, 1);
+    })";
 
-    Coel::Shader shader(vertSrc, fragSrc);
-
-    auto u_projMat = shader.findMat4("u_projMat");
-    auto u_viewMat = shader.findMat4("u_viewMat");
-    auto u_modlMat = shader.findMat4("u_modlMat");
-    glm::mat4 projMat, viewMat, modlMat;
-
-    Coel::Model model("Assets/Models/stall.obj");
-    auto u_tex = shader.findInt("u_tex");
-    Coel::Texture texture("Assets/Textures/stall.png");
-
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
+    auto u_projMat = Coel::findMat4(shader, "u_projMat");
+    auto u_viewMat = Coel::findMat4(shader, "u_viewMat");
+    auto u_modlMat = Coel::findMat4(shader, "u_modlMat");
+    auto u_modlNrmMat = Coel::findMat4(shader, "u_modlNrmMat");
+    auto u_tex = Coel::findInt(shader, "u_tex");
+    auto u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
+    glm::mat4 projMat{1}, viewMat{1};
+    std::vector<Coel::Model> objects;
+    constexpr auto FROG_X = 5, FROG_Y = 10;
+    objects.resize(FROG_X * FROG_Y);
+    for (int yi = 0; yi < FROG_Y; ++yi)
+        for (int xi = 0; xi < FROG_X; ++xi) {
+            size_t index = xi + yi * FROG_X;
+            Coel::open(objects[index], "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+            
+            for (auto &o : objects[index].objects)
+                o.modlMat = glm::scale(glm::rotate(glm::translate(glm::mat4(1), {27.4923f * xi, 0.0f, 16.4608f * yi}), 0.0f, {1, 0, 0}), {1, 1, 1}) * o.modlMat;
+        }
+    // Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
     Coel::Renderer::enableDepthTest(true);
-    Coel::Renderer::enableCulling(true);
-    Coel::Renderer::setClearColor(0.6, 0.6, 0.8, 1);
+    Coel::Renderer::enableCulling(false);
+    Coel::Renderer::setClearColor(0.2f, 0.2f, 0.3f, 1.0f);
 
     while (window.isOpen) {
         Coel::Renderer::clear();
-
-        shader.bind();
-
-        projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 100.f);
-        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -2.5, -15});
-        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)Coel::getTime(), {0, 1, 0});
-
-        shader.send(u_projMat, &projMat);
-        shader.send(u_viewMat, &viewMat);
-        shader.send(u_modlMat, &modlMat);
-        shader.send(u_tex, 0);
-        texture.bind(0);
-
-        model.draw();
-
+        Coel::bind(shader);
+        player.update(static_cast<float>(window.elapsed));
+        camera.fov = player.fov;
+        camera.resize(window.size.x, window.size.y);
+        camera.set_pos(player.pos);
+        camera.set_rot(player.rot.x, player.rot.y);
+        projMat = camera.proj_mat;
+        viewMat = camera.vrot_mat * camera.vtrn_mat;
+        Coel::send(u_projMat, &projMat);
+        Coel::send(u_viewMat, &viewMat);
+        for(auto &o : objects)
+            Coel::Renderer::draw(o, u_modlMat, u_modlNrmMat, u_tex, u_nrm_tex);
         Coel::update(window);
     }
 }

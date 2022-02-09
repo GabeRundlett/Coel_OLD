@@ -47,11 +47,11 @@ int main() {
         //    and thus will not be updated accordingly. To correctly use this
         //    field, use the Window::onChar callback. This
         if (w.key.action == Coel::Action::Press)
-            std::cout << "Pressed key  [" << w.key.code << " '" << (char)w.key.character << "']\n";
+            std::cout << "Pressed key  [" << w.key.code << " '" << static_cast<char>(w.key.character) << "']\n";
         if (w.key.action == Coel::Action::Repeat)
-            std::cout << "Repeated key [" << w.key.code << " '" << (char)w.key.character << "']\n";
+            std::cout << "Repeated key [" << w.key.code << " '" << static_cast<char>(w.key.character) << "']\n";
         if (w.key.action == Coel::Action::Release)
-            std::cout << "Released key [" << w.key.code << " '" << (char)w.key.character << "']\n";
+            std::cout << "Released key [" << w.key.code << " '" << static_cast<char>(w.key.character) << "']\n";
         std::cout << ++keyEventCount << '\n';
     };
     // --------------------------------------------------------------

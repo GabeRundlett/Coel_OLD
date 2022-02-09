@@ -1,7 +1,8 @@
 #include <Coel.hpp>
 
 int main() {
-    Coel::Window window(800, 600, "Title");
+    Coel::Window window({800, 600}, "Title");
+    Coel::create(window);
     Coel::Renderer::Quad2d quad;
     const char *const vertSrc = R"(
         #version 450
@@ -110,7 +111,8 @@ int main() {
             // if (length(c - v_tex) < 0.01) fragCol = vec4(0.3, 0.9, 0.4, 1);
         }
     )";
-    Coel::Shader shader(vertSrc, fragSrc);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
 
     glm::vec2 points[]{
         glm::vec2(0.3, 0.3),
@@ -119,10 +121,10 @@ int main() {
         glm::vec2(0.8, 0.8),
     };
 
-    auto u_p = shader.findFloat2("p");
+    auto u_p = Coel::findFloat2(shader, "p");
     u_p.count = 4;
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         if (window.key.code == '1') {
             points[0] = glm::vec2(window.mouse.pos) / glm::vec2(window.size);
             points[0].y = 1 - points[0].y;
@@ -139,9 +141,11 @@ int main() {
             points[3] = glm::vec2(window.mouse.pos) / glm::vec2(window.size);
             points[3].y = 1 - points[3].y;
         }
-        shader.bind();
-        shader.send(u_p, points);
+        
+        Coel::Renderer::clearColor();
+        Coel::bind(shader);
+        Coel::send(u_p, points);
         quad.draw();
-        window.update();
+        Coel::update(window);
     }
 }

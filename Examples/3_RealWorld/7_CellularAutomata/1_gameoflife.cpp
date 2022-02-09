@@ -1,5 +1,5 @@
 #include <Coel.hpp>
-#include <unistd.h>
+// #include <unistd.h>
 
 int main() {
     Coel::Window window{{1024, 1024}, "Cellular Automata"};
@@ -103,7 +103,7 @@ void main() {
 
     Coel::Shader startGridShader;
     Coel::create(startGridShader, vertSrc, startGridFragSrc);
-    auto u_copyGridTex = Coel::findInt(startGridShader, "u_tex");
+    // auto u_copyGridTex = Coel::findInt(startGridShader, "u_tex");
 
     Coel::Shader automataShader;
     Coel::create(automataShader, automataVertSrc, automataFragSrc);
@@ -163,7 +163,7 @@ void main() {
         // run_automata();
 
         Coel::bind(window.fbo);
-        Coel::Renderer::setClearColor(0.5, 0, 0.9, 1);
+        Coel::Renderer::setClearColor(0.5f, 0.0f, 0.9f, 1.0f);
         Coel::Renderer::clearColor();
         Coel::Renderer::enableDepthTest(false);
         Coel::Renderer::enableCulling(false);
@@ -173,7 +173,7 @@ void main() {
         Coel::bind(gridTextures[i], 0);
         quadRenderer.draw();
 
-        usleep(10000);
+        // usleep(10000);
         Coel::update(window);
     }
 }

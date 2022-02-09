@@ -4,7 +4,7 @@
 int main() {
     Coel::Window window({1280, 960}, "Deferred Rendering Example");
     Coel::create(window);
-    Scene::init(Deferred::vertSrc, Deferred::fragSrc);
+    Scene::init(Deferred::vertSrc, Deferred::fragSrc, window);
 
     const char *const quadVertSrc = R"(
     #version 440
@@ -62,7 +62,7 @@ int main() {
         Coel::Renderer::clearColor();
         Coel::bind(Scene::shader);
         Coel::bind(gbufferFbo);
-        Scene::draw(window.size);
+        Scene::draw(window);
 
         Coel::bind(window.fbo);
         Coel::Renderer::enableDepthTest(false);

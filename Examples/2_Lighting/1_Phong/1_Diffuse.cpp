@@ -4,7 +4,7 @@
 int main() {
     Coel::Window window({1280, 960}, "Diffuse Phong Shading Example");
     Coel::create(window);
-    Scene::init(Deferred::vertSrc, Deferred::fragSrc);
+    Scene::init(Deferred::vertSrc, Deferred::fragSrc, window);
 
     const char *const quadVertSrc = R"(
     #version 440
@@ -63,16 +63,12 @@ int main() {
     glm::vec3 lightPos{1.5, 7, 4.5}, lightCol{1, 1, 1};
     Coel::Renderer::Quad2d quadRenderer;
     Coel::Renderer::ImGuiRenderer imgui(window);
-    bool animate = true;
-    float rotation = 0.f, lightIntensity = 40;
+    float lightIntensity = 40;
 
     while (window.isOpen) {
         Coel::bind(gbufferFbo);
         Coel::Renderer::setClearColor(0, 0, 0, 1);
-        if (animate)
-            Scene::draw(window.size);
-        else
-            Scene::draw(window.size, rotation);
+        Scene::draw(window);
         Coel::bind(window.fbo);
         Coel::Renderer::enableCulling(false);
         Coel::Renderer::setClearColor(1, 0, 0, 1);
@@ -92,11 +88,9 @@ int main() {
 
         imgui.begin();
         ImGui::Begin("Light Settings");
-        ImGui::SliderFloat3("Light Position", (float *)&lightPos, -15, 15);
-        ImGui::ColorEdit3("Light Color", (float *)&lightCol);
+        ImGui::SliderFloat3("Light Position", reinterpret_cast<float *>(&lightPos), -15, 15);
+        ImGui::ColorEdit3("Light Color", reinterpret_cast<float *>(&lightCol));
         ImGui::DragFloat("Light lightIntensity", &lightIntensity, 0.01f);
-        ImGui::Checkbox("Animate", &animate);
-        if (!animate) ImGui::DragFloat("Rotation", &rotation, 0.01f);
         ImGui::End();
         imgui.end(window);
 

@@ -4,7 +4,7 @@
 int main() {
     Coel::Window window("Sharpen Filter Example");
     Coel::create(window);
-    Scene::init(Simple::vertSrc, Simple::fragSrc);
+    Scene::init(Simple::vertSrc, Simple::fragSrc, window);
 
     const char *const quadVertSrc = R"(
     #version 440
@@ -52,7 +52,7 @@ int main() {
     while (window.isOpen) {
         Coel::bind(Scene::shader);
         Coel::bind(fbo);
-        Scene::draw(window.size);
+        Scene::draw(window);
 
         Coel::bind(window.fbo);
         Coel::Renderer::enableDepthTest(false);

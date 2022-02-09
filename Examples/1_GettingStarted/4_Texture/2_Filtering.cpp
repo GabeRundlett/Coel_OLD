@@ -37,7 +37,7 @@ int main() {
     Coel::create(shader, vertSrc, fragSrc);
     auto u_tex = Coel::findInt(shader, "u_tex");
     Coel::Texture texture;
-    Coel::create(texture, "Assets/UVGrid.png");
+    Coel::create(texture, "Assets/Textures/sheet.png");
     Coel::setMagFilter(texture, Coel::Nearest);
 
     while (window.isOpen) {

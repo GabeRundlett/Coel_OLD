@@ -5,7 +5,7 @@ int main() {
 
     Coel::create(window);
     Coel::init(spriteRenderer);
-    Coel::Renderer::setClearColor(0.24, 0.24, 0.32, 1);
+    Coel::Renderer::setClearColor(0.24f, 0.24f, 0.32f, 1.0f);
     Coel::Renderer::enableBlend(true);
 
     Coel::Texture spriteSheet;
@@ -22,14 +22,14 @@ int main() {
             Coel::Renderer::clearColor();
 
             spriteRenderer.begin();
-            spriteRenderer.submit({0, 0, 2, 2}, {texpos.x + texsize.x * offset, texpos.y, texsize.x, texsize.y}, spriteSheet);
+            spriteRenderer.submit({0, 0, 2, 2}, {texpos.x + texsize.x * static_cast<float>(offset), texpos.y, texsize.x, texsize.y}, spriteSheet);
             spriteRenderer.flush();
 
             imgui.begin();
             ImGui::Begin("Controls");
             ImGui::Text("First Frame");
-            ImGui::SliderFloat2("coordinates", (float *)&texpos, 0, 1);
-            ImGui::SliderFloat2("dimensions", (float *)&texsize, 0, 1);
+            ImGui::SliderFloat2("coordinates", reinterpret_cast<float *>(&texpos), 0, 1);
+            ImGui::SliderFloat2("dimensions", reinterpret_cast<float *>(&texsize), 0, 1);
             ImGui::SliderInt("offset", &offset, 0, 3);
             ImGui::End();
             imgui.end(window);

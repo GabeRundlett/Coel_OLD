@@ -62,7 +62,7 @@ int main() {
     // to the invocation directory, which is assumed to be the root
     // directory of this repository.
     Coel::Texture texture;
-    Coel::create(texture, "Assets/UVGrid.png");
+    Coel::create(texture, "Assets/Textures/sheet.png");
     // --------------------------------------------------------------
 
     while (window.isOpen) {

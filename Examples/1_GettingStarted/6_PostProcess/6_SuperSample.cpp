@@ -5,7 +5,7 @@ int main() {
     Coel::Window window{"Super Sampling Example"};
     Coel::create(window);
 
-    Scene::init(Simple::vertSrc, Simple::fragSrc);
+    Scene::init(Simple::vertSrc, Simple::fragSrc, window);
 
     const char *const quadVertSrc = R"(
     #version 440
@@ -39,7 +39,7 @@ int main() {
     auto u_fboTex = Coel::findInt(quadShader, "u_fboTex");
 
     window.onFboResize = [&renderTarget](Coel::Window &w) {
-        const float scale = 0.1;
+        const float scale = 0.1f;
         auto size = glm::ivec2(glm::vec2(w.size) * scale);
         Coel::create(renderTarget.fboColTex, size, Coel::RGBA, nullptr);
         Coel::setMagFilter(renderTarget.fboColTex, Coel::Nearest);
@@ -56,7 +56,7 @@ int main() {
     while (window.isOpen) {
         Coel::bind(Scene::shader);
         Coel::bind(renderTarget.fbo);
-        Scene::draw(window.size);
+        Scene::draw(window);
 
         Coel::bind(window.fbo);
         Coel::Renderer::enableDepthTest(false);

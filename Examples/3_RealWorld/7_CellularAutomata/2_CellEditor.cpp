@@ -1,16 +1,6 @@
 #include <Coel.hpp>
-#ifdef WIN32
-#include <Windows.h>
-static inline void s_sleep(std::size_t ms) {
-    Sleep(ms);
-}
-#else
-#include <unistd.h>
-static inline void s_sleep(std::size_t ms) {
-    usleep(ms * 1000);
-}
-#endif
 #include <iostream>
+#include <thread>
 
 #include <Coel/Renderers/ImGui/ImGuiTextEditor.hpp>
 
@@ -19,8 +9,8 @@ void dockspace() {
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
     ImGuiViewport *viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(viewport->GetWorkPos());
-    ImGui::SetNextWindowSize(viewport->GetWorkSize());
+    ImGui::SetNextWindowPos(viewport->WorkPos);
+    ImGui::SetNextWindowSize(viewport->WorkSize);
     ImGui::SetNextWindowViewport(viewport->ID);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -175,13 +165,13 @@ void main() {
     Coel::Renderer::Quad2d quadRenderer;
     Coel::Shader quadShader;
     Coel::create(quadShader, vertSrc, quadFragSrc);
-    auto u_tex = Coel::findInt(quadShader, "u_tex");
+    // auto u_tex = Coel::findInt(quadShader, "u_tex");
 
     glm::vec2 tileSize = {1.f / gridSize.x, 1.f / gridSize.y};
 
     Coel::Shader startGridShader;
     Coel::create(startGridShader, vertSrc, startGridFragSrc);
-    auto u_copyGridTex = Coel::findInt(startGridShader, "u_tex");
+    // auto u_copyGridTex = Coel::findInt(startGridShader, "u_tex");
 
     std::string automataFragSrc;
     Coel::Shader automataShader;
@@ -268,6 +258,7 @@ void main() {
                 case Coel::Key::R:
                 case Coel::Key::F5:
                     reset_automata();
+                    break;
                 case Coel::Key::S:
                     if (w.key.mods & Coel::Mod::Control)
                         create_automata_program(editor.GetText());
@@ -289,11 +280,11 @@ void main() {
             dockspace();
 
             ImGui::Begin("Game Of Life");
-            auto size = gridTextures[i].size;
+            // auto size = gridTextures[i].size;
             auto viewport_size = ImGui::GetWindowSize();
             viewport_size.x -= 18, viewport_size.y -= 18;
 
-            ImGui::Image((void *)(intptr_t)gridTextures[i].id, viewport_size);
+            ImGui::Image(reinterpret_cast<void *>(static_cast<intptr_t>(gridTextures[i].id)), viewport_size);
             ImGui::End();
 
             auto cpos = editor.GetCursorPosition();
@@ -314,7 +305,8 @@ void main() {
             ImGui::End();
 
             imgui.end(window);
-            s_sleep(10);
+            using namespace std::literals;
+            std::this_thread::sleep_for(10ms);
             Coel::update(window);
         }
     }

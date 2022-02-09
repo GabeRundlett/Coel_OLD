@@ -25,7 +25,7 @@ CREATE_EXAMPLE(1_GettingStarted 4_Texture 3_Wrapping)
 CREATE_EXAMPLE(1_GettingStarted 4_Texture 4_Multiple)
 
 CREATE_EXAMPLE(1_GettingStarted 5_Model 1_Simple)
-# CREATE_EXAMPLE(1_GettingStarted 5_Model 2_Textured)
+CREATE_EXAMPLE(1_GettingStarted 5_Model 2_Textured)
 
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 1_Invert)
 CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 2_Sharpen)
@@ -39,8 +39,8 @@ CREATE_EXAMPLE(1_GettingStarted 6_PostProcess 7_SSAO)
 # CREATE_EXAMPLE(1_GettingStarted 7_Text 2_Input)
 
 # CREATE_EXAMPLE(1_GettingStarted 8_Renderers 2_Batch2d)
-# CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
-CREATE_EXAMPLE(1_GettingStarted 8_Renderers 4_Sprites)
+CREATE_EXAMPLE(1_GettingStarted 8_Renderers 3_CustomBatch)
+# CREATE_EXAMPLE(1_GettingStarted 8_Renderers 4_Sprites)
 
 CREATE_EXAMPLE(1_GettingStarted 9_ImGui 1_Demo)
 CREATE_EXAMPLE(1_GettingStarted 9_ImGui 2_Dockspace)
@@ -50,11 +50,12 @@ CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
 # CREATE_EXAMPLE(2_Lighting 1_Phong 2_Specular)
 # CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
 
-# CREATE_EXAMPLE(2_Lighting 2_Fog 1_Simple)
-# CREATE_EXAMPLE(2_Lighting 3_Shadow 1_Simple)
+CREATE_EXAMPLE(2_Lighting 2_Fog 1_Simple)
+CREATE_EXAMPLE(2_Lighting 3_Shadow 1_Simple)
+CREATE_EXAMPLE(2_Lighting 3_Shadow 2_Vxgi)
 
-# CREATE_EXAMPLE(2_Lighting 5_PBR 1_BRDF)
-# CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
+CREATE_EXAMPLE(2_Lighting 5_PBR 1_BRDF)
+CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
 
 # REAL WORLD EXAMPLES
 CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 1_PlaneGen)

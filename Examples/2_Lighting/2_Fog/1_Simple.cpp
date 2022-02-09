@@ -2,7 +2,8 @@
 #include <iostream>
 
 int main() {
-    Coel::Window window(800, 600, "Combined Phong Lighting Example");
+    Coel::Window window({800, 600}, "Combined Phong Lighting Example");
+    Coel::create(window);
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -19,6 +20,8 @@ int main() {
     uniform mat4 u_projMat;
     uniform mat4 u_viewMat;
     uniform mat4 u_modlMat;
+    uniform mat4 u_modlNrmMat;
+    
     void main() {
         vec3 lightPos = vec3(0, 10, 8);
         v_col = vec3(1, 0, 0);
@@ -54,38 +57,39 @@ int main() {
     }
     )";
 
-    Coel::Shader shader(vertSrc, fragSrc);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
 
-    auto u_projMat = shader.findMat4("u_projMat");
-    auto u_viewMat = shader.findMat4("u_viewMat");
-    auto u_modlMat = shader.findMat4("u_modlMat");
-    glm::mat4 projMat, viewMat, modlMat;
+    auto u_projMat = Coel::findMat4(shader, "u_projMat");
+    auto u_viewMat = Coel::findMat4(shader, "u_viewMat");
+    auto u_modlMat = Coel::findMat4(shader, "u_modlMat");
+    auto u_modlNrmMat = Coel::findMat4(shader, "u_modlNrmMat");
+    glm::mat4 projMat, viewMat;
 
-    auto u_fogColor = shader.findFloat3("u_fogColor");
+    auto u_fogColor = Coel::findFloat3(shader, "u_fogColor");
     glm::vec3 fogColor{0.6, 0.6, 0.8};
 
-    Coel::Model model("Assets/dragon.obj");
+    Coel::Model model;
+    Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
 
     Coel::Renderer::enableCulling(true);
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::setClearColor(fogColor.r, fogColor.g, fogColor.b, 1);
 
-    while (window.isOpen()) {
+    while (window.isOpen) {
         Coel::Renderer::clear();
 
-        shader.bind();
+        Coel::bind(shader);
 
-        projMat = glm::perspective(glm::radians(45.f), (float)window.size.x / window.size.y, 0.01f, 100.f);
+        projMat = glm::perspective(glm::radians(45.f), static_cast<float>(window.size.x) / static_cast<float>(window.size.y), 0.01f, 100.f);
         viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -5, -18});
-        modlMat = glm::rotate(glm::identity<glm::mat4>(), (float)window.getTime(), {0, 1, 0});
 
-        shader.send(u_projMat, &projMat);
-        shader.send(u_viewMat, &viewMat);
-        shader.send(u_modlMat, &modlMat);
-        shader.send(u_fogColor, &fogColor);
+        Coel::send(u_projMat, &projMat);
+        Coel::send(u_viewMat, &viewMat);
+        Coel::send(u_fogColor, &fogColor);
 
-        model.draw();
+        Coel::Renderer::draw(model, u_modlMat, u_modlNrmMat);
 
-        window.update();
+        Coel::update(window);
     }
 }

@@ -4,7 +4,7 @@
 int main() {
     Coel::Window window("Blurring Filter Example");
     Coel::create(window);
-    Scene::init(Simple::vertSrc, Simple::fragSrc);
+    Scene::init(Simple::vertSrc, Simple::fragSrc, window);
 
     const char *const gaussVertSrc[2]{
         R"(
@@ -125,7 +125,7 @@ int main() {
     while (window.isOpen) {
         Coel::bind(Scene::shader);
         Coel::bind(fbo);
-        Scene::draw(window.size);
+        Scene::draw(window);
         Coel::Renderer::enableCulling(false);
         Coel::Renderer::enableDepthTest(false);
 
@@ -139,7 +139,7 @@ int main() {
                 Coel::bind(fboColTex, 0);
             else
                 Coel::bind(gaussFboTexs[i - 1], 0);
-            Coel::send(u_renderTargetSize[id], gaussFbos[i].size[id]);
+            Coel::send(u_renderTargetSize[id], static_cast<float>(gaussFbos[i].size[id]));
             quadRenderer.draw();
         }
 

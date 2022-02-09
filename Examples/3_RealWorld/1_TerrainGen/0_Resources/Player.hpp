@@ -3,7 +3,7 @@
 
 template <typename T> struct Animatable {
     T base, low_bound, high_bound;
-    double speed = 1.f, val = (base - low_bound) / (high_bound - low_bound);
+    double speed = 1.0, val = static_cast<double>(base - low_bound) / static_cast<double>(high_bound - low_bound);
     int modifier = 0;
 
     inline void set_bounds(const T l, const T h) {
@@ -11,7 +11,7 @@ template <typename T> struct Animatable {
     }
 
     void update(const float elapsed) {
-        val += elapsed * speed * modifier; //
+        val += static_cast<double>(elapsed) * speed * modifier; //
         if (val > 1) val = 1, modifier = 0;
         if (val < 0) val = 0, modifier = 0;
     }
@@ -20,8 +20,8 @@ template <typename T> struct Animatable {
     inline void play_reverse() { modifier = -1; }
 
     inline T get() {
-        auto width = high_bound - low_bound;
-        return static_cast<T>(val * width + low_bound);
+        auto width = static_cast<T>(high_bound - low_bound);
+        return static_cast<T>(val) * width + low_bound;
     }
 
     void reset() { val = base; }
@@ -41,7 +41,7 @@ struct Player {
     float mouseSensitivity = 0.0001f, movementSpeed = 1000.f;
 
     Animatable<float> fov{cam.fov, cam.fov, cam.fov * 1.05f, 10};
-    Animatable<float> height{1.8, 1.2, 1.8, 10};
+    Animatable<float> height{1.8f, 1.2f, 1.8f, 10.0};
 
     Player()
         : shouldMoveForward(false), shouldMoveBackward(false), shouldMoveLeft(false), shouldMoveRight(false),
@@ -99,16 +99,16 @@ struct Player {
         default: break;
         }
     }
-    void mouseButtonUpdate(const Coel::MouseInfo &mInfo) {}
+    void mouseButtonUpdate(const Coel::MouseInfo &) {}
     void mouseScrollUpdate(const Coel::MouseInfo &mInfo) {
-        fov.base = cam.fov - 0.01f * (float)mInfo.scrollOffset.y;
-        fov.set_bounds(cam.fov, cam.fov * 1.25);
+        fov.base = cam.fov - 0.01f * static_cast<float>(mInfo.scrollOffset.y);
+        fov.set_bounds(cam.fov, cam.fov * 1.25f);
         cam.updateFov(fov.base);
     }
     void mouseMoveUpdate(const Coel::MouseInfo &mInfo) {
-        auto offset = (mInfo.pos - mouseCenter) * (double)mouseSensitivity;
+        auto offset = (mInfo.pos - mouseCenter) * static_cast<double>(mouseSensitivity);
         if (UPDATE_ROTATION) {
-            rot.x -= (float)offset.y * fov.base, rot.y -= (float)offset.x * fov.base;
+            rot.x -= static_cast<float>(offset.y) * fov.base, rot.y -= static_cast<float>(offset.x) * fov.base;
             if (rot.x < -glm::radians(90.f)) rot.x = -glm::radians(90.f);
             if (rot.x > glm::radians(90.f)) rot.x = glm::radians(90.f);
         }
@@ -145,7 +145,7 @@ struct Player {
 
             isFalling = true;
             const auto c = std::cos(rot.y), s = std::sin(rot.y);
-            auto speed = vel.length();
+            // auto speed = vel.length();
 
             if (shouldMoveForward) {
                 vel.x += acceleration * elapsed * s;

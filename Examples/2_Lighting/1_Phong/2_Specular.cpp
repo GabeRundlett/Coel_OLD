@@ -2,7 +2,8 @@
 #include <iostream>
 
 int main() {
-    Coel::Window window(800, 600, "Specular Phong Lighting Example");
+    Coel::Window window({1280, 960}, "Specular Phong Lighting Example");
+    Coel::create(window);
 
     const char *const vertSrc = R"(
     #version 450 core
@@ -35,7 +36,8 @@ int main() {
     }
     )";
 
-    Coel::Shader shader(vertSrc, fragSrc);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
 
     auto u_projMat = shader.findMat4("u_projMat");
     auto u_viewMat = shader.findMat4("u_viewMat");

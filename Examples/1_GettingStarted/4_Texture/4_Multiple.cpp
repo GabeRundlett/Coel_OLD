@@ -38,10 +38,10 @@ int main() {
     Coel::create(shader, vertSrc, fragSrc);
     auto u_tex1 = Coel::findInt(shader, "u_tex1");
     Coel::Texture texture1;
-    Coel::create(texture1, "Assets/ColorGrid.png");
+    Coel::create(texture1, "Assets/Textures/sheet.png");
     auto u_tex2 = Coel::findInt(shader, "u_tex2");
     Coel::Texture texture2;
-    Coel::create(texture2, "Assets/UVGrid.png");
+    Coel::create(texture2, "Assets/Textures/player.png");
 
     while (window.isOpen) {
         Coel::Renderer::clearColor();

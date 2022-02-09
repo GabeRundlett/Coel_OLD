@@ -1,38 +1,95 @@
 #pragma once
 #include <Coel.hpp>
 
+#include "../../5_Model/0_Player.hpp"
+
 namespace Scene {
     Coel::Shader shader;
-    Coel::Uniform<glm::mat4> u_projMat, u_viewMat, u_modlMat;
-    glm::mat4 projMat{1}, viewMat{1}, modlMat{1};
-    Coel::Model stallModel;
-    Coel::Texture stallTexture;
-    Coel::Uniform<int> u_stallTex;
+    Coel::Uniform<glm::mat4> u_projMat, u_viewMat, u_modlMat, u_modlNrmMat;
+    Coel::Uniform<int> u_tex, u_nrm_tex;
+    glm::mat4 projMat{1}, viewMat{1};
+    struct Object {
+        Coel::Model model;
+    };
+    std::vector<Object> objects;
 
-    void init(const char *const vertSrc, const char *const fragSrc) {
+    Player player{};
+    Camera camera{};
+    bool is_paused = true;
+
+    void toggle_pause(Coel::Window &window) {
+        double center_x = static_cast<double>(window.size.x) / 2;
+        double center_y = static_cast<double>(window.size.y) / 2;
+        Coel::cursorTo(window, {center_x, center_y});
+        if (is_paused) {
+            Coel::cursorMode(window, Coel::CursorMode::Hidden);
+            is_paused = false;
+        } else {
+            Coel::cursorMode(window, Coel::CursorMode::Normal);
+            is_paused = true;
+        }
+    }
+
+    void init(const char *const vertSrc, const char *const fragSrc, Coel::Window &window) {
+        player.pos = {-1.75, -2.5, -3};
+        player.rot = {glm::radians(-30.0f), glm::radians(90 - 65.0f), 0.0f};
+
+        toggle_pause(window);
+
+        window.onKey = [&](Coel::Window &window) {
+            if (window.key.code == input::keybinds::TOGGLE_PAUSE && window.key.action == GLFW_PRESS)
+                toggle_pause(window);
+            if (!is_paused) {
+                player.on_key(window.key.code, window.key.action);
+            }
+        };
+        window.onMouseMove = [&](Coel::Window &window) {
+            double center_x = static_cast<double>(window.size.x) / 2;
+            double center_y = static_cast<double>(window.size.y) / 2;
+
+            auto x = window.mouse.pos.x;
+            auto y = window.mouse.pos.y;
+            auto dx = x - center_x;
+            auto dy = y - center_y;
+            if (!is_paused) {
+                player.on_mouse_move(dx, -dy);
+                Coel::cursorTo(window, {center_x, center_y});
+            }
+        };
+
         Coel::create(shader, vertSrc, fragSrc);
         u_projMat = Coel::findMat4(shader, "u_projMat");
         u_viewMat = Coel::findMat4(shader, "u_viewMat");
         u_modlMat = Coel::findMat4(shader, "u_modlMat");
-        u_stallTex = Coel::findInt(shader, "u_stallTex");
+        u_modlNrmMat = Coel::findMat4(shader, "u_modlNrmMat");
+        u_tex = Coel::findInt(shader, "u_tex");
+        u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
 
-        Coel::create(stallModel, "Assets/Models/stall.obj");
-        Coel::create(stallTexture, "Assets/Textures/stall.png");
+        objects.resize(2);
+        Coel::open(objects[0].model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+
+        Coel::open(objects[1].model, "Assets/Objects/frog/scene.gltf");
+        for (auto &o : objects[1].model.objects)
+            o.modlMat *= glm::scale(glm::rotate(glm::translate(glm::mat4(1), {0, 0.4f, 0}), 0.25f, {1, 0, 0}), {1, 1, 1});
     }
 
-    void draw(const glm::ivec2 &size, float rotation = -1.f) {
+    void draw(Coel::Window &window) {
         Coel::Renderer::enableDepthTest(true);
         Coel::Renderer::enableCulling(true);
+        Coel::Renderer::setClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        Coel::Renderer::setClearDepth(1.0f);
         Coel::Renderer::clear();
-        if (rotation == -1.f) rotation = (float)Coel::getTime();
-        projMat = glm::perspective(glm::radians(45.f), (float)size.x / size.y, 0.01f, 100.f);
-        viewMat = glm::translate(glm::identity<glm::mat4>(), {0, -1, -5});
-        modlMat = glm::rotate(glm::identity<glm::mat4>(), rotation, {0, 1, 0});
+        player.update(static_cast<float>(window.elapsed));
+        camera.fov = player.fov;
+        camera.resize(window.size.x, window.size.y);
+        camera.set_pos(player.pos);
+        camera.set_rot(player.rot.x, player.rot.y);
+        projMat = camera.proj_mat;
+        viewMat = camera.vrot_mat * camera.vtrn_mat;
+
         Coel::send(u_projMat, &projMat);
         Coel::send(u_viewMat, &viewMat);
-        Coel::send(u_modlMat, &modlMat);
-        Coel::send(u_stallTex, 0);
-        Coel::bind(stallTexture, 0);
-        Coel::Renderer::draw(stallModel);
+        for (auto &o : objects)
+            Coel::Renderer::draw(o.model, u_modlMat, u_modlNrmMat, u_tex, u_nrm_tex);
     }
 } // namespace Scene
