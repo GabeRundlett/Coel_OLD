@@ -55,21 +55,20 @@ int main() {
         uniform float u_skyContrib;
 
         float shadowCalc(in float dotLightNrm) {
-            vec3 pos = v_lightSpacePos;
-            if (pos.z > 1) pos.z = 1;
-            
-            float factor = 0.f;
-            float bias = max(0.005 * (1 - dotLightNrm), 0.0005);
-            vec2 texelSize = 1.f / textureSize(u_shadowMap, 0);
-
-            for (int y = -2; y <= 2; ++y) {
-                for (int x = -2; x <= 2; ++x) {
-                    float depth = texture(u_shadowMap, pos.xy + vec2(float(x), float(y)) * texelSize).r;
-                    if (depth + bias < pos.z)
-                        factor += 1.0f / (5 * 5);
-                }
-            }
-            return 1 - factor;
+            // vec3 pos = v_lightSpacePos;
+            // if (pos.z > 1) pos.z = 1;
+            // float factor = 0.f;
+            // float bias = max(0.005 * (1 - dotLightNrm), 0.0005);
+            // vec2 texelSize = 1.f / textureSize(u_shadowMap, 0);
+            // for (int y = -2; y <= 2; ++y) {
+            //     for (int x = -2; x <= 2; ++x) {
+            //         float depth = texture(u_shadowMap, pos.xy + vec2(float(x), float(y)) * texelSize).r;
+            //         if (depth + bias < pos.z)
+            //             factor += 1.0f / (5 * 5);
+            //     }
+            // }
+            // return 1 - factor;
+            return 0.0f;
         }
 
         vec3 filmicToneMapping(vec3 color) {
@@ -210,7 +209,7 @@ int main() {
         // auto u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
         std::vector<Coel::Model> objects;
         objects.resize(2);
-        Coel::open(objects[0], "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+        Coel::open(objects[0], "C:/users/gabe/Downloads/gonza/export/z-up/gonza.gltf");
         Coel::open(objects[1], "Assets/Objects/frog/scene.gltf");
 
         for (auto &o : objects[1].objects)
@@ -261,21 +260,20 @@ int main() {
         uniform float u_skyContrib;
 
         float shadowCalc(in float dotLightNrm) {
-            vec3 pos = v_lightSpacePos;
-            if (pos.z > 1) pos.z = 1;
-            
-            float factor = 0.f;
-            float bias = max(0.005 * (1 - dotLightNrm), 0.0005);
-            vec2 texelSize = 1.f / textureSize(u_shadowMap, 0);
-
-            for (int y = -2; y <= 2; ++y) {
-                for (int x = -2; x <= 2; ++x) {
-                    float depth = texture(u_shadowMap, pos.xy + vec2(float(x), float(y)) * texelSize).r;
-                    if (depth + bias < pos.z)
-                        factor += 1.0f / (5 * 5);
-                }
-            }
-            return 1 - factor;
+            // vec3 pos = v_lightSpacePos;
+            // if (pos.z > 1) pos.z = 1;
+            // float factor = 0.f;
+            // float bias = max(0.005 * (1 - dotLightNrm), 0.0005);
+            // vec2 texelSize = 1.f / textureSize(u_shadowMap, 0);
+            // for (int y = -2; y <= 2; ++y) {
+            //     for (int x = -2; x <= 2; ++x) {
+            //         float depth = texture(u_shadowMap, pos.xy + vec2(float(x), float(y)) * texelSize).r;
+            //         if (depth + bias < pos.z)
+            //             factor += 1.0f / (5 * 5);
+            //     }
+            // }
+            // return 1 - factor;
+            return 0.0f;
         }
 
         vec3 filmicToneMapping(vec3 color) {

@@ -65,12 +65,12 @@ namespace Scene {
         u_tex = Coel::findInt(shader, "u_tex");
         u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
 
-        objects.resize(2);
-        Coel::open(objects[0].model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+        objects.resize(1);
+        Coel::open(objects[0].model, "C:/users/gabe/Downloads/gonza/export/z-up/gonza.gltf");
 
-        Coel::open(objects[1].model, "Assets/Objects/frog/scene.gltf");
-        for (auto &o : objects[1].model.objects)
-            o.modlMat *= glm::scale(glm::rotate(glm::translate(glm::mat4(1), {0, 0.4f, 0}), 0.25f, {1, 0, 0}), {1, 1, 1});
+        // Coel::open(objects[1].model, "Assets/Objects/frog/scene.gltf");
+        // for (auto &o : objects[1].model.objects)
+        //     o.modlMat *= glm::scale(glm::rotate(glm::translate(glm::mat4(1), {0, 0.4f, 0}), 0.25f, {1, 0, 0}), {1, 1, 1});
     }
 
     void draw(Coel::Window &window) {

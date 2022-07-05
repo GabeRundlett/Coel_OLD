@@ -31,7 +31,10 @@ namespace Ssao {
     void main() {
         vec3 pos = (viewMat * vec4(texture(u_posTex, v_tex).xyz, 1)).xyz;
         vec3 nrm = normalize(texture(u_nrmTex, v_tex).xyz);
-        vec3 col = texture(u_colTex, v_tex).rgb;
+        vec4 tex_col = texture(u_colTex, v_tex);
+        if (tex_col.a == 0)
+            discard;
+        vec3 col = tex_col.rgb;
         color = vec4(col, 1);
         float radius = 0.5;
         float bias = 0.025;
@@ -110,9 +113,9 @@ namespace Ssao {
     Coel::Uniform<int> u_blur_fboTex;
 
     void init(glm::ivec2 window_size) {
-        Coel::create(gbufferPosTex, window_size, Coel::RGB16F, nullptr);
-        Coel::create(gbufferNrmTex, window_size, Coel::RGB16F, nullptr);
-        Coel::create(gbufferColTex, window_size, Coel::RGB16F, nullptr);
+        Coel::create(gbufferPosTex, window_size, Coel::RGBA16F, nullptr);
+        Coel::create(gbufferNrmTex, window_size, Coel::RGBA16F, nullptr);
+        Coel::create(gbufferColTex, window_size, Coel::RGBA16F, nullptr);
         Coel::create(gbufferDepRbo, window_size);
         Coel::create(gbufferFbo, window_size);
         Coel::attach(gbufferFbo, {gbufferPosTex, gbufferNrmTex, gbufferColTex});

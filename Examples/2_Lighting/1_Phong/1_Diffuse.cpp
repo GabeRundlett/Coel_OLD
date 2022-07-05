@@ -5,6 +5,7 @@ int main() {
     Coel::Window window({1280, 960}, "Diffuse Phong Shading Example");
     Coel::create(window);
     Scene::init(Deferred::vertSrc, Deferred::fragSrc, window);
+    Deferred::init(window.size);
 
     const char *const quadVertSrc = R"(
     #version 440
@@ -27,31 +28,23 @@ int main() {
     uniform vec3 u_lightCol;
     uniform float u_lightIntensity;
     void main() {
-        vec4 fragPos = texture(u_posTex, v_tex);
-        vec4 fragNrm = normalize(texture(u_nrmTex, v_tex));
-        vec4 fragCol = texture(u_colTex, v_tex);
+        // vec4 fragPos = texture(u_posTex, v_tex);
+        // vec4 fragNrm = normalize(texture(u_nrmTex, v_tex));
+        // vec4 fragCol = texture(u_colTex, v_tex);
 
-        vec3 lightDir = u_lightPos - fragPos.xyz;
-        float lightDist = length(lightDir);
-        lightDir /= lightDist;
-        float lightAttenuation = 1 / pow(lightDist, 2);
+        // vec3 lightDir = u_lightPos - fragPos.xyz;
+        // float lightDist = length(lightDir);
+        // lightDir /= lightDist;
+        // float lightAttenuation = 1 / pow(lightDist, 2);
         
-        float diffuseFactor = max(0.2, dot(lightDir, fragNrm.xyz));
-        color = fragCol * diffuseFactor * u_lightCol.xyzz * lightAttenuation * u_lightIntensity;
-        color.w = 1;
-    })";
+        // float diffuseFactor = max(0.2, dot(lightDir, fragNrm.xyz));
+        // color = fragCol * diffuseFactor * u_lightCol.xyzz * lightAttenuation * u_lightIntensity;
+        // color.w = 1;
 
-    Coel::Fbo gbufferFbo;
-    Coel::Rbo gbufferDepRbo;
-    Coel::Texture gbufferPosTex, gbufferNrmTex, gbufferColTex;
+        color = vec4(1, 0, 1, 1);
+    })";
+    
     Coel::Shader quadShader;
-    Coel::create(gbufferPosTex, window.size, Coel::RGBA16F, nullptr);
-    Coel::create(gbufferNrmTex, window.size, Coel::RGB16F, nullptr);
-    Coel::create(gbufferColTex, window.size, Coel::RGBA, nullptr);
-    Coel::create(gbufferDepRbo, window.size);
-    Coel::create(gbufferFbo, window.size);
-    Coel::attach(gbufferFbo, {gbufferPosTex, gbufferNrmTex, gbufferColTex});
-    Coel::attach(gbufferFbo, gbufferDepRbo);
     Coel::create(quadShader, quadVertSrc, quadFragSrc);
 
     auto u_posTex = Coel::findInt(quadShader, "u_posTex");
@@ -66,24 +59,14 @@ int main() {
     float lightIntensity = 40;
 
     while (window.isOpen) {
-        Coel::bind(gbufferFbo);
-        Coel::Renderer::setClearColor(0, 0, 0, 1);
-        Scene::draw(window);
         Coel::bind(window.fbo);
-        Coel::Renderer::enableCulling(false);
-        Coel::Renderer::setClearColor(1, 0, 0, 1);
-        Coel::Renderer::clear();
-
+        Deferred::begin();
+        Scene::draw(window);
         Coel::bind(quadShader);
         Coel::send(u_lightPos, &lightPos);
         Coel::send(u_lightCol, &lightCol);
         Coel::send(u_lightIntensity, lightIntensity);
-        Coel::send(u_posTex, 0);
-        Coel::bind(gbufferPosTex, 0);
-        Coel::send(u_nrmTex, 1);
-        Coel::bind(gbufferNrmTex, 1);
-        Coel::send(u_colTex, 2);
-        Coel::bind(gbufferColTex, 2);
+        Deferred::bindUniforms(u_posTex, 0, u_nrmTex, 1, u_colTex, 2);
         quadRenderer.draw();
 
         imgui.begin();

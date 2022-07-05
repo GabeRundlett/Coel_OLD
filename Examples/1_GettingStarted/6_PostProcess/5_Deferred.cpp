@@ -44,8 +44,8 @@ int main() {
     Coel::Texture gbufferPosTex, gbufferNrmTex, gbufferColTex;
     Coel::Shader quadShader;
     Coel::create(gbufferPosTex, window.size, Coel::RGBA16F, nullptr);
-    Coel::create(gbufferNrmTex, window.size, Coel::RGB16F, nullptr);
-    Coel::create(gbufferColTex, window.size, Coel::RGBA, nullptr);
+    Coel::create(gbufferNrmTex, window.size, Coel::RGBA16F, nullptr);
+    Coel::create(gbufferColTex, window.size, Coel::RGBA16F, nullptr);
     Coel::create(gbufferDepRbo, window.size);
     Coel::create(gbufferFbo, window.size);
     Coel::attach(gbufferFbo, {gbufferPosTex, gbufferNrmTex, gbufferColTex});

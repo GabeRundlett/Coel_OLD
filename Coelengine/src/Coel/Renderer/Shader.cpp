@@ -5,6 +5,7 @@
 #ifndef NDEBUG
 #include <iostream>
 #include <vector>
+#include <sstream>
 #endif
 
 namespace Coel {
@@ -23,6 +24,14 @@ namespace Coel {
             glGetShaderInfoLog(compiled_object_id, temp, &temp, &infoLog[0]);
             glDeleteShader(compiled_object_id);
             std::cout << "COMPILE ERROR:\n" << infoLog.data() << std::endl;
+            // std::vector<std::string> lines;
+            std::istringstream f(src);
+            int line_i = 0;
+            std::string line;
+            while (getline(f, line)) {
+                line_i++;
+                std::cout << line_i << ": " << line << "\n";
+            }
         }
 #endif
 

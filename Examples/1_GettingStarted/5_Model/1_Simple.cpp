@@ -73,7 +73,7 @@ int main() {
     in vec2 v_tex;
     out vec4 frag_color;
     void main() {
-        frag_color = vec4(v_nrm), 1);
+        frag_color = vec4(v_nrm, 1);
     })";
 
     Coel::Shader shader;
@@ -84,7 +84,7 @@ int main() {
     auto u_modlNrmMat = Coel::findMat4(shader, "u_modlNrmMat");
     glm::mat4 projMat{1}, viewMat{1};
     Coel::Model model;
-    Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+    Coel::open(model, "C:/users/gabe/Downloads/gonza/export/z-up/gonza.gltf");
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(false);
     Coel::Renderer::setClearColor(0.2f, 0.2f, 0.3f, 1.0f);

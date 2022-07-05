@@ -84,12 +84,12 @@ int main() {
     auto u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
     glm::mat4 projMat{1}, viewMat{1};
     std::vector<Coel::Model> objects;
-    constexpr auto FROG_X = 5, FROG_Y = 10;
+    constexpr auto FROG_X = 1, FROG_Y = 1;
     objects.resize(FROG_X * FROG_Y);
     for (int yi = 0; yi < FROG_Y; ++yi)
         for (int xi = 0; xi < FROG_X; ++xi) {
             size_t index = xi + yi * FROG_X;
-            Coel::open(objects[index], "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+            Coel::open(objects[index], "C:/users/gabe/Downloads/gonza/export/z-up/gonza.gltf");
             
             for (auto &o : objects[index].objects)
                 o.modlMat = glm::scale(glm::rotate(glm::translate(glm::mat4(1), {27.4923f * xi, 0.0f, 16.4608f * yi}), 0.0f, {1, 0, 0}), {1, 1, 1}) * o.modlMat;
