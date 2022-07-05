@@ -131,15 +131,9 @@ struct automaton_5rj9aiBR {
     const char *const conwaysGameOfLife = R"(
 bool automata_main() {
     if (otto.is_alive) {
-        if (otto.neighbor_count < 2) 
-            return false;
-        if (otto.neighbor_count > 3) 
-            return false;
-        return true;
+        return otto.neighbors[7];
     } else {
-        if (otto.neighbor_count == 3) 
-            return true;
-        return false;
+        return otto.neighbors[1];
     }
 })";
     const char *const automataFragSrc_end = R"(
@@ -159,7 +153,7 @@ void main() {
             otto.neighbors[i] = false;
         }
     }
-    color_5rj9aiBR = vec4(automata_main());
+    color_5rj9aiBR = vec4(automata_main() || v_tex_5rj9aiBR[4].y > 0.95);
 })";
 
     Coel::Renderer::Quad2d quadRenderer;
@@ -203,6 +197,8 @@ void main() {
     for (auto &tex : gridTextures) {
         Coel::setMinFilter(tex, Coel::Nearest);
         Coel::setMagFilter(tex, Coel::Nearest);
+        Coel::setWrapMode(tex, Coel::TextureWrap::ClampToBorder);
+        // Coel::setBorderColor(tex, {1.0f, 1.0f, 1.0f, 1.0f});
     }
 
     Coel::Rbo fboDepthRbo;

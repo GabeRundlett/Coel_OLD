@@ -56,7 +56,8 @@ int main() {
         float time = static_cast<float>(Coel::getTime());
 
         for (unsigned int i = 0; i < 10; ++i) {
-            if (vertexCount + 4 > MAX_VCOUNT || indexCount + 6 > MAX_ICOUNT) flush();
+            if (vertexCount + 4 > MAX_VCOUNT || indexCount + 6 > MAX_ICOUNT)
+                flush();
 
             float x = 0.2f * static_cast<float>(i) - 1.0f;
             float y = std::sin(0.5f * static_cast<float>(i) + time) * 0.9f - 0.1f;

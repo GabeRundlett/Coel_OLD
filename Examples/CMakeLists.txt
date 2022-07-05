@@ -47,8 +47,8 @@ CREATE_EXAMPLE(1_GettingStarted 9_ImGui 2_Dockspace)
 
 # 3D LIGHTING EXAMPLES
 CREATE_EXAMPLE(2_Lighting 1_Phong 1_Diffuse)
-# CREATE_EXAMPLE(2_Lighting 1_Phong 2_Specular)
-# CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
+CREATE_EXAMPLE(2_Lighting 1_Phong 2_Specular)
+CREATE_EXAMPLE(2_Lighting 1_Phong 3_Combined)
 
 CREATE_EXAMPLE(2_Lighting 2_Fog 1_Simple)
 CREATE_EXAMPLE(2_Lighting 3_Shadow 1_Simple)
@@ -59,16 +59,15 @@ CREATE_EXAMPLE(2_Lighting 5_PBR 2_ImageBased)
 
 # REAL WORLD EXAMPLES
 CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 1_PlaneGen)
-# CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 2_HeightMap)
-# CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 3_TerrainChunks)
+CREATE_EXAMPLE(3_RealWorld 1_TerrainGen 2_HeightMap)
 
 # CREATE_EXAMPLE(3_RealWorld 2_MarchingCubes 1_PointGen)
 CREATE_EXAMPLE(3_RealWorld 3_Platformer Main)
 # CREATE_EXAMPLE(3_RealWorld 4_Splines 1_Bezier)
 # CREATE_EXAMPLE(3_RealWorld 4_Splines 2_CatmullRom)
 
-# CREATE_EXAMPLE(3_RealWorld 5_Minecraft 1_Renderer)
-# CREATE_EXAMPLE(3_RealWorld 5_Minecraft 2_Player)
+CREATE_EXAMPLE(3_RealWorld 5_Minecraft 1_Renderer)
+CREATE_EXAMPLE(3_RealWorld 5_Minecraft 2_Player)
 
 CREATE_EXAMPLE(3_RealWorld 6_SpriteAnimation 1_SpriteAnimation)
 CREATE_EXAMPLE(3_RealWorld 7_CellularAutomata 1_gameoflife)

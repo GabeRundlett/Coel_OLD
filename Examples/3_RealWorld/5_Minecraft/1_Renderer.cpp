@@ -7,19 +7,23 @@ int main() {
 
     Coel::Renderer::init(batch, MAX_VSIZE, MAX_ISIZE);
 
-    Coel::Shader shader(vertSrc, fragSrc);
-    auto u_proj = shader.findMat4("u_proj");
-    auto u_view = shader.findMat4("u_view");
-    Coel::Texture texture("Assets/dirt.png");
-    texture.setMagFilter(Coel::Filter::Nearest);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
+    auto u_proj = Coel::findMat4(shader, "u_proj");
+    auto u_view = Coel::findMat4(shader, "u_view");
+    Coel::Texture texture;
+    Coel::create(texture, "Assets/dirt.png");
+    Coel::setMagFilter(texture, Coel::Nearest);
     Coel::Camera3D cam;
     cam.updatePosition({0, 0, 0});
     cam.updateRotation({0, 0, 0});
 
     window.onResize = [&cam, &shader, &u_proj, &u_view](Coel::Window &w) {
         cam.updateAspect(w.size);
-        shader.send(u_proj, &cam.projMat);
-        shader.send(u_view, &cam.viewMat);
+
+        Coel::bind(shader);
+        Coel::send(u_proj, &cam.projMat);
+        Coel::send(u_view, &cam.viewMat);
     };
 
     window.onResize(window);
@@ -32,8 +36,8 @@ int main() {
 
         submitCube({0, 0, -1});
 
-        shader.bind();
-        texture.bind(0);
+        Coel::bind(shader);
+        // Coel::send(u_tex, 0);
         flush();
         Coel::update(window);
     }

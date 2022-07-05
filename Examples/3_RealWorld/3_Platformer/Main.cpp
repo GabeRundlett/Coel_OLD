@@ -137,41 +137,41 @@ int main() {
         if (prev_moving != player.moving)
             player_sprite_anim_start = window.time;
 
-        float off = player.pos.x;
-        float off1 = off / 1.0f - round(off) / 1.0f;
-        float off2 = off / 24.0f - round(off) / 24.0f;
-        float off3 = off / 12.0f - round(off) / 12.0f;
+        // float off = player.pos.x;
+        // float off1 = off / 1.0f - round(off) / 1.0f;
+        // float off2 = off / 24.0f - round(off) / 24.0f;
+        // float off3 = off / 12.0f - round(off) / 12.0f;
 
         aspect = static_cast<float>(window.size.x) / static_cast<float>(window.size.y) * scale;
         spriteRenderer.resize(aspect, scale);
         spriteRenderer.begin();
-        const float s4 = round(scale / 4.0f) + 3.0f;
-        const float s1 = round(scale) + 3.0f;
-        const glm::vec4 tint = {0.9, 0.9, 0.95, 1.0};
+        // const float s4 = round(scale / 4.0f) + 3.0f;
+        // const float s1 = round(scale) + 3.0f;
+        // const glm::vec4 tint = {0.9, 0.9, 0.95, 1.0};
 
-        // hills
-        for (float x = -s4 * 4; x < s4 * 4; x += 4)
-            spriteRenderer.submit({x - off3 * 4, 0, 4, 1}, toTexPosSize(0, 2, 4, 1), spriteSheet, tint);
+        // // hills
+        // for (float x = -s4 * 4; x < s4 * 4; x += 4)
+        //     spriteRenderer.submit({x - off3 * 4, 0, 4, 1}, toTexPosSize(0, 2, 4, 1), spriteSheet, tint);
 
-        // clouds
-        for (float x = -s4 * 4; x < s4 * 4; x += 4)
-            spriteRenderer.submit({x - off2 * 4, 1, 4, 1}, toTexPosSize(0, 3, 4, 1), spriteSheet, tint);
+        // // clouds
+        // for (float x = -s4 * 4; x < s4 * 4; x += 4)
+        //     spriteRenderer.submit({x - off2 * 4, 1, 4, 1}, toTexPosSize(0, 3, 4, 1), spriteSheet, tint);
 
-        // dirt
-        for (float y = -s1 * 4; y < 0; ++y)
-            for (float x = -s1 * 1; x < s1 * 1; ++x)
-                spriteRenderer.submit({x - off1, y, 1, 1}, toTexPosSize(0, 1), spriteSheet, tint);
+        // // dirt
+        // for (float y = -s1 * 4; y < 0; ++y)
+        //     for (float x = -s1 * 1; x < s1 * 1; ++x)
+        //         spriteRenderer.submit({x - off1, y, 1, 1}, toTexPosSize(0, 1), spriteSheet, tint);
 
-        // Blocks (dirt, grass)
-        spriteRenderer.submit({-off, 0, 1, 1}, toTexPosSize(0, 1), spriteSheet, tint);
-        // spriteRenderer.submit({-off, 0.25, 1, 1}, toTexPosSize(1, 1), spriteSheet, tint);
+        // // Blocks (dirt, grass)
+        // spriteRenderer.submit({-off, 0, 1, 1}, toTexPosSize(0, 1), spriteSheet, tint);
+        // // spriteRenderer.submit({-off, 0.25, 1, 1}, toTexPosSize(1, 1), spriteSheet, tint);
 
-        spriteRenderer.submit({-off, 1, 1, 1}, toTexPosSize(0, 1), spriteSheet, tint);
-        spriteRenderer.submit({-off, 1.25, 1, 1}, toTexPosSize(1, 1), spriteSheet, tint);
+        // spriteRenderer.submit({-off, 1, 1, 1}, toTexPosSize(0, 1), spriteSheet, tint);
+        // spriteRenderer.submit({-off, 1.25, 1, 1}, toTexPosSize(1, 1), spriteSheet, tint);
 
-        // grass
-        for (float x = -s1 * 1; x < s1 * 1; ++x)
-            spriteRenderer.submit({x - off1, -0.75, 1, 1}, toTexPosSize(1, 1), spriteSheet, tint);
+        // // grass
+        // for (float x = -s1 * 1; x < s1 * 1; ++x)
+        //     spriteRenderer.submit({x - off1, -0.75, 1, 1}, toTexPosSize(1, 1), spriteSheet, tint);
 
         // player
         int sprite_anim_offset = 0;
@@ -180,8 +180,8 @@ int main() {
         spriteRenderer.submit({0, player.pos.y, player.facing, 1}, toTexPosSize(static_cast<float>(sprite_anim_offset), 0.0f), spriteSheet);
 
         // tallgrass foreground
-        for (float x = -s1 * 1; x < s1 * 1; ++x)
-            spriteRenderer.submit({x - off1, 0, 1, 1}, toTexPosSize(2, 1), spriteSheet, tint);
+        // for (float x = -s1 * 1; x < s1 * 1; ++x)
+        //     spriteRenderer.submit({x - off1, 0, 1, 1}, toTexPosSize(2, 1), spriteSheet, tint);
 
         spriteRenderer.flush();
 

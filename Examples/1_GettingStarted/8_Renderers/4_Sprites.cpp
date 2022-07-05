@@ -22,7 +22,8 @@ struct Particle {
     void update(float elapsed) {
         pos += vel * elapsed / (time * 2 + 1);
         time += elapsed;
-        if (time > lifetime) reset();
+        if (time > lifetime)
+            reset();
     }
 };
 std::vector<Particle> particles{10000};
@@ -38,7 +39,8 @@ int main() {
 
     window.onMouseScroll = [&scale](Coel::Window &w) {
         scale -= w.mouse.scrollOffset.y / 5;
-        if (scale < 0.4) scale = 0.4;
+        if (scale < 0.4)
+            scale = 0.4;
     };
 
     window.onMouseMove = [&scale](Coel::Window &w) {

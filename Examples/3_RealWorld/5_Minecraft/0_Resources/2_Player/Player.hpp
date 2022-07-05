@@ -4,7 +4,7 @@
 
 struct Player {
     float speed{3.f}, mouseSensitivity{0.0001f};
-    Coel::Camera3D cam;
+    Coel::Camera3D cam{};
     glm::vec3 pos{0, 0, 0}, vel{speed, speed, speed}, rot{0, 0, 0};
     glm::dvec2 mouseCenter{};
 
@@ -14,20 +14,29 @@ struct Player {
     void init() {
         cam.updatePosition(pos);
         cam.updateRotation(rot);
+        shouldMoveForward = false;
+        shouldMoveBackward = false;
+        shouldMoveLeft = false;
+        shouldMoveRight = false;
+        shouldMoveUp = false;
+        shouldMoveDown = false;
     }
 
-    void updateCamera(const Coel::Shader &shader, const glm::ivec2 size, const Coel::Shader::Uniform<glm::mat4> &u_proj,
-                      const Coel::Shader::Uniform<glm::mat4> &u_view) {
+    void updateCamera(const Coel::Shader &shader, const glm::ivec2 size, const Coel::Uniform<glm::mat4> &u_proj,
+                      const Coel::Uniform<glm::mat4> &u_view) {
         mouseCenter = {0.5 * size.x, 0.5 * size.y};
         cam.updateAspect(size);
-        shader.send(u_proj, &cam.projMat);
-        shader.send(u_view, &cam.viewMat);
+        Coel::bind(shader);
+        Coel::send(u_proj, &cam.projMat);
+        Coel::send(u_view, &cam.viewMat);
     }
 
-    void updateCamera(const Coel::Shader &shader, const Coel::Shader::Uniform<glm::mat4> &u_proj,
-                      const Coel::Shader::Uniform<glm::mat4> &u_view) {
-        shader.send(u_proj, &cam.projMat);
-        shader.send(u_view, &cam.viewMat);
+    void updateCamera(const Coel::Shader &shader, const Coel::Uniform<glm::mat4> &u_proj,
+                      const Coel::Uniform<glm::mat4> &u_view) {
+
+        Coel::bind(shader);
+        Coel::send(u_proj, &cam.projMat);
+        Coel::send(u_view, &cam.viewMat);
     }
 
     void onKey(const Coel::KeyInfo &kInfo) {
@@ -59,10 +68,12 @@ struct Player {
     }
 
     void onMouseMove(const Coel::MouseInfo &mInfo) {
-        auto offset = (mInfo.pos - mouseCenter) * (double)mouseSensitivity;
-        rot.x -= (float)offset.y * cam.fov, rot.y -= (float)offset.x * cam.fov;
-        if (rot.x < -glm::radians(90.f)) rot.x = -glm::radians(90.f);
-        if (rot.x > glm::radians(90.f)) rot.x = glm::radians(90.f);
+        auto offset = (mInfo.pos - mouseCenter) * static_cast<double>(mouseSensitivity);
+        rot.x -= static_cast<float>(offset.y) * cam.fov, rot.y -= static_cast<float>(offset.x) * cam.fov;
+        if (rot.x < -glm::radians(90.f))
+            rot.x = -glm::radians(90.f);
+        if (rot.x > glm::radians(90.f))
+            rot.x = glm::radians(90.f);
         cam.updateRotation(rot);
     }
 
@@ -86,8 +97,10 @@ struct Player {
             pos.z += vel.z * elapsed * s;
         }
 
-        if (shouldMoveUp) pos.y -= vel.y * elapsed;
-        if (shouldMoveDown) pos.y += vel.y * elapsed;
+        if (shouldMoveUp)
+            pos.y -= vel.y * elapsed;
+        if (shouldMoveDown)
+            pos.y += vel.y * elapsed;
 
         cam.updatePosition(pos);
     }

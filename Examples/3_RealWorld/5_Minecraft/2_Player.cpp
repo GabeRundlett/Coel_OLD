@@ -8,11 +8,13 @@ int main() {
 
     Coel::Renderer::init(batch, MAX_VSIZE, MAX_ISIZE);
 
-    Coel::Shader shader(vertSrc, fragSrc);
-    auto u_proj = shader.findMat4("u_proj");
-    auto u_view = shader.findMat4("u_view");
-    Coel::Texture texture("Assets/cobblestone.png");
-    texture.setMagFilter(Coel::Filter::Nearest);
+    Coel::Shader shader;
+    Coel::create(shader, vertSrc, fragSrc);
+    auto u_proj = Coel::findMat4(shader, "u_proj");
+    auto u_view = Coel::findMat4(shader, "u_view");
+    Coel::Texture texture;
+    Coel::create(texture, "Assets/cobblestone.png");
+    Coel::setMagFilter(texture, Coel::Nearest);
     Player player;
     player.init();
 
@@ -32,7 +34,7 @@ int main() {
 
     Coel::Renderer::enableCulling(true);
     Coel::Renderer::enableDepthTest(true);
-    Coel::Renderer::setClearColor(0.72, 0.76, 1.f, 1.f);
+    Coel::Renderer::setClearColor(0.72f, 0.76f, 1.0f, 1.0f);
     auto time = Coel::getTime(), prevTime = time, elapsed = time;
 
     while (window.isOpen) {
@@ -42,16 +44,16 @@ int main() {
         Coel::Renderer::clear();
         begin();
 
-        player.update(elapsed);
+        player.update(static_cast<float>(elapsed));
         player.updateCamera(shader, u_proj, u_view);
 
         for (float x = 0; x < 4; ++x)
             for (float y = 0; y < 4; ++y)
                 for (float z = 0; z < 4; ++z)
-                    submitCube({x - 1.5, y - 1.5, z - 5});
+                    submitCube({x - 1.5f, y - 1.5f, z - 5.0f});
 
-        shader.bind();
-        texture.bind(0);
+        Coel::bind(shader);
+        // Coel::send(u_tex, 0);
         flush();
         Coel::update(window);
     }

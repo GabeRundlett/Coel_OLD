@@ -8,9 +8,9 @@ int main() {
     Coel::create(vao);
     float vertex_data[]{
         -0.5, -0.5, 0, 0, 0, 1, // Black
-        -0.5, 0.5,  1, 0, 0, 1, // Red
-        0.5,  -0.5, 0, 1, 0, 1, // Green
-        0.5,  0.5,  0, 0, 1, 1  // Blue
+        -0.5, 0.5, 1, 0, 0, 1,  // Red
+        0.5, -0.5, 0, 1, 0, 1,  // Green
+        0.5, 0.5, 0, 0, 1, 1    // Blue
     };
     Coel::Vbo vbo{{{Coel::F32, 2}, {Coel::F32, 4}}};
     Coel::create(vbo, vertex_data, sizeof(vertex_data));

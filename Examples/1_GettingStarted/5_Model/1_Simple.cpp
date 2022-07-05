@@ -9,7 +9,7 @@ int main() {
 
     Player player{};
     player.pos = {-1.75, -2.5, -3};
-    player.rot = {glm::radians(-30.0f), glm::radians(90-65.0f), 0.0f};
+    player.rot = {glm::radians(-30.0f), glm::radians(90 - 65.0f), 0.0f};
     Camera camera{};
     bool is_paused = true;
 
@@ -27,7 +27,7 @@ int main() {
     };
 
     toggle_pause();
-    
+
     window.onKey = [&](Coel::Window &window) {
         if (window.key.code == input::keybinds::TOGGLE_PAUSE && window.key.action == GLFW_PRESS)
             toggle_pause();

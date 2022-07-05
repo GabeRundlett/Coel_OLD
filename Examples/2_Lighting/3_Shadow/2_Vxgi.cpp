@@ -154,7 +154,7 @@ int main() {
 
         auto u_tex = Coel::findInt(shader, "u_tex");
         auto u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
-        
+
         Coel::Model model;
         Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
 
@@ -189,7 +189,7 @@ int main() {
 
         glm::ivec3 vxgiRenderSize{64, 64, 64};
         glm::vec3 vxgiBoxMin{-10.0f, -10.0f, -10.0f};
-        glm::vec3 vxgiBoxMax{ 10.0f,  10.0f,  10.0f};
+        glm::vec3 vxgiBoxMax{10.0f, 10.0f, 10.0f};
 
         Coel::create(vxgiRenderTarget.fbo, {vxgiRenderSize.x, vxgiRenderSize.y});
         Coel::create(vxgiRenderTarget.texture, vxgiRenderSize, Coel::TextureFormat::RGBA, nullptr);

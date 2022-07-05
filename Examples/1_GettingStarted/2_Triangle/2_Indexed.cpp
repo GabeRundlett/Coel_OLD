@@ -7,8 +7,8 @@ int main() {
     float vertex_data[]{
         -0.5, -0.5, // 1----3 <-- New
         -0.5, 0.5,  // |`.  |   Vertex!
-        0.5,  -0.5, // |  `.|
-        0.5,  0.5   // 0----2
+        0.5, -0.5,  // |  `.|
+        0.5, 0.5    // 0----2
     };
     Coel::Vbo vbo{{{Coel::F32, 2}}};
     Coel::create(vbo, vertex_data, sizeof(vertex_data));

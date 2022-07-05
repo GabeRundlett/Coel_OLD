@@ -22,7 +22,8 @@ namespace Coel {
             std::vector<char> infoLog(static_cast<size_t>(temp) + 100);
             glGetShaderInfoLog(compiled_object_id, temp, &temp, &infoLog[0]);
             glDeleteShader(compiled_object_id);
-            std::cout << "COMPILE ERROR:\n" << infoLog.data() << std::endl;
+            std::cout << "COMPILE ERROR:\n"
+                      << infoLog.data() << std::endl;
         }
 #endif
 
