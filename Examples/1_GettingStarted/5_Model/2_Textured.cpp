@@ -9,7 +9,7 @@ int main() {
 
     Player player{};
     player.pos = {-1.75, -2.5, -3};
-    player.rot = {glm::radians(-30.0f), glm::radians(90-65.0f), 0.0f};
+    player.rot = {glm::radians(-30.0f), glm::radians(90 - 65.0f), 0.0f};
     Camera camera{};
     bool is_paused = true;
 
@@ -27,7 +27,7 @@ int main() {
     };
 
     toggle_pause();
-    
+
     window.onKey = [&](Coel::Window &window) {
         if (window.key.code == input::keybinds::TOGGLE_PAUSE && window.key.action == GLFW_PRESS)
             toggle_pause();
@@ -86,15 +86,14 @@ int main() {
     std::vector<Coel::Model> objects;
     constexpr auto FROG_X = 1, FROG_Y = 1;
     objects.resize(FROG_X * FROG_Y);
-    for (int yi = 0; yi < FROG_Y; ++yi)
-        for (int xi = 0; xi < FROG_X; ++xi) {
+    for (size_t yi = 0; yi < FROG_Y; ++yi)
+        for (size_t xi = 0; xi < FROG_X; ++xi) {
             size_t index = xi + yi * FROG_X;
-            Coel::open(objects[index], "C:/users/gabe/Downloads/gonza/export/z-up/gonza.gltf");
-            
+            Coel::open(objects[index], "Assets/Objects/frog/scene.gltf");
+
             for (auto &o : objects[index].objects)
-                o.modlMat = glm::scale(glm::rotate(glm::translate(glm::mat4(1), {27.4923f * xi, 0.0f, 16.4608f * yi}), 0.0f, {1, 0, 0}), {1, 1, 1}) * o.modlMat;
+                o.modlMat = glm::scale(glm::rotate(glm::translate(glm::mat4(1), {2.0 * static_cast<float>(xi), 0.0f, 2.0 * static_cast<float>(yi)}), 0.0f, {1, 0, 0}), {1, 1, 1}) * o.modlMat;
         }
-    // Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(false);
     Coel::Renderer::setClearColor(0.2f, 0.2f, 0.3f, 1.0f);
@@ -111,7 +110,7 @@ int main() {
         viewMat = camera.vrot_mat * camera.vtrn_mat;
         Coel::send(u_projMat, &projMat);
         Coel::send(u_viewMat, &viewMat);
-        for(auto &o : objects)
+        for (auto &o : objects)
             Coel::Renderer::draw(o, u_modlMat, u_modlNrmMat, u_tex, u_nrm_tex);
         Coel::update(window);
     }

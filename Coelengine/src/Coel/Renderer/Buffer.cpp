@@ -141,7 +141,7 @@ namespace Coel {
     void bind(const Sbo &sbo, uint32_t index) {
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, sbo.id); //
     }
-    void* open(const Sbo &sbo) {
+    void *open(const Sbo &sbo) {
         // bind(sbo);
         // *reinterpret_cast<void **>(handle) = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
         return glMapNamedBuffer(sbo.id, GL_READ_WRITE);

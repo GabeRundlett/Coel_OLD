@@ -46,5 +46,6 @@ namespace Coel {
     void setMinFilter(Texture &tex, TextureFilter mode);
     void setMagFilter(Texture &tex, TextureFilter mode);
     void setWrapMode(Texture &tex, TextureWrap mode);
+    void setBorderColor(Texture &tex, const glm::vec4 &color);
     void destroy(Texture &tex);
 } // namespace Coel

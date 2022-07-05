@@ -45,7 +45,7 @@ namespace Coel {
 
     TextureRef load(const char *const filepath) {
         auto filepath_str = std::string(filepath);
-        auto tex_iter = cache.textures.find(filepath_str); 
+        auto tex_iter = cache.textures.find(filepath_str);
         if (tex_iter == cache.textures.end()) {
             // not found, create a new one
             Texture result;
@@ -119,6 +119,9 @@ namespace Coel {
     void setWrapMode(Texture &tex, const TextureWrap mode) {
         glTextureParameteri(tex.id, GL_TEXTURE_WRAP_S, toGlWrap(mode));
         glTextureParameteri(tex.id, GL_TEXTURE_WRAP_T, toGlWrap(mode));
+    }
+    void setBorderColor(Texture &, const glm::vec4 &color) {
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, reinterpret_cast<const float *>(&color));
     }
     void destroy(Texture &tex) {
         glDeleteTextures(1, &tex.id); //

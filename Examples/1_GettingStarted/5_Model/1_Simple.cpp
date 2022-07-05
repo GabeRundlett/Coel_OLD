@@ -9,7 +9,7 @@ int main() {
 
     Player player{};
     player.pos = {-1.75, -2.5, -3};
-    player.rot = {glm::radians(-30.0f), glm::radians(90-65.0f), 0.0f};
+    player.rot = {glm::radians(-30.0f), glm::radians(90 - 65.0f), 0.0f};
     Camera camera{};
     bool is_paused = true;
 
@@ -27,7 +27,7 @@ int main() {
     };
 
     toggle_pause();
-    
+
     window.onKey = [&](Coel::Window &window) {
         if (window.key.code == input::keybinds::TOGGLE_PAUSE && window.key.action == GLFW_PRESS)
             toggle_pause();
@@ -84,7 +84,7 @@ int main() {
     auto u_modlNrmMat = Coel::findMat4(shader, "u_modlNrmMat");
     glm::mat4 projMat{1}, viewMat{1};
     Coel::Model model;
-    Coel::open(model, "C:/users/gabe/Downloads/gonza/export/z-up/gonza.gltf");
+    Coel::open(model, "Assets/Objects/frog/scene.gltf");
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(false);
     Coel::Renderer::setClearColor(0.2f, 0.2f, 0.3f, 1.0f);

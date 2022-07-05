@@ -12,8 +12,10 @@ int main() {
         case Coel::Action::Repeat:
             if (w.key.code == Coel::Key::Backspace) {
                 std::size_t pos = text.size() - 1;
-                if (w.key.mods & Coel::Mod::Control) pos = text.rfind(' ');
-                if (pos == std::string::npos) pos = 0;
+                if (w.key.mods & Coel::Mod::Control)
+                    pos = text.rfind(' ');
+                if (pos == std::string::npos)
+                    pos = 0;
                 text = text.substr(0, pos);
                 // std::cout << "\033[K\033[1000D" << text << std::flush;
                 // for (unsigned int i = 0; i < 100; ++i)

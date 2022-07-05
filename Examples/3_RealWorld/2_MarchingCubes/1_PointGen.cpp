@@ -150,7 +150,8 @@ int main() {
         for (unsigned int zi = 0; zi < SIZE_Z; ++zi) {
             for (unsigned int yi = 0; yi < SIZE_Y; ++yi) {
                 for (unsigned int xi = 0; xi < SIZE_X; ++xi) {
-                    if (noiseValues[zi][yi][xi] > cutoff) drawCube(xi, yi, zi);
+                    if (noiseValues[zi][yi][xi] > cutoff)
+                        drawCube(xi, yi, zi);
                 }
             }
         }

@@ -70,7 +70,7 @@ int main() {
     glm::vec3 fogColor{0.6, 0.6, 0.8};
 
     Coel::Model model;
-    Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+    Coel::open(model, "Assets/Objects/frog/scene.gltf");
 
     Coel::Renderer::enableCulling(true);
     Coel::Renderer::enableDepthTest(true);

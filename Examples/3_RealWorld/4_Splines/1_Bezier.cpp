@@ -141,7 +141,7 @@ int main() {
             points[3] = glm::vec2(window.mouse.pos) / glm::vec2(window.size);
             points[3].y = 1 - points[3].y;
         }
-        
+
         Coel::Renderer::clearColor();
         Coel::bind(shader);
         Coel::send(u_p, points);

@@ -8,9 +8,9 @@ int main() {
     Coel::create(vao);
     float vertex_data[]{
         -1, -1, 0, 0, //
-        -1, 1,  0, 1, //
-        1,  -1, 1, 0, //
-        1,  1,  1, 1  //
+        -1, 1, 0, 1,  //
+        1, -1, 1, 0,  //
+        1, 1, 1, 1    //
     };
     // New Attrib {F32, 2}
     Coel::Vbo vbo{{{Coel::F32, 2}, {Coel::F32, 2}}};

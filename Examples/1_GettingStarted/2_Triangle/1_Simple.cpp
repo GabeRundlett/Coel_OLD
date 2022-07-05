@@ -16,7 +16,7 @@ int main() {
     float vertex_data[]{
         -0.5, -0.5, // bottom left
         -0.5, 0.5,  // top left
-        0.5,  -0.5  // bottom right
+        0.5, -0.5   // bottom right
     };
     // Now we can create our triangle vertex buffer. We pass a pointer
     // to the data, the size in bytes of the buffer, and then an initializer
