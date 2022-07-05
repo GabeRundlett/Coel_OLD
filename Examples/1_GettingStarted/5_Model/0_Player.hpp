@@ -11,7 +11,7 @@ namespace input::keybinds {
     static constexpr auto MOVE_PX = GLFW_KEY_A;
     static constexpr auto MOVE_NX = GLFW_KEY_D;
     static constexpr auto MOVE_PY = GLFW_KEY_SPACE;
-    static constexpr auto MOVE_NY = GLFW_KEY_LEFT_SHIFT;
+    static constexpr auto MOVE_NY = GLFW_KEY_LEFT_CONTROL;
 
     static constexpr auto TOGGLE_PAUSE = GLFW_KEY_ESCAPE;
 } // namespace input::keybinds

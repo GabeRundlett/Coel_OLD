@@ -44,7 +44,7 @@ int main() {
     glm::mat4 projMat{1}, viewMat{1};
 
     Coel::Model model;
-    Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+    Coel::open(model, "Assets/Objects/frog/scene.gltf");
 
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(true);

@@ -89,12 +89,11 @@ int main() {
     for (size_t yi = 0; yi < FROG_Y; ++yi)
         for (size_t xi = 0; xi < FROG_X; ++xi) {
             size_t index = xi + yi * FROG_X;
-            Coel::open(objects[index], "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+            Coel::open(objects[index], "Assets/Objects/frog/scene.gltf");
 
             for (auto &o : objects[index].objects)
-                o.modlMat = glm::scale(glm::rotate(glm::translate(glm::mat4(1), {27.4923f * static_cast<float>(xi), 0.0f, 16.4608f * static_cast<float>(yi)}), 0.0f, {1, 0, 0}), {1, 1, 1}) * o.modlMat;
+                o.modlMat = glm::scale(glm::rotate(glm::translate(glm::mat4(1), {2.0 * static_cast<float>(xi), 0.0f, 2.0 * static_cast<float>(yi)}), 0.0f, {1, 0, 0}), {1, 1, 1}) * o.modlMat;
         }
-    // Coel::open(model, "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
     Coel::Renderer::enableDepthTest(true);
     Coel::Renderer::enableCulling(false);
     Coel::Renderer::setClearColor(0.2f, 0.2f, 0.3f, 1.0f);

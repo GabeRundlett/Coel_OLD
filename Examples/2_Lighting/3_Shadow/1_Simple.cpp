@@ -198,7 +198,7 @@ int main() {
         // auto u_nrm_tex = Coel::findInt(shader, "u_nrm_tex");
         std::vector<Coel::Model> objects;
         objects.resize(2);
-        Coel::open(objects[0], "C:/users/gabe/Downloads/gonza/export/y-up/gonza.gltf");
+        Coel::open(objects[0], "Assets/Objects/frog/scene.gltf");
         Coel::open(objects[1], "Assets/Objects/frog/scene.gltf");
 
         for (auto &o : objects[1].objects)
